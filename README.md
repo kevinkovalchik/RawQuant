@@ -19,7 +19,7 @@ The Python packages you need are:
 1.	Numpy
 2.	Pandas
 3.	tqdm
-4.	Joblib
+4.	Joblib (optional)
 5.	Comtypes
 
 Python can be downloaded from python.org and installed on your local machine. It should come with pip installed, so you can install the required packages from the command line: 
