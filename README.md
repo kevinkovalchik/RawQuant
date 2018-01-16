@@ -1,8 +1,8 @@
-#RawQuant
+# RawQuant
 
 RawQuant is a Python script for extracting scan meta data and quantification information from Thermo .raw files.
 
-###Setting up the RawQuant environment
+### Setting up the RawQuant environment
 
 RawQuant is a Python script and does not function as a standalone program. There are several other programs and packages which must be installed before RawQuant can be used.
 
@@ -12,7 +12,7 @@ The programs you need are:
 2. MSFileReader (version 3.0.29, 64-bit has been tested)
 3. MSFileReader Python bindings (https://github.com/frallain/MSFileReader-Python-bindings)
 
-####Setting up Python
+#### Setting up Python
 
 The Python packages you need are:
 
@@ -36,11 +36,11 @@ Alternatively, Python can be installed as a scientific distrubtion, such as with
 > conda install -c conda-forge tqdm
 ```
 
-####Setting up MSFileReader
+#### Setting up MSFileReader
 
 Thermo MSFileReader can be downloaded directly from Thermo (https://thermo.flexnetoperations.com/control/thmo/product?plneID=632401). MSFileReader can also be found in the MSFileReader.py github repository (https://github.com/frallain/MSFileReader_Python_bindings/tree/master/MSFileReader). Simply run the executable to install this program. 
 
-####Setting up MSFileReader Python bindings
+#### Setting up MSFileReader Python bindings
  
 RawQuant makes use of François Allain’s excellent Python bindings for MSFileReader. They can be downloaded from https://github.com/frallain/MSFileReader-Python-bindings (download MSFileReader.py). MSFileReader.py does not need to be installed, but it does need to be available to whatever Python session it is you will be working in. There are two easy ways to do this:
 
@@ -51,7 +51,7 @@ RawQuant makes use of François Allain’s excellent Python bindings for MSFileR
 > python -m site --user-site
 ```
 
-###RawQuant usage
+### RawQuant usage
 
 The RawQuant script needs to be called from the command prompt as a Python argument. For example:
 
