@@ -939,7 +939,9 @@ class RawQuant:
             None
         else:
             raise ValueError('Labels of impurities must exactly match those of '+
-                                'the reporters')
+                             'the reporters. The reporter labels in your data are as follows:\n'+
+                             str(list(self.data['Labels'].keys()))+
+                             '\nPlease check that the labels in your impurity matrix file match.')
 
         Impurities = self.Impurities['ImpurityMatrix'].copy()
         CorrectionMatrix = pd.DataFrame(index=list(self.data['Labels'].keys()),columns=list(self.data['Labels'].keys()),data = 0,dtype=float)
@@ -1488,7 +1490,15 @@ if __name__ == "__main__":
         'RawQuant provides hassle-free extraction of quantification information\n'+
         'and scan meta data from Thermo .raw files for isobaric tag techniques.\n'+
         'It can be imported into a running python session or called from the command\n'+
-        'line. If you wish to use the interactive command line mode use this command:\n\n'+
+        'line.\n\n'+
+        
+        'In addition to quantification and meta data, RawQuant will always return\n'+
+        'metrics of the MS data in a simple text file. These metrics include the\n'+
+        'total number of MS scans, the number of scans for each MS order, mean topN,\n'+
+        'mean number of MS1 and MS2 scans per second, and mean duty cycle.\n\n'+
+        
+        'If you wish to use the interactive command line mode to run RawQuant, use\n'+
+        'this command:\n\n'+
 
         '>python RawQuant.py\n\n'+
 
@@ -1509,7 +1519,7 @@ if __name__ == "__main__":
         'Each mode has its own help documentation, which can be accessed with\n'+
         'the -h arguement. For example:\n\n'+
 
-        '/python RawQuant.py parse -h\n\n'+
+        '>python RawQuant.py parse -h\n\n'+
 
         'In brief, parse is used for parsing MS metadata from a .raw file, and\n'+
         'can also generate standard-format .mgf files. The desired MS order(s)\n'+
