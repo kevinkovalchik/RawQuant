@@ -2225,5 +2225,5 @@ if __name__ == "__main__":
                 # if user asks for more cores than exist, default to the maximum
                 print('Specified number of cores for parallelization exceeds '+
                         'available number of cores. Maximum will be used.')
-
+        if args.parallel == None:
             Parallel(n_jobs=num_cores)(delayed(func)(msFile=msFile, reagents=reagents, mgf=args.generate_mgf, interference = args.quantify_interference, impurities = impurities) for msFile in files)
