@@ -2214,7 +2214,7 @@ if __name__ == "__main__":
 
                 data.Close()
                 
-        elif args.parallel:
+        else:
 
             num_cores = multiprocessing.cpu_count()
 
