@@ -1,14 +1,31 @@
-import MSFileReader
-import pandas as pd
-import numpy as np
-import sys
-import argparse
-from tqdm import tqdm
+try:
+    import MSFileReader
+except:
+    raise Exception('MSFileReader.py not found!')
+
+try:
+    import pandas as pd
+except:
+    raise Exception('pandas not found!')
+    
+try:
+    import numpy as np
+except:
+    raise Exception('numpy not found!')
+
+try:
+    from tqdm import tqdm
+except:
+    raise Exception('tqdm not found!')
+
 try:
     from joblib import Parallel, delayed
     import multiprocessing
 except:
-    print('Parallel processing unavailable.')
+    print('joblib not found! Parallel processing unavailable.')
+    
+import sys
+import argparse
 
 '''
 RawQuant provides hassle-free extraction of quantification information
