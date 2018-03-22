@@ -8,7 +8,7 @@ setup(
     author='Kevin Kovalchik',
     author_email='kevin.kovalchik@gmail.com',
     url='https://github.com/kevinkovalchik/RawQuant',
-    download_url='https://github.com/kevinkovalchik/RawQuant/archive/0.1.tar.gz',
+    project_urls={'Documentation':'https://github.com/kevinkovalchik/RawQuant/docs'},
     keywords=['Orbitrap', 'mass spectrometer', 'isobaric labelling', 'quantification', 'scan meta data'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
