@@ -169,14 +169,14 @@ This section will walk through some common commands and input scenarios for RawQ
 	* MS2 scans/sec counts the number of MS2 events that are triggered every second.
 	* Mean duty cycle calculates the time (in seconds) between neighbouring MS1 events.  
 
-	![alt text](screens/screen11_crop.png)
+	![alt text](screens/screen11.png)
 
 13. What about the 'MS1ParseData.txt' file. 
 	* ScanNumber is the scan index for the MS1 event.
 	* RetentionTime is the retention time (in minutes) of the MS1 event.
 	* MS1IonInjectionTime is the injection time (in ms) for the MS1 event.
 
-	![alt text](screens/screen14_crop.png)
+	![alt text](screens/screen14.png)
 
 14. What about the 'MS2ParseData.txt' file. This contains a lot of information.
 	* ScanNumber is the scan index for the MS2 event.
@@ -193,7 +193,7 @@ This section will walk through some common commands and input scenarios for RawQ
 	* MS1IonInjectionTime is the injection time (in ms) of the MS1 scan where the MS2 event was triggered from.
 	* MS2IonInjectionTime is the injection time (in ms) of the MS2 scan event itself. 
 
-	![alt text](screens/screen12_crop.png)
+	![alt text](screens/screen12.png)
 
 15. Let's move on to processing a quant file. For this example I am going to use a file that was obtained using an SPS-MS3 approach on an Orbitrap Fusion from the above PRIDE repository that was acquired as . The file name is "ch 29Sept2017 eColi-31907 TMT11 2e5-120 1.raw" if you would like to follow along with the same file.
 16. First lets process this file using the 'quant' functionality of RawQuant. There are multiple flags that the quant command can use as input.
@@ -248,7 +248,7 @@ This section will walk through some common commands and input scenarios for RawQ
 	* SPSMass are the masses of the ions selected from the MS2 scan for SPS-MS3 analysis.
 	* SPSIntensity are the intensities of the selected SPS ions. 
 
-	![alt text](screens/screen13_crop.png)
+	![alt text](screens/screen13.png)
 
 
 ####Using the RawQuant output in your analysis
@@ -269,11 +269,11 @@ Let's look at an example for combining the RawQuant data with search engines.
 1. In the RawQuant manuscript, we used SearchGUI and PeptideShaker a lot. As you saw above, the RawQuant output always contains the columns 'ScanNumber', or 'MS2ScanNumber', 'MS1ScanNumber' and so on. 
 2. PeptideShaker can output a variety of reports. The one we are interested in for combination is the 'Default PSM Report'.
 
-	![alt text](screens/screen15_crop.png)
+	![alt text](screens/screen15.png)
 
 3. As you can see, there is a lot of information here. Unfortunately, at the moment, the scan number is a bit messed up because of the MGF format of RawQuant (known bug), but this information is still accessible from the 'Spectrum Title' column.
 
-	![alt text](screens/screen16_crop.png)
+	![alt text](screens/screen16.png)
 
 4. Using R, Python, or your language of choice, you can combine the RawQuant output with the PeptideShaker results by combining this spectrum number with the appropriate column from RawQuant.
 	* For a parsed file where -o 2 was used, this will be the 'ScanNumber' column.
