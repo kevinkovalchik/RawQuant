@@ -33,6 +33,7 @@ Let's walk through the setup:
 	* On PATH, click 'Edit'.
 	* Add the directory of the Python install to the PATH variable.
 
+	![alt text](https://github.com/kevinkovalchik/RawQuant/tree/master/docs/screens/screen2_crop-a.png)
 	![Alt Image Text](/Users/chughes/Documents/google-drive_nov2017/raw-quant_manuscript/script-manuscript/revisions/screens/screen2_crop-a.png)
 	
 	![Alt Image Text](/Users/chughes/Documents/google-drive_nov2017/raw-quant_manuscript/script-manuscript/revisions/screens/screen2_crop-b.png)
