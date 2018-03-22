@@ -3,7 +3,7 @@ from distutils.core import setup
 setup(
     name='RawQuant',
     packages=['RawQuant'],
-    version='0.0.1',
+    version='0.1.0',
     description='Package for extracting scan meta data and quantification information from Orbitrap .raw files',
     author='Kevin Kovalchik',
     author_email='kevin.kovalchik@gmail.com',
