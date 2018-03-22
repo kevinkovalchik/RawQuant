@@ -10,7 +10,15 @@ setup(
     url='https://github.com/kevinkovalchik/RawQuant',
     download_url='https://github.com/kevinkovalchik/RawQuant/archive/0.1.tar.gz',
     keywords=['Orbitrap', 'mass spectrometer', 'isobaric labelling', 'quantification', 'scan meta data'],
-    classifiers=[],
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Operating System :: Microsoft :: Windows',
+        'Intended Audience :: Science/Research',
+        'License :: OSI Approved :: MIT License',
+        'Natural Language :: English',
+        'Topic :: Scientific/Engineering :: Bio-Informatics',
+        'Topic :: Scientific/Engineering :: Chemistry',
+    ],
     install_requires=['numpy', 'comtypes>=1.1.3', 'pandas', 'tqdm>=4', 'joblib'],
     python_requires='>=3.6'
 )
