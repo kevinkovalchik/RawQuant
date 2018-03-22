@@ -1,26 +1,32 @@
-##RawQuant 
+## RawQuant 
 
-This guide describes the install and use of RawQuant. 
+This guide describes the install and use of RawQuant. This guide was updated last on March 22, 2018. 
 
-####Installation
+#### Pre-Requisites for Installation
 
-We are starting with a fresh system here. We recommend uninstalling MSFileReader and Python if they are already installed, as the order of installation is important for proper functioning.
+Our starting point is a blank Windows system. We recommend uninstalling MSFileReader and Python if they are already installed as the order of installation is important for RawQuant.
 
 RawQuant does not have any specific system requirements, although the script may run slowly on older machines. The computer we are using in this walkthrough has the specs:
 
-> * Microsoft Windows 10 Enterprise 2015 LTSB
-> * 10.0.10240 Build 10240
-> * Optiplex 7040
-> * x64-based PC
-> * Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz, 3408 Mhz, 4 Core(s), 8 Logical Processor(s)
-> * Installed Physical Memory (RAM)	8.00 GB
+* Microsoft Windows 10 Enterprise 2015 LTSB
+* 10.0.10240 Build 10240
+* Optiplex 7040
+* x64-based PC
+* Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz, 3408 Mhz, 4 Core(s), 8 Logical Processor(s)
+* Installed Physical Memory (RAM)	8.00 GB
 
 Let's walk through the setup:
 
-1. Download Python.
+1. It is a good idea to create a central folder somewhere you will remember that we can store all of our files in for installation.
+
+2. Download Python into your created folder.
 	* The version here is important. We have currently only tested version 3.6.1 (64-bit).
-	* The install file can be downloaded from Python directly (https://www.python.org/downloads/release/python-361/).
-2. Install Python. Use the default "Install Now" option. 
+	* The install file can be downloaded from Python directly (https://www.python.org/downloads/release/python-361/). 
+	* Scroll down on the above page and click the appropriate release for your system. In this case, we are going to download the Windows x86-64 executable installer version.
+	
+	![alt text](screens/screen17_crop.png)
+
+2. Install Python by double clicking the downloaded executable. Use the default "Install Now" option. 
 	
 	![alt text](screens/screen1_crop.png)
 	
@@ -108,7 +114,7 @@ Let's walk through the setup:
 12. If everything has worked properly, the commands should finish without error, and text output files should be generated in the same directory where the processed raw file(s) is located. 
 
 
-####Processing Files with RawQuant
+#### Processing Files with RawQuant
 
 This section will walk through some common commands and input scenarios for RawQuant as well as discussing some of the output data. 
 
