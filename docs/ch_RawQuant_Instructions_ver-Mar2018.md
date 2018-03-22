@@ -1,86 +1,122 @@
-##RawQuant 
+## RawQuant 
 
-This guide describes the install and use of RawQuant. 
+This guide describes the install and use of RawQuant. This guide was updated last on March 22, 2018. 
 
-####Installation
+#### System Pre-Requisites
 
-We are starting with a fresh system here. We recommend uninstalling MSFileReader and Python if they are already installed, as the order of installation is important for proper functioning.
+Our starting point is a blank Windows system. We recommend uninstalling MSFileReader and Python if they are already installed as the order of installation is important for RawQuant.
 
 RawQuant does not have any specific system requirements, although the script may run slowly on older machines. The computer we are using in this walkthrough has the specs:
 
-> * Microsoft Windows 10 Enterprise 2015 LTSB
-> * 10.0.10240 Build 10240
-> * Optiplex 7040
-> * x64-based PC
-> * Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz, 3408 Mhz, 4 Core(s), 8 Logical Processor(s)
-> * Installed Physical Memory (RAM)	8.00 GB
+* Microsoft Windows 10 Enterprise 2015 LTSB
+* 10.0.10240 Build 10240
+* Optiplex 7040
+* x64-based PC
+* Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz, 3408 Mhz, 4 Core(s), 8 Logical Processor(s)
+* Installed Physical Memory (RAM)	8.00 GB
+
+#### Downloads
+
+Before starting, we recommend creating a working directory somewhere you will remember, and downloading some files to it. 
+
+1. Download the RawQuant GitHub repository.
+	* Navigate to the [RawQuant GitHub repository](https://github.com/kevinkovalchik/RawQuant) in your web browser.
+	* This will include the Python bindings with MSFileReader.py.
+	* Download the entire repository as a ZIP archive using the 'Clone or download' button. 
+	* Extract the ZIP archive in the folder you created above.
+
+	![alt text](screens/screen18.png)
+
+2. Download Python into your created folder.
+	* The version here is important. We have currently only tested version 3.6.1 (64-bit).
+	* The install file can be downloaded from [Python directly](https://www.python.org/downloads/release/python-361/). 
+	* Scroll down on the above page and click the appropriate release for your system. In this case, we are going to download the Windows x86-64 executable installer version.
+	
+	![alt text](screens/screen17.png)
+
+3. Download the comtypes library for Python.
+	* The version here is important (want version 1.1.3). 
+	* The install file can be downloaded from [Python directly](https://pypi.python.org/pypi/comtypes/1.1.3) into the directory you created earlier.
+
+4. Download MSFileReader into your created folder.
+	* The version here is important. We have currently only tested the mentioned version (version 3.0.29, or 3.0 SP2).
+	* The install file can be downloaded from [Thermo](https://thermo.flexnetoperations.com/control/thmo/login?nextURL=%2Fcontrol%2Fthmo%2Fdownload%3Felement%3D6306677). This website requires registration, which is free.
+	* Alternatively, the install file can be downloaded from the [RawQuant GitHub page](https://github.com/kevinkovalchik/RawQuant).
+
+#### Installation
 
 Let's walk through the setup:
 
-1. Download Python.
-	* The version here is important. We have currently only tested version 3.6.1 (64-bit).
-	* The install file can be downloaded from Python directly (https://www.python.org/downloads/release/python-361/).
-2. Install Python. Use the default "Install Now" option. 
+1. Navigate to your folder containing all the downloaded files using your file browser.
+
+2. Install Python by double clicking the downloaded executable. Use the default "Install Now" option. You should see the screen below when it completes successfully.
 	
 	![alt text](screens/screen1_crop.png)
 	
-3. Setup Python in the environment variables. 
+3. Setup Python in the environment variables.
+	* First find where Python was installed. You can use the Windows search function to look for the 'python.exe' file.
+	
+	![alt text](screens/screen2_crop-b.png)
+	
+	* Now that we have the path, we want to add it to the environment.
 	* Go to 'Control Panel'.
 	* Click 'System and Security'.
 	* Click 'System'.
 	* Click 'Advanced System Settings'.
 	* Click 'Environment Variables'.
-	* On PATH, click 'Edit'.
-	* Add the directory of the Python install to the PATH variable.
-
-	![alt text](screens/screen2_crop-a.png)
+	* In the upper box with the PATH entry highlighted, click 'Edit'.
+	* Add the directory of the 'python.exe' file to the PATH variable.	
 	
-	![alt text](screens/screen2_crop-b.png)
+	![alt text](screens/screen2_crop-a.png)
 
 4. Add pip to the environment variables as well using the same process. 
+	* the pip file is typically located in the same python directory in a 'Scripts' folder.
 
 	![alt text](screens/screen4_crop.png)
 
 5. Check that Python and pip are installed correctly.
-	* Open 'Command Prompt'.
+	* Open 'Command Prompt'. If you cannot find command prompt, just search for it in Windows.
 	* Type 'python --version'.
 	* Type 'pip --version'.
 
 	![alt text](screens/screen3_crop.png)
 
 6. Install the comtypes package.
-	* The version here is important (want version 1.1.3). 
-	* The install file can be downloaded from Python directly (https://pypi.python.org/pypi/comtypes/1.1.3).
 	* Open 'Command Prompt' if not already open.
-	* Type 'pip install 'path to comtypes.zip file'.
-	* Restart your computer. 
+	* Type 'pip install 'directory path to comtypes.zip file'.
+	* After the install has completed successfully, restart your computer. 
 
 	![alt text](screens/screen5_crop.png)
  
 
 7. Install MSFileReader version 3.0 SP2, 64-bit only (do not install the 32-bit version!).
-	* The version here is important. We have currently only tested the mentioned version.
-	* The install file can be downloaded from Thermo (https://thermo.flexnetoperations.com/control/thmo/login?nextURL=%2Fcontrol%2Fthmo%2Fdownload%3Felement%3D6306677). This website requires registration, which is free.
-	* Alternatively, the install file can be downloaded from the RawQuant GitHub page (https://github.com/kevinkovalchik/RawQuant).
-	* After install, restart your computer.
+	* Use the default settings for the install, specifying the 64-bit version only. 
+	* After the install has completed successfully, restart your computer.
 
 8. Install the other Python dependencies.
 	* Open 'Command Prompt'.
-	* Install dependencies using the command 'pip install 'package name'.
+	* Install dependencies using the command 'pip install 'package name''. For example:
+	
+	~~~bash
+	pip install pandas
+	~~~	
+	
 	* Repeat for packages numpy, pandas, tqdm, joblib, argparse.
 
 	![alt text](screens/screen6_crop.png)
 
-9. Copy the MSFileReader.py file from the Python bindings to the Python directory.
-	* The MSFileReader.py file can be downloaded from the RawQuant GitHub page (https://github.com/kevinkovalchik/RawQuant). 
-	* Copy and paste in the appropriate directory. This will be the Lib directory of the Python you mapped to the environment previously. 
+9. Copy the MSFileReader.py file from the RawQuant GitHub directory you downloaded earlier to the Python 'Lib' directory.
+	* Simply copy and paste MSFileReader.py into the Python Lib directory.
+	* The Lib directory will be in the Python directory you mapped to the environment previously.  
 
 	![alt text](screens/screen7_crop.png)
 
-10. Check if RawQuant works.
+#### Install testing
+
+1. Check if RawQuant works.
 	* Open 'Command Prompt'.
-	* Navigate to the directory where you have stored the RawQuant.py script.
-	* Make sure you have admin priveleges. The first time you run RawQuant, the comtypes package needs to build a couple of sub-libraries. After you have run it the first time, you no longer need admin priveleges. In the image below, note the comtypes 'generating' lines. This will only happen the first time you run RawQuant with admin.
+	* Navigate in command prompt to the directory where you have stored the RawQuant.py script. If you are unfamiliar with navigating folders with command prompt, there are many great tutorials online for helping with this. 
+	* Make sure you have administrator priveleges at this point. The first time you run RawQuant, the comtypes package needs to build a couple of sub-libraries. After you have run it the first time, you no longer need admin priveleges. In the image below, note the comtypes 'generating' lines. This will only happen the first time you run RawQuant.
 	* Enter the command below into the terminal and hit enter.
 
 	~~~bash
@@ -89,7 +125,7 @@ Let's walk through the setup:
 	
 	![alt text](screens/screen8_crop.png)
 
-11. Test RawQuant on a real raw file to see if it is working completely. 
+2. Test RawQuant on a real raw file to see if it is working completely. 
 	* Download a test raw file from the EBI PRIDE repository for RawQuant (https://www.ebi.ac.uk/pride/archive/projects/PXD008787) or use your own raw file.
 	* Test the raw file (in this example I tested an MS2 and SPS-MS3 file).
 
@@ -105,10 +141,10 @@ Let's walk through the setup:
  
  	![alt text](screens/screen10_crop.png)
 
-12. If everything has worked properly, the commands should finish without error, and text output files should be generated in the same directory where the processed raw file(s) is located. 
+3. If everything has worked properly, the commands should finish without error, and text output files should be generated in the same directory where the processed raw file(s) is located. 
 
 
-####Processing Files with RawQuant
+#### Processing Files with RawQuant
 
 This section will walk through some common commands and input scenarios for RawQuant as well as discussing some of the output data. 
 
@@ -251,9 +287,9 @@ This section will walk through some common commands and input scenarios for RawQ
 	![alt text](screens/screen13.png)
 
 
-####Using the RawQuant output in your analysis
+#### Using the RawQuant output in your analysis
 
-There are numerous ways you can capitalize on the data output from RawQuant. For some code examples that process RawQuant output and combine them with search results from PeptideShaker, please see the GitHub associated with the RawQuant manuscript (https://github.com/chrishuges/RawQuant_JPR-2018). There are a wide variety of RNotebook code snippets here that can be followed for doing numerous analyses. Potential analysis pipelines of RawQuant data include:
+There are numerous ways you can capitalize on the data output from RawQuant. For some code examples that process RawQuant output and combine them with search results from PeptideShaker, please see the [GitHub page associated with the RawQuant manuscript](https://github.com/chrishuges/RawQuant_JPR-2018). There are a wide variety of RNotebook code snippets here that can be followed for doing numerous analyses. Potential analysis pipelines of RawQuant data include:
 
 * Parse your data file with RawQuant. Use the generated 'metrics' file to measure the performance of your MS across a wide variety of acquisition parameters, or monitor the performance over time.
 * Parse your data file with RawQuant and generate an MGF. Process the MGF using a search tool that accepts MGF input (e.g. Mascot, SearchGUI...and many other search engines). Use the MS2 scan numbers of the peptide matches to combine with the parsed RawQuant data (ScanNumber column in RawQuant). Check the metrics of the peptides that were identified, are you always hitting the max injection time for MS2? Can you afford to scan faster? Or do you need to go slower?
@@ -297,12 +333,14 @@ What about using the RawQuant output for other tools?
 	* Perform database matching with the MGF using packages such as rTandem and MSGFplus. 
 
 3. The parsed data can also be directly input into R and Python to perform your own calculations of topN, scan rate, ID rate, etc...
-	* Use the R code guides fround on https://github.com/chrishuges/RawQuant_JPR-2018 to get ideas and help.
+	* Use the R code guides fround on the [RawQuant manuscript GitHub page](https://github.com/chrishuges/RawQuant_JPR-2018) to get ideas and help.
 	* Design your own code to track instrument performance over time based on parsed data.
 
 The massive number of tools available to proteomics researchers now means that you can combine RawQuant data with virtually any sort of analysis pipeline. The specifics will depend on the software tools you are using, and the data made available by these packages. 
 
 
-####Final notes
+#### Final notes
 
-RawQuant is in active development. We hope to have a GUI-based version sometime in the near future. If you have any issues, or have encountered a bug, or there is a feature you would really like to see, please do not hesitate to contact Kevin Kovalchik (kkovalchik@bcgsc.ca) or Christopher Hughes (chughes@bcgsc.ca), and we will do our best to get you using our tool!
+RawQuant is in active development. We hope to have a GUI-based version sometime in the near future. We welcome any suggesetions or help, especially from vendors who want to make their raw files accessible via open source tools so people can make better use of their own data!
+
+If you have any issues, or have encountered a bug, or there is a feature you would really like to see, please do not hesitate to contact Kevin Kovalchik (kkovalchik@bcgsc.ca) or Christopher Hughes (chughes@bcgsc.ca), and we will do our best to get you using our tool!
