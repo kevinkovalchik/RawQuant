@@ -2,7 +2,7 @@
 
 This guide describes the install and use of RawQuant. This guide was updated last on March 22, 2018. 
 
-#### Pre-Requisites for Installation
+#### System Pre-Requisites
 
 Our starting point is a blank Windows system. We recommend uninstalling MSFileReader and Python if they are already installed as the order of installation is important for RawQuant.
 
@@ -15,64 +15,93 @@ RawQuant does not have any specific system requirements, although the script may
 * Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz, 3408 Mhz, 4 Core(s), 8 Logical Processor(s)
 * Installed Physical Memory (RAM)	8.00 GB
 
-Let's walk through the setup:
+#### Downloads
 
-1. It is a good idea to create a central folder somewhere you will remember that we can store all of our files in for installation.
+Before starting, we recommend creating a working directory somewhere you will remember, and downloading some files to it. 
+
+1. Download the RawQuant GitHub repository.
+	* Navigate to the [RawQuant GitHub repository](https://github.com/kevinkovalchik/RawQuant) in your web browser.
+	* Download the entire repository as a ZIP archive using the 'Clone or download' button. 
+	* Extract the ZIP archive in the folder you created above.
+
+	![alt text](screens/screen18_crop.png)
 
 2. Download Python into your created folder.
 	* The version here is important. We have currently only tested version 3.6.1 (64-bit).
-	* The install file can be downloaded from Python directly (https://www.python.org/downloads/release/python-361/). 
+	* The install file can be downloaded from [Python directly](https://www.python.org/downloads/release/python-361/). 
 	* Scroll down on the above page and click the appropriate release for your system. In this case, we are going to download the Windows x86-64 executable installer version.
 	
 	![alt text](screens/screen17_crop.png)
+
+3. Download the comtypes library for Python.
+	* The version here is important (want version 1.1.3). 
+	* The install file can be downloaded from [Python directly](https://pypi.python.org/pypi/comtypes/1.1.3) into the directory you created earlier.
+
+4. Download MSFileReader into your created folder.
+	* The version here is important. We have currently only tested the mentioned version (version 3.0.29, or 3.0 SP2).
+	* The install file can be downloaded from [Thermo](https://thermo.flexnetoperations.com/control/thmo/login?nextURL=%2Fcontrol%2Fthmo%2Fdownload%3Felement%3D6306677). This website requires registration, which is free.
+	* Alternatively, the install file can be downloaded from the [RawQuant GitHub page](https://github.com/kevinkovalchik/RawQuant).
+
+#### Installation
+
+Let's walk through the setup:
+
+1. It is a good idea to create a central folder somewhere you will remember that we can store all of our files in for installation.
 
 2. Install Python by double clicking the downloaded executable. Use the default "Install Now" option. 
 	
 	![alt text](screens/screen1_crop.png)
 	
-3. Setup Python in the environment variables. 
+3. Setup Python in the environment variables.
+	* First find where Python was installed. You can use the Windows search function to look for the 'python.exe' file.
+	
+	![alt text](screens/screen2_crop-b.png)
+	
+	* Now that we have the path, we want to add it to the environment.
 	* Go to 'Control Panel'.
 	* Click 'System and Security'.
 	* Click 'System'.
 	* Click 'Advanced System Settings'.
 	* Click 'Environment Variables'.
-	* On PATH, click 'Edit'.
-	* Add the directory of the Python install to the PATH variable.
-
-	![alt text](screens/screen2_crop-a.png)
+	* In the upper box with the PATH entry highlighted, click 'Edit'.
+	* Add the directory of the 'python.exe' file to the PATH variable.	
 	
-	![alt text](screens/screen2_crop-b.png)
+	![alt text](screens/screen2_crop-a.png)
 
 4. Add pip to the environment variables as well using the same process. 
+	* the pip file is typically located in the same python directory in a 'Scripts' folder.
 
 	![alt text](screens/screen4_crop.png)
 
 5. Check that Python and pip are installed correctly.
-	* Open 'Command Prompt'.
+	* Open 'Command Prompt'. If you cannot find command prompt, just search for it in Windows.
 	* Type 'python --version'.
 	* Type 'pip --version'.
 
 	![alt text](screens/screen3_crop.png)
 
 6. Install the comtypes package.
-	* The version here is important (want version 1.1.3). 
-	* The install file can be downloaded from Python directly (https://pypi.python.org/pypi/comtypes/1.1.3).
+	* 
 	* Open 'Command Prompt' if not already open.
-	* Type 'pip install 'path to comtypes.zip file'.
-	* Restart your computer. 
+	* Type 'pip install 'directory path to comtypes.zip file'.
+	* After the install has completed successfully, restart your computer. 
 
 	![alt text](screens/screen5_crop.png)
  
 
 7. Install MSFileReader version 3.0 SP2, 64-bit only (do not install the 32-bit version!).
-	* The version here is important. We have currently only tested the mentioned version.
-	* The install file can be downloaded from Thermo (https://thermo.flexnetoperations.com/control/thmo/login?nextURL=%2Fcontrol%2Fthmo%2Fdownload%3Felement%3D6306677). This website requires registration, which is free.
-	* Alternatively, the install file can be downloaded from the RawQuant GitHub page (https://github.com/kevinkovalchik/RawQuant).
-	* After install, restart your computer.
+	* 
+	* Use the default settings for the install, specifying the 64-bit version only. 
+	* After the install has completed successfully, restart your computer.
 
 8. Install the other Python dependencies.
 	* Open 'Command Prompt'.
-	* Install dependencies using the command 'pip install 'package name'.
+	* Install dependencies using the command 'pip install 'package name''. For example:
+	
+	~~~bash
+	pip install pandas
+	~~~	
+	
 	* Repeat for packages numpy, pandas, tqdm, joblib, argparse.
 
 	![alt text](screens/screen6_crop.png)
