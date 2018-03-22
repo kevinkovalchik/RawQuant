@@ -25,14 +25,14 @@ Before starting, we recommend creating a working directory somewhere you will re
 	* Download the entire repository as a ZIP archive using the 'Clone or download' button. 
 	* Extract the ZIP archive in the folder you created above.
 
-	![alt text](screens/screen18_crop.png)
+	![alt text](screens/screen18.png)
 
 2. Download Python into your created folder.
 	* The version here is important. We have currently only tested version 3.6.1 (64-bit).
 	* The install file can be downloaded from [Python directly](https://www.python.org/downloads/release/python-361/). 
 	* Scroll down on the above page and click the appropriate release for your system. In this case, we are going to download the Windows x86-64 executable installer version.
 	
-	![alt text](screens/screen17_crop.png)
+	![alt text](screens/screen17.png)
 
 3. Download the comtypes library for Python.
 	* The version here is important (want version 1.1.3). 
