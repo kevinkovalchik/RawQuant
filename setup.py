@@ -2,13 +2,13 @@ from distutils.core import setup
 
 setup(
     name='RawQuant',
-    packages=['RawQuant','docs'],
+    packages=['RawQuant', 'docs'],
     version='0.0.1',
     description='Package for extracting scan meta data and quantification information from Orbitrap .raw files',
     author='Kevin Kovalchik',
     author_email='kevin.kovalchik@gmail.com',
     url='https://github.com/kevinkovalchik/RawQuant',
-    project_urls={'Documentation':'https://github.com/kevinkovalchik/RawQuant/docs'},
+    project_urls={'Documentation': 'https://github.com/kevinkovalchik/RawQuant/docs'},
     keywords=['Orbitrap', 'mass spectrometer', 'isobaric labelling', 'quantification', 'scan meta data'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
