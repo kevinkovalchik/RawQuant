@@ -2,4 +2,4 @@
 
 Here's a picture:
 
-![alt text](fig3.PNG)
+![alt text](fig3.PNG "and this is the title")
