@@ -21,6 +21,7 @@ Before starting, we recommend creating a working directory somewhere you will re
 
 1. Download the RawQuant GitHub repository.
 	* Navigate to the [RawQuant GitHub repository](https://github.com/kevinkovalchik/RawQuant) in your web browser.
+	* This will include the Python bindings with MSFileReader.py.
 	* Download the entire repository as a ZIP archive using the 'Clone or download' button. 
 	* Extract the ZIP archive in the folder you created above.
 
@@ -46,9 +47,9 @@ Before starting, we recommend creating a working directory somewhere you will re
 
 Let's walk through the setup:
 
-1. It is a good idea to create a central folder somewhere you will remember that we can store all of our files in for installation.
+1. Navigate to your folder containing all the downloaded files using your file browser.
 
-2. Install Python by double clicking the downloaded executable. Use the default "Install Now" option. 
+2. Install Python by double clicking the downloaded executable. Use the default "Install Now" option. You should see the screen below when it completes successfully.
 	
 	![alt text](screens/screen1_crop.png)
 	
@@ -81,7 +82,6 @@ Let's walk through the setup:
 	![alt text](screens/screen3_crop.png)
 
 6. Install the comtypes package.
-	* 
 	* Open 'Command Prompt' if not already open.
 	* Type 'pip install 'directory path to comtypes.zip file'.
 	* After the install has completed successfully, restart your computer. 
@@ -90,7 +90,6 @@ Let's walk through the setup:
  
 
 7. Install MSFileReader version 3.0 SP2, 64-bit only (do not install the 32-bit version!).
-	* 
 	* Use the default settings for the install, specifying the 64-bit version only. 
 	* After the install has completed successfully, restart your computer.
 
@@ -106,16 +105,18 @@ Let's walk through the setup:
 
 	![alt text](screens/screen6_crop.png)
 
-9. Copy the MSFileReader.py file from the Python bindings to the Python directory.
-	* The MSFileReader.py file can be downloaded from the RawQuant GitHub page (https://github.com/kevinkovalchik/RawQuant). 
-	* Copy and paste in the appropriate directory. This will be the Lib directory of the Python you mapped to the environment previously. 
+9. Copy the MSFileReader.py file from the RawQuant GitHub directory you downloaded earlier to the Python 'Lib' directory.
+	* Simply copy and paste MSFileReader.py into the Python Lib directory.
+	* The Lib directory will be in the Python directory you mapped to the environment previously.  
 
 	![alt text](screens/screen7_crop.png)
 
-10. Check if RawQuant works.
+#### Install testing
+
+1. Check if RawQuant works.
 	* Open 'Command Prompt'.
-	* Navigate to the directory where you have stored the RawQuant.py script.
-	* Make sure you have admin priveleges. The first time you run RawQuant, the comtypes package needs to build a couple of sub-libraries. After you have run it the first time, you no longer need admin priveleges. In the image below, note the comtypes 'generating' lines. This will only happen the first time you run RawQuant with admin.
+	* Navigate in command prompt to the directory where you have stored the RawQuant.py script. If you are unfamiliar with navigating folders with command prompt, there are many great tutorials online for helping with this. 
+	* Make sure you have administrator priveleges at this point. The first time you run RawQuant, the comtypes package needs to build a couple of sub-libraries. After you have run it the first time, you no longer need admin priveleges. In the image below, note the comtypes 'generating' lines. This will only happen the first time you run RawQuant.
 	* Enter the command below into the terminal and hit enter.
 
 	~~~bash
@@ -124,7 +125,7 @@ Let's walk through the setup:
 	
 	![alt text](screens/screen8_crop.png)
 
-11. Test RawQuant on a real raw file to see if it is working completely. 
+2. Test RawQuant on a real raw file to see if it is working completely. 
 	* Download a test raw file from the EBI PRIDE repository for RawQuant (https://www.ebi.ac.uk/pride/archive/projects/PXD008787) or use your own raw file.
 	* Test the raw file (in this example I tested an MS2 and SPS-MS3 file).
 
@@ -140,7 +141,7 @@ Let's walk through the setup:
  
  	![alt text](screens/screen10_crop.png)
 
-12. If everything has worked properly, the commands should finish without error, and text output files should be generated in the same directory where the processed raw file(s) is located. 
+3. If everything has worked properly, the commands should finish without error, and text output files should be generated in the same directory where the processed raw file(s) is located. 
 
 
 #### Processing Files with RawQuant
