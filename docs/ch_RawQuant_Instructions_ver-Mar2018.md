@@ -115,7 +115,7 @@ Let's walk through the setup:
  
  	![alt text](screens/screen27_crop.png)
 
-3. If everything has worked properly, the commands should finish without error, and text output files should be generated in the same directory where the processed raw file(s) is located. 
+3. If everything has worked properly, the commands should finish without error, and text output files should be generated in the same directory where the processed raw file is located. 
 
 
 #### Processing Files with RawQuant
