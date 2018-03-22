@@ -91,30 +91,29 @@ Let's walk through the setup:
 
 1. Check if RawQuant works.
 	* Open 'Command Prompt'.
-	* Make sure you have administrator priveleges at this point. The first time you run RawQuant, the comtypes package needs to build a couple of sub-libraries. After you have run it the first time, you no longer need admin priveleges. In the image below, note the comtypes 'generating' lines. This will only happen the first time you run RawQuant.
 	* Enter the command below into the terminal and hit enter.
 
 	~~~bash
 	python -m RawQuant.py -h
 	~~~
 	
-	![alt text](screens/screen8_crop.png)
+	![alt text](screens/screen23_crop.png)
 
 2. Test RawQuant on a real raw file to see if it is working completely. 
-	* Download a test raw file from the EBI PRIDE repository for RawQuant (https://www.ebi.ac.uk/pride/archive/projects/PXD008787) or use your own raw file.
+	* Download a test raw file from the EBI PRIDE repository for [RawQuant](https://www.ebi.ac.uk/pride/archive/projects/PXD008787) or use your own raw file.
 	* Test the raw file (in this example I tested an MS2 and SPS-MS3 file).
 
 	~~~bash
 	python -m RawQuant.py parse -f <path to your raw file> -o 2
 	~~~
  
- 	![alt text](screens/screen9_crop.png)
+ 	![alt text](screens/screen26_crop.png)
  	
  	~~~bash
 	python -m RawQuant.py quant -f <path to your raw file> -r TMT10 -i
 	~~~
  
- 	![alt text](screens/screen10_crop.png)
+ 	![alt text](screens/screen27_crop.png)
 
 3. If everything has worked properly, the commands should finish without error, and text output files should be generated in the same directory where the processed raw file(s) is located. 
 
@@ -123,7 +122,7 @@ Let's walk through the setup:
 
 This section will walk through some common commands and input scenarios for RawQuant as well as discussing some of the output data. 
 
-1. Download a test raw file from the EBI PRIDE repository for RawQuant (https://www.ebi.ac.uk/pride/archive/projects/PXD008787) or use your own raw file.
+1. Download a test raw file from the EBI PRIDE repository for [RawQuant](https://www.ebi.ac.uk/pride/archive/projects/PXD008787) or use your own raw file.
 
 2. To invoke the general help for RawQuant use the command:
 
@@ -135,9 +134,15 @@ This section will walk through some common commands and input scenarios for RawQ
 
 	~~~bash
 	python -m RawQuant.py parse -h
+	~~~
 	
+	![alt text](screens/screen24_crop.png)
+	
+	~~~bash
 	python -m RawQuant.py quant -h
 	~~~
+	
+	![alt text](screens/screen25_crop.png)
 
 4. These help boxes are worth reading and cover a lot of the basic usage and commands with RawQuant. 
 5. If you are ever confused about input files for things like 'custom reagents', use the examples functionality of RawQuant to generate some files for you to use as a guide.
