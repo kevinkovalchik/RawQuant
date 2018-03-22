@@ -287,9 +287,9 @@ This section will walk through some common commands and input scenarios for RawQ
 	![alt text](screens/screen13.png)
 
 
-####Using the RawQuant output in your analysis
+#### Using the RawQuant output in your analysis
 
-There are numerous ways you can capitalize on the data output from RawQuant. For some code examples that process RawQuant output and combine them with search results from PeptideShaker, please see the GitHub associated with the RawQuant manuscript (https://github.com/chrishuges/RawQuant_JPR-2018). There are a wide variety of RNotebook code snippets here that can be followed for doing numerous analyses. Potential analysis pipelines of RawQuant data include:
+There are numerous ways you can capitalize on the data output from RawQuant. For some code examples that process RawQuant output and combine them with search results from PeptideShaker, please see the [GitHub page associated with the RawQuant manuscript](https://github.com/chrishuges/RawQuant_JPR-2018). There are a wide variety of RNotebook code snippets here that can be followed for doing numerous analyses. Potential analysis pipelines of RawQuant data include:
 
 * Parse your data file with RawQuant. Use the generated 'metrics' file to measure the performance of your MS across a wide variety of acquisition parameters, or monitor the performance over time.
 * Parse your data file with RawQuant and generate an MGF. Process the MGF using a search tool that accepts MGF input (e.g. Mascot, SearchGUI...and many other search engines). Use the MS2 scan numbers of the peptide matches to combine with the parsed RawQuant data (ScanNumber column in RawQuant). Check the metrics of the peptides that were identified, are you always hitting the max injection time for MS2? Can you afford to scan faster? Or do you need to go slower?
@@ -333,12 +333,12 @@ What about using the RawQuant output for other tools?
 	* Perform database matching with the MGF using packages such as rTandem and MSGFplus. 
 
 3. The parsed data can also be directly input into R and Python to perform your own calculations of topN, scan rate, ID rate, etc...
-	* Use the R code guides fround on https://github.com/chrishuges/RawQuant_JPR-2018 to get ideas and help.
+	* Use the R code guides fround on the [RawQuant manuscript GitHub page](https://github.com/chrishuges/RawQuant_JPR-2018) to get ideas and help.
 	* Design your own code to track instrument performance over time based on parsed data.
 
 The massive number of tools available to proteomics researchers now means that you can combine RawQuant data with virtually any sort of analysis pipeline. The specifics will depend on the software tools you are using, and the data made available by these packages. 
 
 
-####Final notes
+#### Final notes
 
 RawQuant is in active development. We hope to have a GUI-based version sometime in the near future. If you have any issues, or have encountered a bug, or there is a feature you would really like to see, please do not hesitate to contact Kevin Kovalchik (kkovalchik@bcgsc.ca) or Christopher Hughes (chughes@bcgsc.ca), and we will do our best to get you using our tool!
