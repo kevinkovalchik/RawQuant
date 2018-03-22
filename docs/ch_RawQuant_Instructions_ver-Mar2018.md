@@ -21,7 +21,9 @@ Let's walk through the setup:
 	* The version here is important. We have currently only tested version 3.6.1 (64-bit).
 	* The install file can be downloaded from Python directly (https://www.python.org/downloads/release/python-361/).
 2. Install Python. Use the default "Install Now" option. 
-
+	
+	![alt text](https://github.com/kevinkovalchik/RawQuant/tree/master/docs/screens/screen1_crop.png)
+	
 	![Alt Image Text](/Users/chughes/Documents/google-drive_nov2017/raw-quant_manuscript/script-manuscript/revisions/screens/screen1_crop.png)
 
 3. Setup Python in the environment variables. 
@@ -34,6 +36,7 @@ Let's walk through the setup:
 	* Add the directory of the Python install to the PATH variable.
 
 	![alt text](https://github.com/kevinkovalchik/RawQuant/tree/master/docs/screens/screen2_crop-a.png)
+	
 	![Alt Image Text](/Users/chughes/Documents/google-drive_nov2017/raw-quant_manuscript/script-manuscript/revisions/screens/screen2_crop-a.png)
 	
 	![Alt Image Text](/Users/chughes/Documents/google-drive_nov2017/raw-quant_manuscript/script-manuscript/revisions/screens/screen2_crop-b.png)
