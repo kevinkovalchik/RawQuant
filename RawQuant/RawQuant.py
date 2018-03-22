@@ -33,6 +33,8 @@ new class called RawQuant which can be used to carry out any operation
 in the script. However, documentation is not provided for this usage.
 '''
 
+__version__ = '0.1.0'
+
 class RawQuant:
 
     def __init__(self, RawFile, order = 'auto', disable_bar = False):
