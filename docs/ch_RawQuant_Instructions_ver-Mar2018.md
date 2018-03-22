@@ -22,7 +22,7 @@ Let's walk through the setup:
 	* The install file can be downloaded from Python directly (https://www.python.org/downloads/release/python-361/).
 2. Install Python. Use the default "Install Now" option. 
 	
-	![alt text](https://github.com/kevinkovalchik/RawQuant/tree/master/docs/screens/screen1_crop.png)
+	![alt text](screens\screen1_crop.png)
 	
 	![Alt Image Text](/Users/chughes/Documents/google-drive_nov2017/raw-quant_manuscript/script-manuscript/revisions/screens/screen1_crop.png)
 
