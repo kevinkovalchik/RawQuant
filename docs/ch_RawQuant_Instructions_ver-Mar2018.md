@@ -21,7 +21,8 @@ Before starting, we recommend creating a working directory somewhere you will re
 
 1. Download the RawQuant GitHub repository.
 	* Navigate to the [RawQuant GitHub repository](https://github.com/kevinkovalchik/RawQuant) in your web browser.
-	* This will include the Python bindings with MSFileReader.py.
+	* This will include the Python bindings file MSFileReader.py.
+	* This download will also contain the correct version of MSFileReader.
 	* Download the entire repository as a ZIP archive using the 'Clone or download' button. 
 	* Extract the ZIP archive in the folder you created above.
 
@@ -34,14 +35,10 @@ Before starting, we recommend creating a working directory somewhere you will re
 	
 	![alt text](screens/screen17.png)
 
-3. Download the comtypes library for Python.
-	* The version here is important (want version 1.1.3). 
-	* The install file can be downloaded from [Python directly](https://pypi.python.org/pypi/comtypes/1.1.3) into the directory you created earlier.
-
-4. Download MSFileReader into your created folder.
+3. Download MSFileReader into your created folder.
 	* The version here is important. We have currently only tested the mentioned version (version 3.0.29, or 3.0 SP2).
-	* The install file can be downloaded from [Thermo](https://thermo.flexnetoperations.com/control/thmo/login?nextURL=%2Fcontrol%2Fthmo%2Fdownload%3Felement%3D6306677). This website requires registration, which is free.
-	* Alternatively, the install file can be downloaded from the [RawQuant GitHub page](https://github.com/kevinkovalchik/RawQuant).
+	* The install file can be downloaded from the [RawQuant GitHub page](https://github.com/kevinkovalchik/RawQuant). If you downloaded the RawQuant GitHub repository in Step 1 above, then you already have the required MSFileReader file!
+	* Alternatively, the install file can be downloaded from [Thermo](https://thermo.flexnetoperations.com/control/thmo/login?nextURL=%2Fcontrol%2Fthmo%2Fdownload%3Felement%3D6306677). This website requires registration, which is free.
 
 #### Installation
 
@@ -81,31 +78,23 @@ Let's walk through the setup:
 
 	![alt text](screens/screen3_crop.png)
 
-6. Install the comtypes package.
+6. Install RawQuant and it's Python dependencies.
 	* Open 'Command Prompt' if not already open.
-	* Type 'pip install 'directory path to comtypes.zip file'.
-	* After the install has completed successfully, restart your computer. 
+	* RawQuant is available on the [Python Package Index](https://pypi.python.org/pypi/RawQuant/0.1.0), so can be easily installed with pip.
+	
+	~~~bash
+	python install RawQuant
+	~~~
 
 	![alt text](screens/screen5_crop.png)
  
+8. After the install has completed successfully, restart your computer. 
 
-7. Install MSFileReader version 3.0 SP2, 64-bit only (do not install the 32-bit version!).
+9. Install MSFileReader version 3.0 SP2, 64-bit only (do not install the 32-bit version!).
 	* Use the default settings for the install, specifying the 64-bit version only. 
 	* After the install has completed successfully, restart your computer.
 
-8. Install the other Python dependencies.
-	* Open 'Command Prompt'.
-	* Install dependencies using the command 'pip install 'package name''. For example:
-	
-	~~~bash
-	pip install pandas
-	~~~	
-	
-	* Repeat for packages numpy, pandas, tqdm, joblib, argparse.
-
-	![alt text](screens/screen6_crop.png)
-
-9. Copy the MSFileReader.py file from the RawQuant GitHub directory you downloaded earlier to the Python 'Lib' directory.
+10. Copy the MSFileReader.py file from the RawQuant GitHub directory you downloaded earlier to the Python 'Lib' directory.
 	* Simply copy and paste MSFileReader.py into the Python Lib directory.
 	* The Lib directory will be in the Python directory you mapped to the environment previously.  
 
