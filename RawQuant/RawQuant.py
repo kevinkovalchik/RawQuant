@@ -23,17 +23,16 @@ from collections import OrderedDict as OD
 '''
 RawQuant provides hassle-free extraction of quantification information
 and scan meta data from Thermo .raw files for MS isobaric tag techniques.
-The RawQuant script is intended to be run from the command line. To do
-so, use the following command to access the help documentation:
+RawQuant is intended to be run from the command line. To do so, use the
+following command to access the help documentation:
 
-    >python RawQuant.py -h
+    >python -m RawQuant -h
 
-The script can also be imported into a Python session. This creates a
+RawQuant can also be imported into a Python session. This creates a
 new class called RawQuant which can be used to carry out any operation
-in the script. However, documentation is not provided for this usage.
+performed by the command line interface. However, documentation is not
+provided for this usage.
 '''
-
-__version__ = '0.1.0'
 
 class RawQuant:
 
