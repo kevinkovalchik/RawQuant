@@ -2,4 +2,4 @@
 
 Here's a picture:
 
-![alt text](fig3.png "This is a PNG file")
+![alt text](/fig3.png "This is a PNG file")
