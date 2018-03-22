@@ -27,26 +27,26 @@ if __name__ == "__main__":
         'If you wish to use the interactive command line mode to run RawQuant, use\n'+
         'this command:\n\n'+
 
-        '>python RawQuant.py\n\n'+
+        '>python -m RawQuant\n\n'+
 
         'An interactive session will be started in which the user is prompted to\n'+
-        'provide the necessary information for the script to run.\n\n'+
+        'provide the necessary information.\n\n'+
 
         'If the user does not wish to use the interactive mode, all parameters\n'+
         'must be entered directly on the command line. Please read on for details.\n\n'+
 
         'There are three "modes" in which to operate RawQuant: parse, quant,\n'+
-        'and examples. These modes are specified by typing them after the script\n'+
-        'name in the command line:\n\n'+
+        'and examples. These modes are specified by typing them after "RawQuant"\n'+
+        'in the command line:\n\n'+
 
-        '>python RawQuant.py parse\n'+
-        '>python RawQuant.py quant\n'+
-        '>python RawQuant.py examples\n\n'+
+        '>python -m RawQuant parse\n'+
+        '>python -m RawQuant quant\n'+
+        '>python -m RawQuant examples\n\n'+
 
         'Each mode has its own help documentation, which can be accessed with\n'+
         'the -h arguement. For example:\n\n'+
 
-        '>python RawQuant.py parse -h\n\n'+
+        '>python -m RawQuant parse -h\n\n'+
 
         'In brief, parse is used for parsing MS metadata from a .raw file, and\n'+
         'can also generate standard-format .mgf files. The desired MS order(s)\n'+
@@ -74,22 +74,22 @@ if __name__ == "__main__":
 
         'Example command line usage:\n'+
         '\n'+
-        '>python RawQuant.py -h : access the help documentation\n'+
+        '>python -m RawQuant -h : access the help documentation\n'+
         '\n'+
-        '>python RawQuant.py parse -f rawfile.raw -o 1 2 :parse a single .raw\n'+
+        '>python -m RawQuant parse -f rawfile.raw -o 1 2 :parse a single .raw\n'+
             '\tfile (rawfile.raw) for MS1 and MS2 metadata and save a file for each\n'+
         '\n'+
-        '>python RawQuant.py quant -f rawfile.raw -r TMT10 -mgf : process a\n'+
+        '>python -m RawQuant quant -f rawfile.raw -r TMT10 -mgf : process a\n'+
             '\tsingle .raw file (rawfile.raw) using TMT10 reporter ion quantification\n'+
             '\tand additionaly generate a standard-format MGF file containing all\n'+
             '\tMS2 scans for use in a database search.\n'+
         '\n'+
-        '>python RawQuant.py quant -f rawfile1.raw rawfile2.raw -r TMT6 -mgf :\n'+
+        '>python -m RawQuant quant -f rawfile1.raw rawfile2.raw -r TMT6 -mgf :\n'+
             '\tprocess two .raw files (rawfile1.raw and rawfile2.raw) using TMT6\n'+
             '\treporter ion quantificationand additionaly generate a standard-format\n'+
             '\tMGF file for each containing all MS2 scans for use in a database search.\n'+
         '\n'+
-        '>python RawQuant.py quant -m FileList.txt -r iTRAQ4 : process a list\n'+
+        '>python -m RawQuant quant -m FileList.txt -r iTRAQ4 : process a list\n'+
             '\tof .raw files (FileList.txt) using iTRAQ4 reporter ion quantification.\n'+
             '\tIn this instance the -mgf argument is left out, and MGF files are not\n'+
             '\tcreated. The FileList.txt file can have any name, but should be\n'+
@@ -99,7 +99,7 @@ if __name__ == "__main__":
             '\t\t    File2.raw\n'+
             '\t\t    File3.raw\n'+
         '\n'+
-        '>python RawQuant.py examples -f : Create and example file list (like the\n'+
+        '>python -m RawQuant examples -f : Create and example file list (like the\n'+
         '    \tone above) in the current directory.',
         formatter_class = argparse.RawTextHelpFormatter)
 
@@ -109,21 +109,21 @@ if __name__ == "__main__":
                 'Generate example files. Possible command line\narguments are:\n'+
                 'OPTIONAL: -r, -c, and -m.\n'+
                 'For further help use the command:\n'+
-                '>python script.py examples -h\n ',
+                '>python -m RawQuant examples -h\n ',
             formatter_class = argparse.RawTextHelpFormatter)
 
         quant = subparsers.add_parser('quant', help=
                 'Parse and quantify data. Possible command line\narguments are:\n'+
                 'REQUIRED: -f or -m, -r or -cr\n'+
                 'OPTIONAL: -o, -mgf, -i, -spb, -c\n'+
-                'For further help use the command:\n/python script.py quant -h\n ',
+                'For further help use the command:\n/python -m RawQuant quant -h\n ',
             formatter_class = argparse.RawTextHelpFormatter)
 
         parse = subparsers.add_parser('parse', help=
                 'Parse MS data. Possible command line arguments\nare:\n'+
                 'REQUIRED: -f or -m, -o\n'
                 'OPTIONAL: -mgf, -spb\n'+
-                'For further help use the command:\n/python script.py parse -h\n ',
+                'For further help use the command:\n/python -m RawQuant parse -h\n ',
             formatter_class = argparse.RawTextHelpFormatter)
 
         ### Quant subparser section ###
@@ -135,8 +135,8 @@ if __name__ == "__main__":
         RAWFILES.add_argument('-f','--rawfile', nargs = '+', help =
                 'The single raw file to be processed, or a list of multiple files\n'+
                 'separated by spaces. Examples:\n'+
-                '/python script.py quant -f File.raw -arguments\n'+
-                '>python script.py quant -f File1.raw File2.raw File3.raw -arguments\n ')
+                '/python -m RawQuant quant -f File.raw -arguments\n'+
+                '>python -m RawQuant quant -f File1.raw File2.raw File3.raw -arguments\n ')
 
         RAWFILES.add_argument('-m','--multiple',help =
                 'A text file specifying multiple raw files to be processed,\n'+
@@ -149,7 +149,7 @@ if __name__ == "__main__":
         REAGENTS.add_argument('-cr', '--custom_reagents', help =
                 'A csv file containing user-defined labels and reporter masses.\n'+
                 'To generate an example .csv file, use the command:\n'+
-                '>python RawQuant.py examples -r\n ')
+                '>python -m RawQuant examples -r\n ')
 
         quant.add_argument('-p','--parallel', help =
                 'Number of CPU cores to be used when processing multiple files.\n'+
@@ -174,7 +174,7 @@ if __name__ == "__main__":
         quant.add_argument('-c','--correct_impurities',help =
                 'Specify a .csv file containing an impurity matrix for ion\n'+
                 'impurity corrections. For an example file use the command:\n'+
-                '>python RawQuant.py examples -c\n ')
+                '>python -m RawQuant examples -c\n ')
 
         quant.add_argument('-mtx','--metrics', action='store_true', help =
                 'Generate a text file containing metrics of the MS run. Includes:\n'+
@@ -268,11 +268,7 @@ if __name__ == "__main__":
             'Welcome to RawQuant! For the help documentation, please exit\n'+
             'and use the following command:\n\n'+
 
-            '>python script.py -h\n\n'+
-
-            '...where script.py is the RawQuant script (in most cases this\n'+
-            'will be RawQuant.py). Otherwise, you may continue with the\n'+
-            'interactive interface.\n\n'
+            '>python -m RawQuant -h\n\n'+
 
             'Please enter one of the following modes to begin or to exit:\n\n'+
             'quant: quantify an isobaric labeling experiment\n'+
