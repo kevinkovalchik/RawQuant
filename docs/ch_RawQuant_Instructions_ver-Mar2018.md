@@ -83,7 +83,7 @@ Let's walk through the setup:
 
 10. Copy the MSFileReader.py file from the RawQuant GitHub directory you downloaded earlier to the Python 'Lib' directory.
 	* Simply copy and paste MSFileReader.py into the Python Lib directory.
-	* The Lib directory will be in the Python directory you mapped to the environment previously.  
+	* The Lib directory will be in the Python directory where 'python.exe' is stored. Simply search for this file if you can't find the directory.  
 
 	![alt text](screens/screen7_crop.png)
 
@@ -91,12 +91,11 @@ Let's walk through the setup:
 
 1. Check if RawQuant works.
 	* Open 'Command Prompt'.
-	* Navigate in command prompt to the directory where you have stored the RawQuant.py script. If you are unfamiliar with navigating folders with command prompt, there are many great tutorials online for helping with this. 
 	* Make sure you have administrator priveleges at this point. The first time you run RawQuant, the comtypes package needs to build a couple of sub-libraries. After you have run it the first time, you no longer need admin priveleges. In the image below, note the comtypes 'generating' lines. This will only happen the first time you run RawQuant.
 	* Enter the command below into the terminal and hit enter.
 
 	~~~bash
-	python RawQuant.py -h
+	python -m RawQuant.py -h
 	~~~
 	
 	![alt text](screens/screen8_crop.png)
@@ -106,13 +105,13 @@ Let's walk through the setup:
 	* Test the raw file (in this example I tested an MS2 and SPS-MS3 file).
 
 	~~~bash
-	python RawQuant.py parse -f <path to your raw file> -o 2
+	python -m RawQuant.py parse -f <path to your raw file> -o 2
 	~~~
  
  	![alt text](screens/screen9_crop.png)
  	
  	~~~bash
-	python RawQuant.py quant -f <path to your raw file> -r TMT10 -i
+	python -m RawQuant.py quant -f <path to your raw file> -r TMT10 -i
 	~~~
  
  	![alt text](screens/screen10_crop.png)
@@ -125,26 +124,26 @@ Let's walk through the setup:
 This section will walk through some common commands and input scenarios for RawQuant as well as discussing some of the output data. 
 
 1. Download a test raw file from the EBI PRIDE repository for RawQuant (https://www.ebi.ac.uk/pride/archive/projects/PXD008787) or use your own raw file.
-2. Navigate to the directory where you have stored the RawQuant.py script
-3. To invoke the general help for RawQuant use the command:
+
+2. To invoke the general help for RawQuant use the command:
 
 	~~~bash
-	python RawQuant.py -h
+	python -m RawQuant.py -h
 	~~~
 
-4. To invoke the help for the specific parse and quant functions, use extensions of the previous command.
+3. To invoke the help for the specific parse and quant functions, use extensions of the previous command.
 
 	~~~bash
-	python RawQuant.py parse -h
+	python -m RawQuant.py parse -h
 	
-	python RawQuant.py quant -h
+	python -m RawQuant.py quant -h
 	~~~
 
-5. These help boxes are worth reading and cover a lot of the basic usage and commands with RawQuant. 
-6. If you are ever confused about input files for things like 'custom reagents', use the examples functionality of RawQuant to generate some files for you to use as a guide.
+4. These help boxes are worth reading and cover a lot of the basic usage and commands with RawQuant. 
+5. If you are ever confused about input files for things like 'custom reagents', use the examples functionality of RawQuant to generate some files for you to use as a guide.
 
 	~~~bash
-	python RawQuant.py examples -h
+	python -m RawQuant.py examples -h
 	~~~
 
 7. Let's perform our own analysis. I am going to use a file acquired on an Orbitrap Fusion downloaded from the above PRIDE repository that was acquired as MS1-Orbitrap HCD-MS2-Orbitrap. The file name is "ch 29Sept2017 eColi-31907 TMT11 MS2 1.raw" if you would like to follow along with the same file.
@@ -156,13 +155,13 @@ This section will walk through some common commands and input scenarios for RawQ
 	* '-spd' this will suppress the progress bar during processing. But this is cool to look at, so why would you do that?
 
 	~~~bash
-	python RawQuant.py parse -h
+	python -m RawQuant.py parse -h
 	~~~
 
 9. I am interested in generating parsed output for MS1 and MS2 scans in my raw file, as well as creating an MGF output I can use in a database search.
 
 	~~~bash
-	python RawQuant.py parse -f C:\Users\ptx_user\Desktop\RawQuant\ch_29Sept2017_eColi-31907_TMT11_MS2_1.raw -o 1 2 -mgf
+	python -m RawQuant.py parse -f C:\Users\ptx_user\Desktop\RawQuant\ch_29Sept2017_eColi-31907_TMT11_MS2_1.raw -o 1 2 -mgf
 	~~~
 
 10. Once processing is complete, you should see four files created in the same directory as the raw file.
@@ -220,13 +219,13 @@ This section will walk through some common commands and input scenarios for RawQ
 	* '-c' this will correct for isotopic impurities in the reagents. Input should be a csv file containing an impurity matrix. For an example, try 'python RawQuant.py examples -c'. 
 
 	~~~bash
-	python RawQuant.py quant -h
+	python -m RawQuant.py quant -h
 	~~~
 
 17. I am interested in generating quant output for MS3 scans in my raw file, as well as creating an MGF output I can use in a database search.
 
 	~~~bash
-	python RawQuant.py quant -f C:\Users\ptx_user\Desktop\RawQuant\ch_29Sept2017_eColi-31907_TMT11_2e5-120_1.raw -r TMT10 -i -mgf
+	python -m RawQuant.py quant -f C:\Users\ptx_user\Desktop\RawQuant\ch_29Sept2017_eColi-31907_TMT11_2e5-120_1.raw -r TMT10 -i -mgf
 	~~~
 
 18. Once processing is complete, you should see three files created in the same directory as the raw file.
