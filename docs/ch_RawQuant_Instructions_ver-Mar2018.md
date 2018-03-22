@@ -46,39 +46,24 @@ Let's walk through the setup:
 
 1. Navigate to your folder containing all the downloaded files using your file browser.
 
-2. Install Python by double clicking the downloaded executable. Use the default "Install Now" option. You should see the screen below when it completes successfully.
+2. Install Python by double clicking the downloaded executable. 
+	* Make sure to select the 'add Python 3.6 to PATH' option.
+	* Use the default "Install Now" option. 
+	
+	![alt text](screens/screen20_crop.png)
+	
+	* The screen below should appear upon successful installation. 
 	
 	![alt text](screens/screen1_crop.png)
-	
-3. Setup Python in the environment variables.
-	* First find where Python was installed. You can use the Windows search function to look for the 'python.exe' file.
-	
-	![alt text](screens/screen2_crop-b.png)
-	
-	* Now that we have the path, we want to add it to the environment.
-	* Go to 'Control Panel'.
-	* Click 'System and Security'.
-	* Click 'System'.
-	* Click 'Advanced System Settings'.
-	* Click 'Environment Variables'.
-	* In the upper box with the PATH entry highlighted, click 'Edit'.
-	* Add the directory of the 'python.exe' file to the PATH variable.	
-	
-	![alt text](screens/screen2_crop-a.png)
 
-4. Add pip to the environment variables as well using the same process. 
-	* the pip file is typically located in the same python directory in a 'Scripts' folder.
-
-	![alt text](screens/screen4_crop.png)
-
-5. Check that Python and pip are installed correctly.
+3. Check that Python and pip are installed correctly.
 	* Open 'Command Prompt'. If you cannot find command prompt, just search for it in Windows.
 	* Type 'python --version'.
 	* Type 'pip --version'.
 
 	![alt text](screens/screen3_crop.png)
 
-6. Install RawQuant and it's Python dependencies.
+4. Install RawQuant and it's Python dependencies.
 	* Open 'Command Prompt' if not already open.
 	* RawQuant is available on the [Python Package Index](https://pypi.python.org/pypi/RawQuant/0.1.0), so can be easily installed with pip.
 	
@@ -86,13 +71,15 @@ Let's walk through the setup:
 	python install RawQuant
 	~~~
 
-	![alt text](screens/screen5_crop.png)
+	![alt text](screens/screen21_crop.png)
  
 8. After the install has completed successfully, restart your computer. 
 
 9. Install MSFileReader version 3.0 SP2, 64-bit only (do not install the 32-bit version!).
 	* Use the default settings for the install, specifying the 64-bit version only. 
 	* After the install has completed successfully, restart your computer.
+	
+	![alt text](screens/screen22_crop.png)
 
 10. Copy the MSFileReader.py file from the RawQuant GitHub directory you downloaded earlier to the Python 'Lib' directory.
 	* Simply copy and paste MSFileReader.py into the Python Lib directory.
