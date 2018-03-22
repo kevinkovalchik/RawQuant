@@ -24,8 +24,6 @@ Let's walk through the setup:
 	
 	![alt text](screens/screen1_crop.png)
 	
-	![Alt Image Text](/Users/chughes/Documents/google-drive_nov2017/raw-quant_manuscript/script-manuscript/revisions/screens/screen1_crop.png)
-
 3. Setup Python in the environment variables. 
 	* Go to 'Control Panel'.
 	* Click 'System and Security'.
@@ -35,22 +33,20 @@ Let's walk through the setup:
 	* On PATH, click 'Edit'.
 	* Add the directory of the Python install to the PATH variable.
 
-	![alt text](https://github.com/kevinkovalchik/RawQuant/tree/master/docs/screens/screen2_crop-a.png)
+	![alt text](screens/screen2_crop-a.png)
 	
-	![Alt Image Text](/Users/chughes/Documents/google-drive_nov2017/raw-quant_manuscript/script-manuscript/revisions/screens/screen2_crop-a.png)
-	
-	![Alt Image Text](/Users/chughes/Documents/google-drive_nov2017/raw-quant_manuscript/script-manuscript/revisions/screens/screen2_crop-b.png)
+	![alt text](screens/screen2_crop-b.png)
 
 4. Add pip to the environment variables as well using the same process. 
 
-	![Alt Image Text](/Users/chughes/Documents/google-drive_nov2017/raw-quant_manuscript/script-manuscript/revisions/screens/screen4_crop.png)
+	![alt text](screens/screen4_crop.png)
 
 5. Check that Python and pip are installed correctly.
 	* Open 'Command Prompt'.
 	* Type 'python --version'.
 	* Type 'pip --version'.
 
-	![Alt Image Text](/Users/chughes/Documents/google-drive_nov2017/raw-quant_manuscript/script-manuscript/revisions/screens/screen3_crop.png)
+	![alt text](screens/screen3_crop.png)
 
 6. Install the comtypes package.
 	* The version here is important (want version 1.1.3). 
@@ -59,7 +55,7 @@ Let's walk through the setup:
 	* Type 'pip install 'path to comtypes.zip file'.
 	* Restart your computer. 
 
-	![Alt Image Text](/Users/chughes/Documents/google-drive_nov2017/raw-quant_manuscript/script-manuscript/revisions/screens/screen5_crop.png)
+	![alt text](screens/screen5_crop.png)
  
 
 7. Install MSFileReader version 3.0 SP2, 64-bit only (do not install the 32-bit version!).
@@ -73,13 +69,13 @@ Let's walk through the setup:
 	* Install dependencies using the command 'pip install 'package name'.
 	* Repeat for packages numpy, pandas, tqdm, joblib, argparse.
 
-	![Alt Image Text](/Users/chughes/Documents/google-drive_nov2017/raw-quant_manuscript/script-manuscript/revisions/screens/screen6_crop.png)
+	![alt text](screens/screen6_crop.png)
 
 9. Copy the MSFileReader.py file from the Python bindings to the Python directory.
 	* The MSFileReader.py file can be downloaded from the RawQuant GitHub page (https://github.com/kevinkovalchik/RawQuant). 
 	* Copy and paste in the appropriate directory. This will be the Lib directory of the Python you mapped to the environment previously. 
 
-	![Alt Image Text](/Users/chughes/Documents/google-drive_nov2017/raw-quant_manuscript/script-manuscript/revisions/screens/screen7_crop.png)
+	![alt text](screens/screen7_crop.png)
 
 10. Check if RawQuant works.
 	* Open 'Command Prompt'.
@@ -91,7 +87,7 @@ Let's walk through the setup:
 	python RawQuant.py -h
 	~~~
 	
-	![Alt Image Text](/Users/chughes/Documents/google-drive_nov2017/raw-quant_manuscript/script-manuscript/revisions/screens/screen8_crop.png)
+	![alt text](screens/screen8_crop.png)
 
 11. Test RawQuant on a real raw file to see if it is working completely. 
 	* Download a test raw file from the EBI PRIDE repository for RawQuant (https://www.ebi.ac.uk/pride/archive/projects/PXD008787) or use your own raw file.
@@ -101,13 +97,13 @@ Let's walk through the setup:
 	python RawQuant.py parse -f <path to your raw file> -o 2
 	~~~
  
- 	![Alt Image Text](/Users/chughes/Documents/google-drive_nov2017/raw-quant_manuscript/script-manuscript/revisions/screens/screen9_crop.png)
+ 	![alt text](screens/screen9_crop.png)
  	
  	~~~bash
 	python RawQuant.py quant -f <path to your raw file> -r TMT10 -i
 	~~~
  
- 	![Alt Image Text](/Users/chughes/Documents/google-drive_nov2017/raw-quant_manuscript/script-manuscript/revisions/screens/screen10_crop.png)
+ 	![alt text](screens/screen10_crop.png)
 
 12. If everything has worked properly, the commands should finish without error, and text output files should be generated in the same directory where the processed raw file(s) is located. 
 
@@ -173,14 +169,14 @@ This section will walk through some common commands and input scenarios for RawQ
 	* MS2 scans/sec counts the number of MS2 events that are triggered every second.
 	* Mean duty cycle calculates the time (in seconds) between neighbouring MS1 events.  
 
-	![Alt Image Text](/Users/chughes/Documents/google-drive_nov2017/raw-quant_manuscript/script-manuscript/revisions/screens/screen11.png)
+	![alt text](screens/screen11_crop.png)
 
 13. What about the 'MS1ParseData.txt' file. 
 	* ScanNumber is the scan index for the MS1 event.
 	* RetentionTime is the retention time (in minutes) of the MS1 event.
 	* MS1IonInjectionTime is the injection time (in ms) for the MS1 event.
 
-	![Alt Image Text](/Users/chughes/Documents/google-drive_nov2017/raw-quant_manuscript/script-manuscript/revisions/screens/screen14.png)
+	![alt text](screens/screen14_crop.png)
 
 14. What about the 'MS2ParseData.txt' file. This contains a lot of information.
 	* ScanNumber is the scan index for the MS2 event.
@@ -197,7 +193,7 @@ This section will walk through some common commands and input scenarios for RawQ
 	* MS1IonInjectionTime is the injection time (in ms) of the MS1 scan where the MS2 event was triggered from.
 	* MS2IonInjectionTime is the injection time (in ms) of the MS2 scan event itself. 
 
-	![Alt Image Text](/Users/chughes/Documents/google-drive_nov2017/raw-quant_manuscript/script-manuscript/revisions/screens/screen12.png)
+	![alt text](screens/screen12_crop.png)
 
 15. Let's move on to processing a quant file. For this example I am going to use a file that was obtained using an SPS-MS3 approach on an Orbitrap Fusion from the above PRIDE repository that was acquired as . The file name is "ch 29Sept2017 eColi-31907 TMT11 2e5-120 1.raw" if you would like to follow along with the same file.
 16. First lets process this file using the 'quant' functionality of RawQuant. There are multiple flags that the quant command can use as input.
@@ -252,7 +248,7 @@ This section will walk through some common commands and input scenarios for RawQ
 	* SPSMass are the masses of the ions selected from the MS2 scan for SPS-MS3 analysis.
 	* SPSIntensity are the intensities of the selected SPS ions. 
 
-	![Alt Image Text](/Users/chughes/Documents/google-drive_nov2017/raw-quant_manuscript/script-manuscript/revisions/screens/screen13.png)
+	![alt text](screens/screen13_crop.png)
 
 
 ####Using the RawQuant output in your analysis
@@ -273,11 +269,11 @@ Let's look at an example for combining the RawQuant data with search engines.
 1. In the RawQuant manuscript, we used SearchGUI and PeptideShaker a lot. As you saw above, the RawQuant output always contains the columns 'ScanNumber', or 'MS2ScanNumber', 'MS1ScanNumber' and so on. 
 2. PeptideShaker can output a variety of reports. The one we are interested in for combination is the 'Default PSM Report'.
 
-	![Alt Image Text](/Users/chughes/Documents/google-drive_nov2017/raw-quant_manuscript/script-manuscript/revisions/screens/screen15.png)
+	![alt text](screens/screen15_crop.png)
 
 3. As you can see, there is a lot of information here. Unfortunately, at the moment, the scan number is a bit messed up because of the MGF format of RawQuant (known bug), but this information is still accessible from the 'Spectrum Title' column.
 
-	![Alt Image Text](/Users/chughes/Documents/google-drive_nov2017/raw-quant_manuscript/script-manuscript/revisions/screens/screen16.png)
+	![alt text](screens/screen16_crop.png)
 
 4. Using R, Python, or your language of choice, you can combine the RawQuant output with the PeptideShaker results by combining this spectrum number with the appropriate column from RawQuant.
 	* For a parsed file where -o 2 was used, this will be the 'ScanNumber' column.
