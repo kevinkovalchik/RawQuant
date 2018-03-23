@@ -32,6 +32,7 @@ Before starting, we recommend creating a working directory somewhere you will re
 	* Navigate to the [RawQuant GitHub repository](https://github.com/kevinkovalchik/RawQuant) in your web browser.
 	* Download the entire repository as a ZIP archive using the 'Clone or download' button. 
 	* Extract the ZIP archive in the folder you created above.
+	* MSFileReader will be located in the MSFileReader folder.
 
 	![alt text](screens/screen18.png)	
 	
