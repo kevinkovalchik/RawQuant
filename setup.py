@@ -11,7 +11,7 @@ setup(
     author_email='kkovalchik@bcgsc.ca',
     url='https://github.com/kevinkovalchik/RawQuant',
     project_urls={'Documentation': 'https://github.com/kevinkovalchik/RawQuant/docs'},
-    keywords=['Orbitrap', 'mass spectrometer', 'isobaric labelling', 'quantification', 'scan meta data'],
+    keywords=['Orbitrap', 'mass spectrometery', 'proteomics', 'isobaric labelling', 'quantification', 'scan meta data'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Operating System :: Microsoft :: Windows',
