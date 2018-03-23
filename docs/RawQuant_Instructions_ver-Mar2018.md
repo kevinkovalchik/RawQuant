@@ -4,7 +4,7 @@ This guide describes the install and use of RawQuant. This guide was updated las
 
 #### System Pre-Requisites
 
-Our starting point is a blank Windows system. We recommend uninstalling MSFileReader and Python if they are already installed as the order of installation is important for RawQuant.
+Our starting point is a blank Windows system. Windows is required for MSFileReader. We recommend uninstalling MSFileReader and Python if they are already installed as the order of installation is important for RawQuant.
 
 RawQuant does not have any specific system requirements, although the script may run slowly on older machines. The computer we are using in this walkthrough has the specs:
 
