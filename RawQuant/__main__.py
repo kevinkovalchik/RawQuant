@@ -670,7 +670,8 @@ if __name__ == "__main__":
 
             files = os.listdir(args.directory)
             files = [x for x in files if '.raw' in x]  # make sure the files contain ".raw"
-            files = [x for x in files if x[-4:] == '.raw']  # make sure ".raw" is the extension
+            # make sure ".raw" is the extension
+            files = [os.path.normpath(args.directory + '/' + x) for x in files if x[-4:] == '.raw']
 
         if args.supress_progress_bar == False:
 
@@ -741,7 +742,8 @@ if __name__ == "__main__":
 
             files = os.listdir(args.directory)
             files = [x for x in files if '.raw' in x]  # make sure the files contain ".raw"
-            files = [x for x in files if x[-4:] == '.raw']  # make sure ".raw" is the extension
+            # make sure ".raw" is the extension
+            files = [os.path.normpath(args.directory + '/' + x) for x in files if x[-4:] == '.raw']
 
         if (args.labeling_reagents or args.custom_reagents) is not None:
 
