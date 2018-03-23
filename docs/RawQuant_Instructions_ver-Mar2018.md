@@ -150,12 +150,13 @@ This section will walk through some common commands and input scenarios for RawQ
 	* '-m' this can be used to specify a text file that contains multiple input files to be processed. One per line.
 	* '-o' this specifies the MS orders to be parsed. Can be one number (e.g. -o 2) or a list separated by spaces (e.g. -o 1 2 3). If -o is set to 0, no parsing will be done. This last functionality is potentially desirable if you are looking to only generate an MGF output. If you input a list of values that contains 0 (e.g. 0 1 2), no parsing will be done.
 	* '-mgf' this flag will trigger MGF generation.
+	* '-mtx' generates a text file containing some general metrics of the raw file, explained further below.
 	* '-spd' this will suppress the progress bar during processing. But this is cool to look at, so why would you do that?
 
 9. I am interested in generating parsed output for MS1 and MS2 scans in my raw file, as well as creating an MGF output I can use in a database search.
 
 	~~~bash
-	python -m RawQuant.py parse -f C:\Users\ptx_user\Desktop\RawQuant\ch_29Sept2017_eColi-31907_TMT11_MS2_1.raw -o 1 2 -mgf
+	python -m RawQuant.py parse -f C:\Users\ptx_user\Desktop\RawQuant\ch_29Sept2017_eColi-31907_TMT11_MS2_1.raw -o 1 2 -mgf -mtx
 	~~~
 
 10. Once processing is complete, you should see four files created in the same directory as the raw file.
@@ -209,13 +210,14 @@ This section will walk through some common commands and input scenarios for RawQ
 	* '-i' this will trigger quantification of isolation interference.
 	* '-o' this specifies the MS order where the quantification values are. Can be one number (e.g. -o 2). This flag is optional. If not input, the highest MS order will be assumed. Possible values are 2 and 3. 
 	* '-mgf' this flag will trigger MGF generation.
+	* '-mtx' generates a text file containing some general metrics of the raw file
 	* '-spd' this will suppress the progress bar during processing. 
 	* '-c' this will correct for isotopic impurities in the reagents. Input should be a csv file containing an impurity matrix. For an example, try 'python RawQuant.py examples -c'. 
 
 17. I am interested in generating quant output for MS3 scans in my raw file, as well as creating an MGF output I can use in a database search.
 
 	~~~bash
-	python -m RawQuant.py quant -f C:\Users\ptx_user\Desktop\RawQuant\ch_29Sept2017_eColi-31907_TMT11_2e5-120_1.raw -r TMT10 -i -mgf
+	python -m RawQuant.py quant -f C:\Users\ptx_user\Desktop\RawQuant\ch_29Sept2017_eColi-31907_TMT11_2e5-120_1.raw -r TMT10 -i -mgf -mtx
 	~~~
 
 18. Once processing is complete, you should see three files created in the same directory as the raw file.
