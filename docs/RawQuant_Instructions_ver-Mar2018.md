@@ -167,39 +167,46 @@ This section will walk through some common commands and input scenarios for RawQ
 11. Let's look at the output files a little closer at each of the files. They are tab delimited text files, so they can be opened in most editors and Excel.
 12. Let's look at the 'metrics.txt' file first. This contains some useful 'quick-glance' information.
 	* The MS order value denotes the level where MS2 data was acquired. 
+	* Total analysis time (min) is the length of time elapsed between the first and last acquired scans.
 	* Total scans denotes the total number of scans in the entire file.
 	* MS1 scans counts the number of MS1 scans.
 	* MS2 scans counts the number of MS2 scans.
 	* Mean topN is the average number of MS2 events triggered in an MS1 scan across the entire run.
 	* MS1 scans/sec counts the number of MS1 scans that occurs every second.
 	* MS2 scans/sec counts the number of MS2 events that are triggered every second.
-	* Mean duty cycle calculates the time (in seconds) between neighbouring MS1 events.  
+	* Mean duty cycle calculates the time (in seconds) between neighbouring MS1 events.
+	* Median precursor intensity is the median intensity of all precursors selected for MS2 analysis.
+	* Median base to base RT width is the median time in seconds over which the precursors selected for MS2 analysis eluted.
 
-	![alt text](screens/screen11.png)
+	![alt text](screens/screen28.png)
 
 13. What about the 'MS1ParseData.txt' file. 
-	* ScanNumber is the scan index for the MS1 event.
-	* RetentionTime is the retention time (in minutes) of the MS1 event.
+	* MS1ScanNumber is the scan index for the MS1 event.
+	* QuantScanRetentionTime is the retention time (in minutes) of the MS1 event.
 	* MS1IonInjectionTime is the injection time (in ms) for the MS1 event.
 
-	![alt text](screens/screen14.png)
+	![alt text](screens/screen29.png)
 
 14. What about the 'MS2ParseData.txt' file. This contains a lot of information.
-	* ScanNumber is the scan index for the MS2 event.
+	* MS2ScanNumber is the scan index for the MS2 event.
 	* MS1ScanNumber is the MS1 event that the MS2 scan was triggered from.
-	* RetentionTime is the retention time (in minutes) where the MS2 scan was acquired. 
+	* QuantScanRetentionTime is the retention time (in minutes) where the MS2 scan was acquired. 
 	* PickedRetentionTime is the retention time (in minutes) where the MS2 ion was targeted for acquisition (so, this is the retention time of the MS1 scan event that it was triggered from).
 	* PeakMaxRetentionTime is the retention time (in minutes) where the maximum intensity for the parent ion selected for MS2 analysis was observed. 
+	* PrecursorRetentionWidth is the width of the elution profile for the parent ion.
 	* PrecursorMass is the m/z of the parent ion selected for MS2.
 	* PrecursorCharge is the determined charge state of the parent ion selected for MS2.
 	* PrecursorPickedIntensity is the intensity of the precursor ion in the MS1 scan closest to where the MS2 scan was carried out (just prior).
 	* PrecursorMaxIntensity is the maximum observed intensity across the elution profile for the parent ion selected for MS2.
 	* PrecursorArea is the detected area across the elution profile for the parent ion selected for MS2.
-	* PrecursorRetentionWidth is the width of the elution profile for the parent ion.
+	* MS1FirstQuantScan is the first MS1 scan where a precursor was observed.
+	* MS1LastQuantScan is the last MS1 scan where a precursor was observed.
 	* MS1IonInjectionTime is the injection time (in ms) of the MS1 scan where the MS2 event was triggered from.
 	* MS2IonInjectionTime is the injection time (in ms) of the MS2 scan event itself. 
 
-	![alt text](screens/screen12.png)
+	![alt text](screens/screen30a.png)
+	
+	![alt text](screens/screen30b.png)
 
 15. Let's move on to processing a quant file. For this example I am going to use a file that was obtained using an SPS-MS3 approach on an Orbitrap Fusion from the above PRIDE repository that was acquired as . The file name is "ch 29Sept2017 eColi-31907 TMT11 2e5-120 1.raw" if you would like to follow along with the same file.
 16. First lets process this file using the 'quant' functionality of RawQuant. There are multiple flags that the quant command can use as input.
@@ -226,18 +233,20 @@ This section will walk through some common commands and input scenarios for RawQ
 	* 'MGF.mgf' file - this is a standard MGF output. Use with any search engine who will take MGF input!
 
 19. Let's look a little closer at the 'QuantData.txt' file. It contains a lot of information. 
-	* ScanNumber is the scan index for the MS3 event.
+	* MS3ScanNumber is the scan index for the MS3 event.
 	* MS2ScanNumber is the MS2 event that the MS3 scan was triggered from.
 	* MS1ScanNumber is the MS1 event that the MS2 scan that led to the MS3 was triggered from.
-	* RetentionTime is the retention time (in minutes) where the MS3 scan was acquired. 
+	* QuantScanRetentionTime is the retention time (in minutes) where the MS3 scan was acquired. 
 	* PickedRetentionTime is the retention time (in minutes) where the MS2 ion was targeted for acquisition (so, this is the retention time of the MS1 scan event that it was triggered from).
 	* PeakMaxRetentionTime is the retention time (in minutes) where the maximum intensity for the parent ion selected for MS2 analysis was observed. 
+	* PrecursorRetentionWidth is the width of the elution profile for the parent ion.
 	* PrecursorMass is the m/z of the parent ion selected for MS2.
 	* PrecursorCharge is the determined charge state of the parent ion selected for MS2.
 	* PrecursorPickedIntensity is the intensity of the precursor ion in the MS1 scan closest to where the MS2 scan was carried out (just prior).
 	* PrecursorMaxIntensity is the maximum observed intensity across the elution profile for the parent ion selected for MS2.
 	* PrecursorArea is the detected area across the elution profile for the parent ion selected for MS2. Note, this is not done by curve fitting, but rather direct calculation of the area under the observed points across the elution profile. 
-	* PrecursorRetentionWidth is the width of the elution profile for the parent ion.
+	* MS1FirstQuantScan is the first MS1 scan where a precursor was observed.
+	* MS1LastQuantScan is the last MS1 scan where a precursor was observed.
 	* MS1IonInjectionTime is the injection time (in ms) of the MS1 scan where the MS2 event was triggered from.
 	* MS2IonInjectionTime is the injection time (in ms) of the MS2 scan event.
 	* MS3IonInjectionTime is the injection time (in ms) of the MS3 scan event.
@@ -251,7 +260,9 @@ This section will walk through some common commands and input scenarios for RawQ
 	* SPSMass are the masses of the ions selected from the MS2 scan for SPS-MS3 analysis.
 	* SPSIntensity are the intensities of the selected SPS ions. 
 
-	![alt text](screens/screen13.png)
+	![alt text](screens/screen31a.png)
+	
+	![alt text](screens/screen31b.png)
 
 
 #### Using the RawQuant output in your analysis
@@ -279,8 +290,8 @@ Let's look at an example for combining the RawQuant data with search engines.
 	![alt text](screens/screen16.png)
 
 4. Using R, Python, or your language of choice, you can combine the RawQuant output with the PeptideShaker results by combining this spectrum number with the appropriate column from RawQuant.
-	* For a parsed file where -o 2 was used, this will be the 'ScanNumber' column.
-	* for a quant file where quant was in MS2, this will be the 'ScanNumber' column.
+	* For a parsed file where -o 2 was used, this will be the 'MS2ScanNumber' column.
+	* for a quant file where quant was in MS2, this will be the 'MS2ScanNumber' column.
 	* for a quant file where the quant was SPS-MS3, this will be the 'MS2ScanNumber' column.
 
 5. For combining with other search engines, you simply need to locate the output file that contains the MS2 scan number of a given peptide spectral match, or peptide match and align this with the same values in the RawQuant tables. 
