@@ -19,25 +19,22 @@ RawQuant does not have any specific system requirements, although the script may
 
 Before starting, we recommend creating a working directory somewhere you will remember, and downloading some files to it. 
 
-1. Download the RawQuant GitHub repository.
-	* Navigate to the [RawQuant GitHub repository](https://github.com/kevinkovalchik/RawQuant) in your web browser.
-	* This will include the Python bindings file MSFileReader.py.
-	* This download will also contain the correct version of MSFileReader.
-	* Download the entire repository as a ZIP archive using the 'Clone or download' button. 
-	* Extract the ZIP archive in the folder you created above.
-
-	![alt text](screens/screen18.png)
-
-2. Download Python into your created folder.
+1. Download Python into your created folder.
 	* The version here is important. We have currently only tested version 3.6.1 (64-bit).
 	* The install file can be downloaded from [Python directly](https://www.python.org/downloads/release/python-361/). 
 	* Scroll down on the above page and click the appropriate release for your system. In this case, we are going to download the Windows x86-64 executable installer version.
 	
 	![alt text](screens/screen17.png)
 
-3. Download MSFileReader into your created folder.
+2. Download MSFileReader into your created folder.
 	* The version here is important. We have currently only tested the mentioned version (version 3.0.29, or 3.0 SP2).
-	* The install file can be downloaded from the [RawQuant GitHub page](https://github.com/kevinkovalchik/RawQuant). If you downloaded the RawQuant GitHub repository in Step 1 above, then you already have the required MSFileReader file!
+	* The install file can be downloaded from the [RawQuant GitHub page](https://github.com/kevinkovalchik/RawQuant). 
+	* Navigate to the [RawQuant GitHub repository](https://github.com/kevinkovalchik/RawQuant) in your web browser.
+	* Download the entire repository as a ZIP archive using the 'Clone or download' button. 
+	* Extract the ZIP archive in the folder you created above.
+
+	![alt text](screens/screen18.png)	
+	
 	* Alternatively, the install file can be downloaded from [Thermo](https://thermo.flexnetoperations.com/control/thmo/login?nextURL=%2Fcontrol%2Fthmo%2Fdownload%3Felement%3D6306677). This website requires registration, which is free.
 
 #### Installation
@@ -81,11 +78,6 @@ Let's walk through the setup:
 	
 	![alt text](screens/screen22_crop.png)
 
-10. Copy the MSFileReader.py file from the RawQuant GitHub directory you downloaded earlier to the Python 'Lib' directory.
-	* Simply copy and paste MSFileReader.py into the Python Lib directory.
-	* The Lib directory will be in the Python directory where 'python.exe' is stored. Simply search for this file if you can't find the directory.  
-
-	![alt text](screens/screen7_crop.png)
 
 #### Install testing
 
