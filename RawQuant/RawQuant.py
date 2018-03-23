@@ -1770,30 +1770,29 @@ class RawQuant:
 
             MassLists = self.data['MS2'+LookFor]
 
-            if LookFor == 'MassLists':
+            for scan in tqdm(MassLists.keys(), ncols=70, disable=self.disable_bar):
 
-                for scan in tqdm(MassLists.keys(),ncols=70,disable = self.disable_bar):
+                f.write(b'\nBEGIN IONS' +
+                        b'\nRAWFILE=' + bytes(self.MetaData['DataFile'], 'utf-8') +
+                        b'\nSCANS=' + bytes(scan, 'utf-8') +
+                        b'\nPEPMASS=' + bytes(str(self.data['MS2PrecursorMass'][scan]), 'utf-8') +
+                        b'\nCHARGE=' + bytes(str(self.data['PrecursorCharge'][scan]), 'utf-8')+b'+' +
+                        b'\n')
 
-                    f.write(b'\nBEGIN IONS'+
-                            b'\nTITLE='+bytes(self.MetaData['DataFile'],'utf-8') + b' spectrum '+bytes(scan,'utf-8') +
-                            b'\nPEPMASS='+bytes(str(self.data['MS2PrecursorMass'][scan]),'utf-8')+
-                            b'\nCHARGE='+bytes(str(self.data['PrecursorCharge'][scan]),'utf-8')+b'+'+
-                            b'\n')
-                    np.savetxt(f, MassLists[scan],delimiter=' ',fmt="%.6f")
-                    f.write(b'END IONS\n')
+                if self.MetaData['AnalysisOrder'] == 2:
+                    scanData = MassLists[scan][MassLists[scan][:, 0] >= 132]
 
-            elif LookFor == 'LabelData':
+                else:
+                    scanData = MassLists[scan]
 
-                for scan in tqdm(MassLists.keys(),ncols=70,disable = self.disable_bar):
+                if LookFor == 'MassLists':
+                    np.savetxt(f, scanData, delimiter=' ', fmt="%.6f")
 
-                    f.write(b'\nBEGIN IONS'+
-                            b'\nTITLE='+bytes(self.MetaData['DataFile'],'utf-8') + b' spectrum '+bytes(scan,'utf-8') +
-                            b'\nPEPMASS='+bytes(str(self.data['MS2PrecursorMass'][scan]),'utf-8')+
-                            b'\nCHARGE='+bytes(str(self.data['PrecursorCharge'][scan]),'utf-8')+b'+'+
-                            b'\n')
+                elif LookFor == 'LabelData':
+                    np.savetxt(f, scanData[:, :2], delimiter=' ', fmt="%.6f")
 
-                    np.savetxt(f, MassLists[scan][:,:2],delimiter=' ',fmt="%.6f")
-                    f.write(b'END IONS\n')
+                f.write(b'END IONS\n')
+
 
     def SaveData(self, method = 'quant', parse_order = None, filename = 'TMTQuantData.txt',delimiter='\t'):
 
