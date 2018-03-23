@@ -135,12 +135,17 @@ if __name__ == "__main__":
         RAWFILES.add_argument('-f','--rawfile', nargs = '+', help =
                 'The single raw file to be processed, or a list of multiple files\n'+
                 'separated by spaces. Examples:\n'+
-                '/python -m RawQuant quant -f File.raw -arguments\n'+
-                '>python -m RawQuant quant -f File1.raw File2.raw File3.raw -arguments\n ')
+                '>python -m RawQuant quant -f File.raw <further arguments>\n'+
+                '>python -m RawQuant quant -f File1.raw File2.raw File3.raw <further arguments>\n ')
 
         RAWFILES.add_argument('-m','--multiple',help =
                 'A text file specifying multiple raw files to be processed,\n'+
                 'one per line\n ')
+
+        RAWFILES.add_argument('-d','--directory',help=
+                'Specify a directory in which to process all .raw files. Files in the directory'+
+                'which are not .raw files will be ignored. Example:\n'+
+                '>python -m RawQuant -d C:/FolderToProcess <further arguments>')
 
         REAGENTS.add_argument('-r', '--labeling_reagents', help =
                 'The labeling reagent used. Built-in options are TMT0, TMT2,\n'+
@@ -211,6 +216,11 @@ if __name__ == "__main__":
         RAWFILES_P.add_argument('-m','--multiple', help =
                 'A text file specifying multiple raw files to be processed,\n'+
                 'one per line.\n ')
+
+        RAWFILES_P.add_argument('-d', '--directory', help=
+        'Specify a directory in which to process all .raw files. Files in the directory'+
+                'which are not .raw files will be ignored. Example:\n' +
+        '>python -m RawQuant -d C:/FolderToProcess <further arguments>')
 
         parse.add_argument('-o','--MSOrder', nargs = '+', help =
                 'The MS order scans to be parsed. Can be one number (e.g. -o 2)\n'
@@ -648,13 +658,19 @@ if __name__ == "__main__":
 
     if args.subparser_name == 'parse':
 
-        if args.rawfile != None:
+        if args.rawfile is not None:
 
             files = args.rawfile
 
-        elif args.multiple != None:
+        elif args.multiple is not None:
 
             files = np.loadtxt(args.multiple,dtype=str).tolist()
+
+        elif args.directory is not None:
+
+            files = os.listdir(args.directory)
+            files = [x for x in files if '.raw' in x]  # make sure the files contain ".raw"
+            files = [x for x in files if x[-4:] == '.raw']  # make sure ".raw" is the extension
 
         if args.supress_progress_bar == False:
 
@@ -667,9 +683,9 @@ if __name__ == "__main__":
         order = args.MSOrder
 
         print('\nFile(s) to be parsed:')
-        if type(files)==str:
-            print(files+'\n')
-        elif type(files)==list:
+        if type(files) == str:
+            print(files + '\n')
+        elif type(files) == list:
             for f in files:
                 print(f)
             print('\n')
@@ -713,17 +729,23 @@ if __name__ == "__main__":
 
     if args.subparser_name == 'quant':
 
-        if args.rawfile != None:
+        if args.rawfile is not None:
 
             files = args.rawfile
 
-        elif args.multiple != None:
+        elif args.multiple is not None:
 
             files = np.loadtxt(args.multiple,dtype=str).tolist()
 
-        if (args.labeling_reagents or args.custom_reagents) != None:
+        elif args.directory is not None:
 
-            if args.labeling_reagents != None:
+            files = os.listdir(args.directory)
+            files = [x for x in files if '.raw' in x]  # make sure the files contain ".raw"
+            files = [x for x in files if x[-4:] == '.raw']  # make sure ".raw" is the extension
+
+        if (args.labeling_reagents or args.custom_reagents) is not None:
+
+            if args.labeling_reagents is not None:
 
                 if args.labeling_reagents not in ['TMT0','TMT2', 'TMT6', 'TMT10', 'TMT11', 'iTRAQ4', 'iTRAQ8']:
 
@@ -732,14 +754,14 @@ if __name__ == "__main__":
 
                 reagents = args.labeling_reagents
 
-            elif args.custom_reagents != None:
+            elif args.custom_reagents is not None:
 
                 reagents = args.custom_reagents
 
         else:
             reagents = None
 
-        if args.MSOrder != None:
+        if args.MSOrder is not None:
 
             order = args.MSOrder
 
@@ -755,7 +777,7 @@ if __name__ == "__main__":
 
             suppress_bar = False
 
-        if args.correct_impurities != None:
+        if args.correct_impurities is not None:
 
             impurities = args.correct_impurities
 
@@ -764,30 +786,30 @@ if __name__ == "__main__":
             impurities = None
 
         print('\nFile(s) to be processed:')
-        if type(files)==str:
-            print(files+'\n')
-        elif type(files)==list:
+        if type(files) == str:
+            print(files + '\n')
+        elif type(files) == list:
             for f in files:
                 print(f)
             print('\n')
 
-        if args.parallel == None:
+        if args.parallel is None:
 
             for msFile in files:
 
                 filename = msFile[:-4]+'_QuantData.txt'
                 data = RawQuant(msFile,order=order,disable_bar=suppress_bar)
 
-                if reagents != None:
+                if reagents is not None:
 
                     if args.quantify_interference:
                         data.QuantifyInterference()
 
-                    data.QuantifyReporters(reagents = reagents)
+                    data.QuantifyReporters(reagents=reagents)
 
                 data.ToDataFrame()
 
-                if impurities != None:
+                if impurities is not None:
                     data.LoadImpurities(impurities)
                     data.GenerateCorrectionMatrix()
                     data.CorrectImpurities()
