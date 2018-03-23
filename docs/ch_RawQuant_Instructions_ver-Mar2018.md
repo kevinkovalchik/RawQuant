@@ -66,7 +66,7 @@ Let's walk through the setup:
 	* RawQuant is available on the [Python Package Index](https://pypi.python.org/pypi/RawQuant/0.1.0), so can be easily installed with pip.
 	
 	~~~bash
-	python install RawQuant
+	pip install RawQuant
 	~~~
 
 	![alt text](screens/screen21_crop.png)
@@ -152,10 +152,6 @@ This section will walk through some common commands and input scenarios for RawQ
 	* '-mgf' this flag will trigger MGF generation.
 	* '-spd' this will suppress the progress bar during processing. But this is cool to look at, so why would you do that?
 
-	~~~bash
-	python -m RawQuant.py parse -h
-	~~~
-
 9. I am interested in generating parsed output for MS1 and MS2 scans in my raw file, as well as creating an MGF output I can use in a database search.
 
 	~~~bash
@@ -165,7 +161,7 @@ This section will walk through some common commands and input scenarios for RawQ
 10. Once processing is complete, you should see four files created in the same directory as the raw file.
 	* a 'metrics.txt' file - this contains some general metrics of the raw file, such as number of MS1 scans, topN rate, duty cycle.
 	* 'MS1ParseData.txt' and 'MS2ParseData.txt' files - these contain the metrics for every MS1 and MS2 scan found in the raw file. 
-	* 'MGF.mgf' file - this is a standard MGF output. Use with any search engine who will take MGF input!
+	* 'MGF.mgf' file - this is a standard MGF output. Use with any search engine that will take MGF input!
  
 11. Let's look at the output files a little closer at each of the files. They are tab delimited text files, so they can be opened in most editors and Excel.
 12. Let's look at the 'metrics.txt' file first. This contains some useful 'quick-glance' information.
@@ -216,10 +212,6 @@ This section will walk through some common commands and input scenarios for RawQ
 	* '-spd' this will suppress the progress bar during processing. 
 	* '-c' this will correct for isotopic impurities in the reagents. Input should be a csv file containing an impurity matrix. For an example, try 'python RawQuant.py examples -c'. 
 
-	~~~bash
-	python -m RawQuant.py quant -h
-	~~~
-
 17. I am interested in generating quant output for MS3 scans in my raw file, as well as creating an MGF output I can use in a database search.
 
 	~~~bash
@@ -242,7 +234,7 @@ This section will walk through some common commands and input scenarios for RawQ
 	* PrecursorCharge is the determined charge state of the parent ion selected for MS2.
 	* PrecursorPickedIntensity is the intensity of the precursor ion in the MS1 scan closest to where the MS2 scan was carried out (just prior).
 	* PrecursorMaxIntensity is the maximum observed intensity across the elution profile for the parent ion selected for MS2.
-	* PrecursorArea is the detected area across the elution profile for the parent ion selected for MS2. Note, this is not done by curve fitting. 
+	* PrecursorArea is the detected area across the elution profile for the parent ion selected for MS2. Note, this is not done by curve fitting, but rather direct calculation of the area under the observed points across the elution profile. 
 	* PrecursorRetentionWidth is the width of the elution profile for the parent ion.
 	* MS1IonInjectionTime is the injection time (in ms) of the MS1 scan where the MS2 event was triggered from.
 	* MS2IonInjectionTime is the injection time (in ms) of the MS2 scan event.
