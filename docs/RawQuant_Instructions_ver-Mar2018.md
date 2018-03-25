@@ -321,4 +321,4 @@ The massive number of tools available to proteomics researchers now means that y
 
 RawQuant is in active development. We hope to have a GUI-based version sometime in the near future. We welcome any suggesetions or help, especially from vendors who want to make their raw files accessible via open source tools so people can make better use of their own data!
 
-If you have any issues, or have encountered a bug, or there is a feature you would really like to see, please do not hesitate to contact Kevin Kovalchik (kkovalchik@bcgsc.ca) or Christopher Hughes (chughes@bcgsc.ca), and we will do our best to get you using our tool!
+If you have any issues, or have encountered a bug, or there is a feature you would really like to see, please do not hesitate to contact Kevin Kovalchik (kkovalchik@bcgsc.ca) or Christopher Hughes (chughes@bcgsc.ca) or [open a new issue on GitHub](https://github.com/kevinkovalchik/RawQuant/issues), and we will do our best to get you using our tool!
