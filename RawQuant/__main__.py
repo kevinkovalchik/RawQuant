@@ -195,7 +195,7 @@ if __name__ == "__main__":
         quant.add_argument('-mco', '--mass_cut_off', help=
                 'Specify a low mass cutoff during mgf file generation. Example:\n' +
                 '>python -m RawQuant quant -f rawFile.raw -r TMT0 -mgf -mco 128\n' +
-                'cuts off all MS2 ions < m/z 128.')
+                'cuts off all MS2 ions < m/z 128 when making the mgf file.')
 
         ### Examples subparser section ###
 
@@ -256,8 +256,8 @@ if __name__ == "__main__":
 
         parse.add_argument('-mco', '--mass_cut_off', help=
         'Specify a low mass cutoff during mgf file generation. Example:\n' +
-        '>python -m RawQuant quant -f rawFile.raw -r TMT0 -mgf -mco 128\n' +
-        'cuts off all MS2 ions < m/z 128.')
+        '>python -m RawQuant parse -f rawFile.raw -o 0 -mgf -mco 128\n' +
+        'cuts off all MS2 ions < m/z 128 when making the mgf file.')
 
         args = parser.parse_args()
 
