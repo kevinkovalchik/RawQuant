@@ -1719,7 +1719,7 @@ class RawQuant:
             self.ParseMatrix[str(order)] = df
             self.flags['MS'+str(order)+'Parse'] = True
 
-    def SaveMGF(self, filename='TMTQuantMGF.mgf'):
+    def SaveMGF(self, filename='TMTQuantMGF.mgf', cutoff=None):
 
         ### Error checking ###
 
@@ -1760,6 +1760,14 @@ class RawQuant:
             #print('PrecursorCharge required. Extracting now.')
             self.ExtractPrecursorCharge()
 
+        if cutoff is not None:
+
+            try:
+                cutoff = float(cutoff)
+
+            except ValueError:
+                raise TypeError('Mass cutoff value must be a number.')
+
         ### Begin mgf creation ###
 
         with open(filename, 'wb') as f:
@@ -1779,8 +1787,8 @@ class RawQuant:
                         b'\nCHARGE=' + bytes(str(self.data['PrecursorCharge'][scan]), 'utf-8')+b'+' +
                         b'\n')
 
-                if self.MetaData['AnalysisOrder'] == 2:
-                    scanData = MassLists[scan][MassLists[scan][:, 0] >= 132]
+                if cutoff is not None:
+                    scanData = MassLists[scan][MassLists[scan][:, 0] >= cutoff]
 
                 else:
                     scanData = MassLists[scan]

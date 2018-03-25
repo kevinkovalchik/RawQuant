@@ -192,6 +192,11 @@ if __name__ == "__main__":
                 '\tMedian precursor intensity\n'+
                 '\tMedian precursor RT width (base to base)')
 
+        quant.add_argument('-mco', '--mass_cut_off', help=
+                'Specify a low mass cutoff during mgf file generation. Example:\n' +
+                '>python -m RawQuant quant -f rawFile.raw -r TMT0 -mgf -mco 128\n' +
+                'cuts off all MS2 ions < m/z 128.')
+
         ### Examples subparser section ###
 
         examples.add_argument('-m','--multiple', action='store_true', help =
@@ -248,6 +253,11 @@ if __name__ == "__main__":
 
         parse.add_argument('-spb','--supress_progress_bar', action = 'store_false',help =
                 'Use this arguement to supress progress bars.\n ')
+
+        parse.add_argument('-mco', '--mass_cut_off', help=
+        'Specify a low mass cutoff during mgf file generation. Example:\n' +
+        '>python -m RawQuant quant -f rawFile.raw -r TMT0 -mgf -mco 128\n' +
+        'cuts off all MS2 ions < m/z 128.')
 
         args = parser.parse_args()
 
@@ -719,7 +729,7 @@ if __name__ == "__main__":
             if args.generate_mgf:
 
                 MGFfilename = msFile[:-4]+'_MGF.mgf'
-                data.SaveMGF(filename=MGFfilename)
+                data.SaveMGF(filename=MGFfilename, cutoff=args.mass_cut_off)
 
             if args.metrics:
                 data.GenMetrics(msFile[:-4]+'_metrics.txt')
@@ -821,7 +831,7 @@ if __name__ == "__main__":
                 if args.generate_mgf:
 
                     MGFfilename = msFile[:-4]+'_MGF.mgf'
-                    data.SaveMGF(filename=MGFfilename)
+                    data.SaveMGF(filename=MGFfilename, cutoff=args.mass_cut_off)
 
                 if args.metrics:
                     data.GenMetrics(msFile[:-4]+'_metrics.txt')
