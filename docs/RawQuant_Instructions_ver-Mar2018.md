@@ -150,6 +150,7 @@ This section will walk through some common commands and input scenarios for RawQ
 	* '-m' this can be used to specify a text file that contains multiple input files to be processed. One per line.
 	* '-o' this specifies the MS orders to be parsed. Can be one number (e.g. -o 2) or a list separated by spaces (e.g. -o 1 2 3). If -o is set to 0, no parsing will be done. This last functionality is potentially desirable if you are looking to only generate an MGF output. If you input a list of values that contains 0 (e.g. 0 1 2), no parsing will be done.
 	* '-mgf' this flag will trigger MGF generation.
+	* '-mco' specifies a low mass cutoff to be applied during MGF generation. Useful to cutoff the reporter region in MS2 experiments. All ions below the specified m/z will be excluded from the MGF file.
 	* '-mtx' generates a text file containing some general metrics of the raw file, explained further below.
 	* '-spd' this will suppress the progress bar during processing. But this is cool to look at, so why would you do that?
 
@@ -217,6 +218,7 @@ This section will walk through some common commands and input scenarios for RawQ
 	* '-i' this will trigger quantification of isolation interference.
 	* '-o' this specifies the MS order where the quantification values are. Can be one number (e.g. -o 2). This flag is optional. If not input, the highest MS order will be assumed. Possible values are 2 and 3. 
 	* '-mgf' this flag will trigger MGF generation.
+	* '-mco' specifies a low mass cutoff to be applied during MGF generation. Useful to cutoff the reporter region in MS2 experiments. All ions below the specified m/z will be excluded from the MGF file.
 	* '-mtx' generates a text file containing some general metrics of the raw file
 	* '-spd' this will suppress the progress bar during processing. 
 	* '-c' this will correct for isotopic impurities in the reagents. Input should be a csv file containing an impurity matrix. For an example, try 'python RawQuant.py examples -c'. 
