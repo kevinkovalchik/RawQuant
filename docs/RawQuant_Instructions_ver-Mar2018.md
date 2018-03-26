@@ -97,13 +97,13 @@ Let's walk through the setup:
 	* Test the raw file (in this example I tested an MS2 and SPS-MS3 file).
 
 	~~~bash
-	python -m RawQuant.py parse -f <path to your raw file> -o 2
+	python -m RawQuant parse -f <path to your raw file> -o 2
 	~~~
  
  	![alt text](screens/screen26_crop.png)
  	
  	~~~bash
-	python -m RawQuant.py quant -f <path to your raw file> -r TMT10 -i
+	python -m RawQuant quant -f <path to your raw file> -r TMT10 -i
 	~~~
  
  	![alt text](screens/screen27_crop.png)
@@ -120,19 +120,19 @@ This section will walk through some common commands and input scenarios for RawQ
 2. To invoke the general help for RawQuant use the command:
 
 	~~~bash
-	python -m RawQuant.py -h
+	python -m RawQuant -h
 	~~~
 
 3. To invoke the help for the specific parse and quant functions, use extensions of the previous command.
 
 	~~~bash
-	python -m RawQuant.py parse -h
+	python -m RawQuant parse -h
 	~~~
 	
 	![alt text](screens/screen24_crop.png)
 	
 	~~~bash
-	python -m RawQuant.py quant -h
+	python -m RawQuant quant -h
 	~~~
 	
 	![alt text](screens/screen25_crop.png)
@@ -141,23 +141,25 @@ This section will walk through some common commands and input scenarios for RawQ
 5. If you are ever confused about input files for things like 'custom reagents', use the examples functionality of RawQuant to generate some files for you to use as a guide.
 
 	~~~bash
-	python -m RawQuant.py examples -h
+	python -m RawQuant examples -h
 	~~~
 
 7. Let's perform our own analysis. I am going to use a file acquired on an Orbitrap Fusion downloaded from the above PRIDE repository that was acquired as MS1-Orbitrap HCD-MS2-Orbitrap. The file name is "ch 29Sept2017 eColi-31907 TMT11 MS2 1.raw" if you would like to follow along with the same file.
 8. First lets process this file using the 'parse' functionality of RawQuant. There are multiple flags that the parse command can use as input.
-	* '-f' this is the input file, or a list of files separated by spaces.
-	* '-m' this can be used to specify a text file that contains multiple input files to be processed. One per line.
-	* '-o' this specifies the MS orders to be parsed. Can be one number (e.g. -o 2) or a list separated by spaces (e.g. -o 1 2 3). If -o is set to 0, no parsing will be done. This last functionality is potentially desirable if you are looking to only generate an MGF output. If you input a list of values that contains 0 (e.g. 0 1 2), no parsing will be done.
+	* '-f' this is the input file, or a list of files separated by spaces. The file(s) should be typed in after -f.
+	* '-m' this can be used to specify a text file that contains multiple input files to be processed, one per line. The filename should be typed in after -m. For an example file use ~~~python -m RawQuant examples -m~~~
+	* '-d' this specifies a directory in which all .raw files will be processed. All other files in the directory will be ignored. The absolute path to the directory should be typed in after -d.
+	* '-o' this specifies the MS orders to be parsed. Can be one number (e.g. -o 2) or a list separated by spaces (e.g. -o 1 2 3), and should be entered after -o. If -o is set to 0, no parsing will be done. This last functionality is potentially desirable if you are looking to only generate an MGF output. If you input a list of values that contains 0 (e.g. 0 1 2), no parsing will be done.
 	* '-mgf' this flag will trigger MGF generation.
-	* '-mco' specifies a low mass cutoff to be applied during MGF generation. Useful to cutoff the reporter region in MS2 experiments. All ions below the specified m/z will be excluded from the MGF file.
+	* '-mco' specifies a low mass cutoff to be applied during MGF generation. Useful to cutoff the reporter region in MS2 experiments. All ions below the value entered after -mco will be excluded from the MGF file.
 	* '-mtx' generates a text file containing some general metrics of the raw file, explained further below.
 	* '-spd' this will suppress the progress bar during processing. But this is cool to look at, so why would you do that?
+Note that -f, -m and -d are mutually exclusive. You need only use one to indicate files to process.
 
 9. I am interested in generating parsed output for MS1 and MS2 scans in my raw file, as well as creating an MGF output I can use in a database search.
 
 	~~~bash
-	python -m RawQuant.py parse -f C:\Users\ptx_user\Desktop\RawQuant\ch_29Sept2017_eColi-31907_TMT11_MS2_1.raw -o 1 2 -mgf -mtx
+	python -m RawQuant parse -f C:\Users\ptx_user\Desktop\RawQuant\ch_29Sept2017_eColi-31907_TMT11_MS2_1.raw -o 1 2 -mgf -mtx
 	~~~
 
 10. Once processing is complete, you should see four files created in the same directory as the raw file.
@@ -211,17 +213,19 @@ This section will walk through some common commands and input scenarios for RawQ
 
 15. Let's move on to processing a quant file. For this example I am going to use a file that was obtained using an SPS-MS3 approach on an Orbitrap Fusion from the above PRIDE repository that was acquired as . The file name is "ch 29Sept2017 eColi-31907 TMT11 2e5-120 1.raw" if you would like to follow along with the same file.
 16. First lets process this file using the 'quant' functionality of RawQuant. There are multiple flags that the quant command can use as input.
-	* '-f' this is the input file, or a list of files separated by spaces.
-	* '-m' this can be used to specify a text file that contains multiple input files to be processed. One per line.
-	* '-r' this is the labeling reagents. Built-in options are TMT0, TMT2, TMT6, TMT10, TMT11, iTRAQ4, and iTRAQ8.
-	* '-cr' this is if you want to use custom reagents. Should be a csv file containing user-defined labels and masses. To see an example, use the command 'python RawQuant.py examples -r'.
+	* '-f' this is the input file, or a list of files separated by spaces. The file(s) should be typed in after -f.
+	* '-m' this can be used to specify a text file that contains multiple input files to be processed, one per line. The filename should be typed in after -m. For an example file use ~~~python -m RawQuant examples -m~~~
+	* '-d' this specifies a directory in which all .raw files will be processed. All other files in the directory will be ignored. The absolute path to the directory should be typed in after -d.
+	* '-r' this is the labeling reagents. Built-in options are TMT0, TMT2, TMT6, TMT10, TMT11, iTRAQ4, and iTRAQ8. One of these values should be typed in after -r.
+	* '-cr' this is if you want to use custom reagents. Should be the filename of a csv file containing user-defined labels and masses. To see an example, use the command 'python RawQuant.py examples -r'.
 	* '-i' this will trigger quantification of isolation interference.
 	* '-o' this specifies the MS order where the quantification values are. Can be one number (e.g. -o 2). This flag is optional. If not input, the highest MS order will be assumed. Possible values are 2 and 3. 
 	* '-mgf' this flag will trigger MGF generation.
-	* '-mco' specifies a low mass cutoff to be applied during MGF generation. Useful to cutoff the reporter region in MS2 experiments. All ions below the specified m/z will be excluded from the MGF file.
+	* '-mco' specifies a low mass cutoff to be applied during MGF generation. Useful to cutoff the reporter region in MS2 experiments. All ions below the value entered after -mco will be excluded from the MGF file.
 	* '-mtx' generates a text file containing some general metrics of the raw file
 	* '-spd' this will suppress the progress bar during processing. 
-	* '-c' this will correct for isotopic impurities in the reagents. Input should be a csv file containing an impurity matrix. For an example, try 'python RawQuant.py examples -c'. 
+	* '-c' this will correct for isotopic impurities in the reagents. Input should be a csv file containing an impurity matrix. For an example, try 'python RawQuant.py examples -c'.
+Note that -f, -m and -d are mutually exclusive. You need only use one to indicate files to process.
 
 17. I am interested in generating quant output for MS3 scans in my raw file, as well as creating an MGF output I can use in a database search.
 
