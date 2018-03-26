@@ -147,7 +147,7 @@ This section will walk through some common commands and input scenarios for RawQ
 7. Let's perform our own analysis. I am going to use a file acquired on an Orbitrap Fusion downloaded from the above PRIDE repository that was acquired as MS1-Orbitrap HCD-MS2-Orbitrap. The file name is "ch 29Sept2017 eColi-31907 TMT11 MS2 1.raw" if you would like to follow along with the same file.
 8. First lets process this file using the 'parse' functionality of RawQuant. There are multiple flags that the parse command can use as input.
 	* '-f' this is the input file, or a list of files separated by spaces. The file(s) should be typed in after -f.
-	* '-m' this can be used to specify a text file that contains multiple input files to be processed, one per line. The filename should be typed in after -m. For an example file use ~~~bash python -m RawQuant examples -m ~~~
+	* '-m' this can be used to specify a text file that contains multiple input files to be processed, one per line. The filename should be typed in after -m. For an example file use `python -m RawQuant examples -m`
 	* '-d' this specifies a directory in which all .raw files will be processed. All other files in the directory will be ignored. The absolute path to the directory should be typed in after -d.
 	* '-o' this specifies the MS orders to be parsed. Can be one number (e.g. -o 2) or a list separated by spaces (e.g. -o 1 2 3), and should be entered after -o. If -o is set to 0, no parsing will be done. This last functionality is potentially desirable if you are looking to only generate an MGF output. If you input a list of values that contains 0 (e.g. 0 1 2), no parsing will be done.
 	* '-mgf' this flag will trigger MGF generation.
