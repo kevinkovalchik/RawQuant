@@ -214,12 +214,12 @@ Note that -f, -m and -d are mutually exclusive. You need only use one to indicat
 15. Let's move on to processing a quant file. For this example I am going to use a file that was obtained using an SPS-MS3 approach on an Orbitrap Fusion from the above PRIDE repository that was acquired as . The file name is "ch 29Sept2017 eColi-31907 TMT11 2e5-120 1.raw" if you would like to follow along with the same file.
 16. First lets process this file using the 'quant' functionality of RawQuant. There are multiple flags that the quant command can use as input.
 	* '-f' this is the input file, or a list of files separated by spaces. The file(s) should be typed in after -f.
-	* '-m' this can be used to specify a text file that contains multiple input files to be processed, one per line. The filename should be typed in after -m. For an example file use ~~~python -m RawQuant examples -m~~~
+	* '-m' this can be used to specify a text file that contains multiple input files to be processed, one per line. The filename should be typed in after -m. For an example file use `python -m RawQuant examples -m`
 	* '-d' this specifies a directory in which all .raw files will be processed. All other files in the directory will be ignored. The absolute path to the directory should be typed in after -d.
 	* '-r' this is the labeling reagents. Built-in options are TMT0, TMT2, TMT6, TMT10, TMT11, iTRAQ4, and iTRAQ8. One of these values should be typed in after -r.
-	* '-cr' this is if you want to use custom reagents. Should be the filename of a csv file containing user-defined labels and masses. To see an example, use the command 'python RawQuant.py examples -r'.
+	* '-cr' this is if you want to use custom reagents. Should be the filename of a csv file containing user-defined labels and masses. To see an example, use the command `python RawQuant.py examples -r`.
 	* '-i' this will trigger quantification of isolation interference.
-	* '-o' this specifies the MS order where the quantification values are. Can be one number (e.g. -o 2). This flag is optional. If not input, the highest MS order will be assumed. Possible values are 2 and 3. 
+	* '-o' this specifies the MS order where the quantification values are. Can be one number (e.g. -o 2), typed in after -o. This flag is optional. If not input, the highest MS order will be assumed. Possible values are 2 and 3. 
 	* '-mgf' this flag will trigger MGF generation.
 	* '-mco' specifies a low mass cutoff to be applied during MGF generation. Useful to cutoff the reporter region in MS2 experiments. All ions below the value entered after -mco will be excluded from the MGF file.
 	* '-mtx' generates a text file containing some general metrics of the raw file
