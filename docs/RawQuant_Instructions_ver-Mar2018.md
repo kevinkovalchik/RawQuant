@@ -87,7 +87,7 @@ Let's walk through the setup:
 	* Enter the command below into the terminal and hit enter.
 
 	~~~bash
-	python -m RawQuant.py -h
+	python -m RawQuant -h
 	~~~
 	
 	![alt text](screens/screen23_crop.png)
@@ -217,20 +217,20 @@ Note that -f, -m and -d are mutually exclusive. You need only use one to indicat
 	* '-m' this can be used to specify a text file that contains multiple input files to be processed, one per line. The filename should be typed in after -m. For an example file use `python -m RawQuant examples -m`
 	* '-d' this specifies a directory in which all .raw files will be processed. All other files in the directory will be ignored. The absolute path to the directory should be typed in after -d.
 	* '-r' this is the labeling reagents. Built-in options are TMT0, TMT2, TMT6, TMT10, TMT11, iTRAQ4, and iTRAQ8. One of these values should be typed in after -r.
-	* '-cr' this is if you want to use custom reagents. Should be the filename of a csv file containing user-defined labels and masses. To see an example, use the command `python RawQuant.py examples -r`.
+	* '-cr' this is if you want to use custom reagents. Should be the filename of a csv file containing user-defined labels and masses. To see an example, use the command `python RawQuant examples -r`.
 	* '-i' this will trigger quantification of isolation interference.
 	* '-o' this specifies the MS order where the quantification values are. Can be one number (e.g. -o 2), typed in after -o. This flag is optional. If not input, the highest MS order will be assumed. Possible values are 2 and 3. 
 	* '-mgf' this flag will trigger MGF generation.
 	* '-mco' specifies a low mass cutoff to be applied during MGF generation. Useful to cutoff the reporter region in MS2 experiments. All ions below the value entered after -mco will be excluded from the MGF file.
 	* '-mtx' generates a text file containing some general metrics of the raw file
 	* '-spd' this will suppress the progress bar during processing. 
-	* '-c' this will correct for isotopic impurities in the reagents. Input should be a csv file containing an impurity matrix. For an example, try 'python RawQuant.py examples -c'.
+	* '-c' this will correct for isotopic impurities in the reagents. Input should be a csv file containing an impurity matrix. For an example, try `python RawQuant examples -c`.
 Note that -f, -m and -d are mutually exclusive. You need only use one to indicate files to process.
 
 17. I am interested in generating quant output for MS3 scans in my raw file, as well as creating an MGF output I can use in a database search.
 
 	~~~bash
-	python -m RawQuant.py quant -f C:\Users\ptx_user\Desktop\RawQuant\ch_29Sept2017_eColi-31907_TMT11_2e5-120_1.raw -r TMT10 -i -mgf -mtx
+	python -m RawQuant quant -f C:\Users\ptx_user\Desktop\RawQuant\ch_29Sept2017_eColi-31907_TMT11_2e5-120_1.raw -r TMT10 -i -mgf -mtx
 	~~~
 
 18. Once processing is complete, you should see three files created in the same directory as the raw file.
