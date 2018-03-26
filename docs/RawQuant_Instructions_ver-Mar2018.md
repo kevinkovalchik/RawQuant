@@ -154,6 +154,7 @@ This section will walk through some common commands and input scenarios for RawQ
 	* '-mco' specifies a low mass cutoff to be applied during MGF generation. Useful to cutoff the reporter region in MS2 experiments. All ions below the value entered after -mco will be excluded from the MGF file.
 	* '-mtx' generates a text file containing some general metrics of the raw file, explained further below.
 	* '-spd' this will suppress the progress bar during processing. But this is cool to look at, so why would you do that?
+
 Note that -f, -m and -d are mutually exclusive. You need only use one to indicate files to process.
 
 9. I am interested in generating parsed output for MS1 and MS2 scans in my raw file, as well as creating an MGF output I can use in a database search.
@@ -225,6 +226,7 @@ Note that -f, -m and -d are mutually exclusive. You need only use one to indicat
 	* '-mtx' generates a text file containing some general metrics of the raw file
 	* '-spd' this will suppress the progress bar during processing. 
 	* '-c' this will correct for isotopic impurities in the reagents. Input should be a csv file containing an impurity matrix. For an example, try `python RawQuant examples -c`.
+
 Note that -f, -m and -d are mutually exclusive. You need only use one to indicate files to process.
 
 17. I am interested in generating quant output for MS3 scans in my raw file, as well as creating an MGF output I can use in a database search.
