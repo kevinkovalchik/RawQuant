@@ -724,7 +724,7 @@ if __name__ == "__main__":
                     data.SaveData(filename=parsefile, method='parse', parse_order=order)
 
             else:
-                print('MS order set to 0. No parsing will be done.\n')
+                print('MS order set to 0. Parse matrix will not be generated.\n')
 
             if args.generate_mgf:
 
