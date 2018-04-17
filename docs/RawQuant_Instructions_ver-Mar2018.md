@@ -179,7 +179,10 @@ Note that -f, -m and -d are mutually exclusive. You need only use one to indicat
 	* MS1 scans/sec counts the number of MS1 scans that occurs every second.
 	* MS2 scans/sec counts the number of MS2 events that are triggered every second.
 	* Mean duty cycle calculates the time (in seconds) between neighbouring MS1 events.
+	* MS1 median ion injection time is the median fill time for MS1.
+	* MS2 median ion injection time is the median fill time for MS2.
 	* Median precursor intensity is the median intensity of all precursors selected for MS2 analysis.
+	* Median MS2 intensity is the median value of the median intensities of all MS2 scans (a median of medians).
 	* Median base to base RT width is the median time in seconds over which the precursors selected for MS2 analysis eluted.
 
 	![alt text](screens/screen28.png)
