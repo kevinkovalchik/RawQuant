@@ -2,6 +2,7 @@ import argparse
 import sys
 import os
 from RawQuant import *
+from RawQuant import qc
 from joblib import Parallel, delayed
 import multiprocessing
 
@@ -126,6 +127,10 @@ if __name__ == "__main__":
                 'For further help use the command:\n/python -m RawQuant parse -h\n ',
             formatter_class = argparse.RawTextHelpFormatter)
 
+        QC = subparsers.add_parser('qc', help='Monitor a selected directory for new raw files. Any new files are '
+                                              'parsed to create a metrics file, which is used to generate QC plots '
+                                              'and tables.')
+
         ### Quant subparser section ###
 
         RAWFILES = quant.add_mutually_exclusive_group(required = True)
@@ -210,7 +215,7 @@ if __name__ == "__main__":
                 'Create an example impurity matrix .csv file. The example\n'+
                 'provided is for a TMT11 experiment.\n ')
 
-        ### Parser subparser section ###
+        ### Parse subparser section ###
 
         RAWFILES_P = parse.add_mutually_exclusive_group(required = True)
 
@@ -258,6 +263,10 @@ if __name__ == "__main__":
         'Specify a low mass cutoff during mgf file generation. Example:\n' +
         '>python -m RawQuant parse -f rawFile.raw -o 0 -mgf -mco 128\n' +
         'cuts off all MS2 ions < m/z 128 when making the mgf file.')
+
+        ### qc subparser section ###
+
+        QC.add_argument('-d', '--directory', help='specify directory to watch for qc purposes.')
 
         args = parser.parse_args()
 
@@ -853,3 +862,8 @@ if __name__ == "__main__":
                         'available number of cores. Maximum will be used.')
 
             Parallel(n_jobs=num_cores)(delayed(func)(msFile=msFile, reagents=reagents, mgf=args.generate_mgf, interference = args.quantify_interference, impurities = impurities, metrics = args.metrics) for msFile in files)
+
+    if args.subparser_name == 'qc':
+
+        qc_dir = qc.Watcher(args.directory)
+        qc_dir.watch()

@@ -72,6 +72,7 @@ class RawQuant:
         try:
             self.raw = MSFileReader.ThermoRawfile(RawFile)
         except:
+            self.raw = None
             raise Exception(RawFile + ' does not appear to be a valid .raw file. Please check path and file and try again.')
 
         self.info = pd.DataFrame(columns = ['ScanNum','MSOrder'],
@@ -1945,9 +1946,10 @@ class RawQuant:
 
     def __del__(self):
 
-        if self.open == True:
-            print('Closing ' + self.RawFile)
-            self.raw.Close()
+        if self.raw is not None:
+            if self.open:
+                print('Closing ' + self.RawFile)
+                self.raw.Close()
 
 
 # define a function to be used in parallelism
