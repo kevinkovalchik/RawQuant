@@ -67,10 +67,9 @@ class RawQuant:
         self.RawFile = RawFile
         self.open = True
 
-        print('Opening '+RawFile+' and initializing')
-
         try:
             self.raw = MSFileReader.ThermoRawfile(RawFile)
+            print('Opening ' + RawFile + ' and initializing')
         except:
             self.raw = None
             raise Exception(RawFile + ' does not appear to be a valid .raw file. Please check path and file and try again.')
