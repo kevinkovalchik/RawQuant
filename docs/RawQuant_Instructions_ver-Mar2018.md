@@ -306,7 +306,7 @@ Let's look at an example for combining the RawQuant data with search engines.
 	* for a quant file where the quant was SPS-MS3, this will be the 'MS2ScanNumber' column.
 
 5. For combining with other search engines, you simply need to locate the output file that contains the MS2 scan number of a given peptide spectral match, or peptide match and align this with the same values in the RawQuant tables. 
-	* In MaxQuant, this data is available in the 'peptides.txt' output file.
+	* In MaxQuant, this data is available in the 'evidence.txt' output file.
 	* In the Trans-Proteomic Pipeline, this data can be made available in the PeptideProphet output. 
 	* In Proteome Discoverer, this data is available in the PSM report. 
 
