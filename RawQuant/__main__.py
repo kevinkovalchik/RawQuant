@@ -123,13 +123,15 @@ if __name__ == "__main__":
         parse = subparsers.add_parser('parse', help=
                 'Parse MS data. Possible command line arguments\nare:\n'+
                 'REQUIRED: -f or -m, -o\n'
-                'OPTIONAL: -mgf, -spb\n'+
+                'OPTIONAL: -mgf, -spb\n' +
                 'For further help use the command:\n/python -m RawQuant parse -h\n ',
             formatter_class = argparse.RawTextHelpFormatter)
 
-        QC = subparsers.add_parser('qc', help='Monitor a selected directory for new raw files. Any new files are '
-                                              'parsed to create a metrics file, which is used to generate QC plots '
-                                              'and tables.')
+        QC = subparsers.add_parser('qc', help=
+                'Monitor a selected directory for new raw files. Any new files are\n'
+                'parsed to create a metrics file, which is used to generate QC plots\n'
+                'and tables. NOTE THIS FEATURE IS IN DEVELOPMENT!!! You should not use\n'
+                'it for QC purposes at this time!')
 
         ### Quant subparser section ###
 
