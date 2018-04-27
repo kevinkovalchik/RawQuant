@@ -136,7 +136,9 @@ if __name__ == "__main__":
 
 
 class WatcherGUI:
+
     def __init__(self, master):
+
         master.title('RawQuant QC')
         self.master = master
         self.content = ttk.Frame(self.master)
@@ -149,7 +151,7 @@ class WatcherGUI:
         self.directory_contents_label = ttk.Label(self.content, text='.raw files in the directory:')
         self.directory_contents = tk.Listbox(self.content, height=10)
         self.scroll = ttk.Scrollbar(self.content, orient=tk.VERTICAL, command=self.directory_contents.yview)
-        self.start = ttk.Button(self.content, text='Start', command = self.begin_watching)
+        self.start = ttk.Button(self.content, text='Start', command=self.begin_watching)
         self.stop = ttk.Button(self.content, text='Stop')
         self.status_label = ttk.Label(self.content, textvariable=self.status)
 
@@ -158,18 +160,49 @@ class WatcherGUI:
         self.directory_entry.grid(row=1, column=0, columnspan=2, sticky='nsew')
         self.directory_contents_label.grid(row=2, column=0, columnspan=2, sticky='nsew')
         self.directory_contents.grid(row=3, column=0, columnspan=2, sticky='nsew')
-        self.scroll.grid(row=3, column=2,sticky='nsew')
+        self.scroll.grid(row=3, column=2, sticky='nsew')
         self.start.grid(row=4, column=0, padx=3, pady=3, sticky='nsew')
         self.stop.grid(row=4, column=1, padx=3, pady=3, sticky='nsew')
         self.status_label.grid(row=5, column=0, sticky='nsew')
 
-        self.master.columnconfigure(0,weight=1)
-        self.master.rowconfigure(0,weight=1)
+        self.master.columnconfigure(0, weight=1)
+        self.master.rowconfigure(0 ,weight=1)
 
         self.content.columnconfigure(0, weight=1)
         self.content.columnconfigure(1, weight=1)
 
         self.content.rowconfigure(3, weight=1)
+
+        self.before = {}
+        self.after = {}
+        self.added = []
+        self.removed = []
+        self.checked_time = 0.0
+
+    def check_qc_directory(self):
+
+        if not os.path.isdir(self.directory_to_watch.get() + '/QC'):  # check if a QC directory already exists
+            os.mkdir(self.directory_to_watch.get() + '/QC')  # create a QC directory
+            open(self.directory_to_watch.get() + '/QC/QC.csv', 'a').close()
+            with open(self.directory_to_watch.get() + '/QC/QC.csv', 'a') as f:  # make an empty QC.csv file to store QC data
+                f.write('RawFile,'
+                        'DateAdded,'
+                        'TotalAnalysisTime(min),'
+                        'TotalScans,'
+                        'MS1Scans,'
+                        'MS2Scans,'
+                        'MS3Scans,'
+                        'MeanTopN,'
+                        'MS1Scans/sec,'
+                        'MS2Scans/sec,'
+                        'MeanDutyCycle(s),'
+                        'MedianMS1IonInjectionIime(ms),'
+                        'MedianMS2IonInjectionTime(ms),'
+                        'MedianMS3IonInjectionTime(ms),'
+                        'MedianPrecursorIntensity,'
+                        'MedianMS2Intensity,'
+                        'MedianBaseToBaseRTWidth(s)')
+            os.mkdir(self.directory_to_watch.get() + '/QC/metrics/')  # make a metrics folder in the QC folder, metrics files go here
 
     def begin_watching(self):
 
@@ -188,49 +221,16 @@ class WatcherGUI:
 
         self.status.set('Done!')
 
-class Watcher:
-
-    def __init__(self, path_to_watch):
-
-        self.path_to_watch = path_to_watch  # the directory in which to watch for new raw files
-
-        if not os.path.isdir(self.path_to_watch+'/QC'):  # check if a QC directory already exists
-            os.mkdir(self.path_to_watch+'/QC')  # create a QC directory
-            open(self.path_to_watch + '/QC/QC.csv', 'a').close()
-            with open(self.path_to_watch+'/QC/QC.csv', 'a') as f:  # make an empty QC.csv file to store QC data
-                f.write('RawFile,'
-                        'DateAdded,'
-                        'TotalAnalysisTime(min),'
-                        'TotalScans,'
-                        'MS1Scans,'
-                        'MS2Scans,'
-                        'MS3Scans,'
-                        'MeanTopN,'
-                        'MS1Scans/sec,'
-                        'MS2Scans/sec,'
-                        'MeanDutyCycle(s),'
-                        'MedianMS1IonInjectionIime(ms),'
-                        'MedianMS2IonInjectionTime(ms),'
-                        'MedianMS3IonInjectionTime(ms),'
-                        'MedianPrecursorIntensity,'
-                        'MedianMS2Intensity,'
-                        'MedianBaseToBaseRTWidth(s)')
-            os.mkdir(self.path_to_watch+'/QC/metrics/')  # make a metrics folder in the QC folder, metrics files go here
-
-        self.before = dict([(f, None) for f in os.listdir(self.path_to_watch) if f[-4:] == '.raw'])
-        self.after = {}
-        self.added = []
-        self.removed = []
-        self.checked_time = 0.0
-
     def watch(self):
+
+        self.before = dict([(f, None) for f in os.listdir(self.directory_to_watch.get()) if f[-4:] == '.raw'])
 
         while 1:
             time.sleep(1)
 
             # self.checked_time = time.time()
 
-            self.after = dict([(f, None) for f in os.listdir(self.path_to_watch) if f[-4:] == '.raw'])
+            self.after = dict([(f, None) for f in os.listdir(self.directory_to_watch.get()) if f[-4:] == '.raw'])
 
             self.added = [f for f in self.after if f not in self.before]
 
@@ -239,7 +239,7 @@ class Watcher:
             if len(self.added) == 1:  # if there is only one file, it might be being acquired, so we should check
 
                 filename = self.added[0]
-                path_to_file = self.path_to_watch + '/' + filename
+                path_to_file = self.directory_to_watch.get() + '/' + filename
 
                 # if the file is being copied MSFileReader won't be able to access it.
                 # wait_for_copy waits for that to finish, then returns the opened RawQuant object.
@@ -255,7 +255,7 @@ class Watcher:
 
                         time.sleep(5)
 
-                raw_file.GenMetrics(self.path_to_watch + '/QC/metrics/' + filename[:-4] + '_metrics.txt')
+                raw_file.GenMetrics(self.directory_to_watch.get() + '/QC/metrics/' + filename[:-4] + '_metrics.txt')
                 self.update_qc_csv(filename)
 
                 del raw_file
@@ -268,11 +268,11 @@ class Watcher:
                 for file in self.added:
 
                     filename = file
-                    path_to_file = self.path_to_watch + '/' + filename
+                    path_to_file = self.directory_to_watch.get() + '/' + filename
 
                     raw_file = self.wait_for_copy(path_to_file)
 
-                    raw_file.GenMetrics(self.path_to_watch + '/QC/metrics/' + filename[:-4] + '_metrics.txt')
+                    raw_file.GenMetrics(self.directory_to_watch.get() + '/QC/metrics/' + filename[:-4] + '_metrics.txt')
                     self.update_qc_csv(filename)
 
                     del raw_file
@@ -311,9 +311,9 @@ class Watcher:
 
     def update_qc_csv(self, filename):
 
-        metrics = open(self.path_to_watch + '/QC/metrics/' + filename[:-4] + '_metrics.txt', 'r').read()
+        metrics = open(self.directory_to_watch.get() + '/QC/metrics/' + filename[:-4] + '_metrics.txt', 'r').read()
 
-        with open(self.path_to_watch+'/QC/QC.csv', 'a') as f:
+        with open(self.directory_to_watch.get() + '/QC/QC.csv', 'a') as f:
 
             f.write('\n')
 
