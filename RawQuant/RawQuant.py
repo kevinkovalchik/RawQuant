@@ -1781,6 +1781,7 @@ class RawQuant:
             for scan in tqdm(MassLists.keys(), ncols=70, disable=self.disable_bar):
 
                 f.write(b'\nBEGIN IONS' +
+                        b'\nTITLE=Spectrum_' + bytes(scan, 'utf-8') +
                         b'\nRAWFILE=' + bytes(self.MetaData['DataFile'], 'utf-8') +
                         b'\nSCANS=' + bytes(scan, 'utf-8') +
                         b'\nPEPMASS=' + bytes(str(self.data['MS2PrecursorMass'][scan]), 'utf-8') +
