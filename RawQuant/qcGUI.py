@@ -1,119 +1,138 @@
 import os
 import time
 import re
+from tkinter import ttk
 import tkinter as tk
-from tkinter import messagebox
-import pandas as pd
 
 from RawQuant import RawQuant
 
-
-def check_qc_directory(directory):
-    if not os.path.isdir(directory + '/__QC__'):  # check if a QC directory already exists
-        os.mkdir(directory + '/__QC__')  # create a QC directory
-        open(directory + '__QC__', 'a').close()
-        open(directory + '/__QC__/QC.csv', 'a').close()
-        with open(directory + '/__QC__/QC.csv', 'a') as f:  # make an empty QC.csv file to store QC data
-            f.write('RawFile,'
-                    'DateAdded,'
-                    'TotalAnalysisTime(min),'
-                    'TotalScans,'
-                    'MS1Scans,'
-                    'MS2Scans,'
-                    'MS3Scans,'
-                    'MeanTopN,'
-                    'MS1Scans/sec,'
-                    'MS2Scans/sec,'
-                    'MeanDutyCycle(s),'
-                    'MedianMS1IonInjectionIime(ms),'
-                    'MedianMS2IonInjectionTime(ms),'
-                    'MedianMS3IonInjectionTime(ms),'
-                    'MedianPrecursorIntensity,'
-                    'MedianMS2Intensity,'
-                    'MedianBaseToBaseRTWidth(s)')
-        os.mkdir(directory + '/__QC__/metrics/')  # make a metrics folder in the QC folder, metrics files go here
+# Author: Miguel Martinez Lopez
+#
+# Uncomment the next line to see my email
+# print("Author's email: %s"%"61706c69636163696f6e616d656469646140676d61696c2e636f6d".decode("hex"))
 
 
-def do_qc(directory):
+"""
+I provide in this module the function "tk_call_async".
 
-    check_qc_directory(directory)
+"tk_call_async" executes the function "computation" asyncronously with the provided "args" and "kwargs" without 
+blocking the tkinter event loop.
+If "callback" is provided, it will be called with the result when the computation is finnished. 
+If an exception is raised during computation, instead errback will be called.
+"Polling" will be the frequency to poll to check for results.
+There is two methods to execute the task: using multiprocessing or using threads.
+"""
 
-    files = to_do_list(directory)
-
-    if len(files) == 0:
-
-        print('\nNo new files to QC!')
-
-    is_locked(directory + '/__QC__/QC.csv', 'QC.csv')
-
-    for file in files:
-
-        raw = RawQuant(file)
-
-        raw.GenMetrics(directory + '/__QC__/metrics/' + file[:-4] + '_metrics.txt')
-
-        update_qc_csv(directory, file)
+import traceback
+import threading
+from queue import Queue
 
 
-def to_do_list(directory):
+def tk_call_async(window, computation, args=(), kwargs={}, callback=None, errback=None, polling=500):
 
-    qc = pd.read_csv(directory + '/__QC__/QC.csv')
+    future_result = _request_result_using_threads(computation, args=args, kwargs=kwargs)
 
-    all_files = [f for f in os.listdir(directory) if f[-4:] == '.raw']
+    if callback is not None or errback is not None:
+        _after_completion(window, future_result, callback, errback, polling)
 
-    done_files = qc['RawFile'].tolist()
-
-    return [f for f in all_files if f not in done_files]
+    return future_result
 
 
-def is_locked(pathtofile, filename):
+def _request_result_using_threads(func, args, kwargs):
+    future_result = Queue()
 
-    failure = True
+    worker = threading.Thread(target=_compute_result, args=(func, args, kwargs, future_result))
+    worker.daemon = True
+    worker.start()
 
-    while failure:
+    return future_result
 
+
+def _after_completion(window, future_result, callback, errback, polling):
+    def check():
         try:
-            open(pathtofile, 'a').close()
-            failure = False
+            result = future_result.get(block=False)
+        except:
+            window.after(polling, check)
+        else:
+            if isinstance(result, Exception):
+                if errback is not None:
+                    errback(result)
+            else:
+                if callback is not None:
+                    callback(result)
 
-        except IOError:
-            root = tk.Tk()
-            root.withdraw()
-            messagebox.showerror('File is open!', 'The ' + filename + ' file appears to be open. Close it and press OK'
-                                                                      ' to continue.')
-            failure = True
+    window.after(0, check)
 
 
-def update_qc_csv(directory, rawfilename):
+def _compute_result(func, func_args, func_kwargs, future_result):
+    try:
+        _result = func(*func_args, **func_kwargs)
+    except Exception as errmsg:
+        _result = Exception(traceback.format_exc())
 
-    metrics = pd.read_table(directory + '/__QC__/metrics/' + rawfilename[:-4] + '_metrics.txt',
-                            header=None, index_col=0).transpose()
+    future_result.put(_result)
 
-    qc = pd.read_csv(directory + '/__QC__/QC.csv')
 
-    qc.loc[rawfilename, 'RawFile'] = metrics.loc[1, 'Raw file:']
-    qc.loc[rawfilename, 'DateAdded'] = time.ctime()
-    qc.loc[rawfilename, 'TotalAnalysisTime(min)'] = metrics.loc[1, 'Total analysis time (min):']
-    qc.loc[rawfilename, 'TotalScans'] = metrics.loc[1, 'Total scans:']
-    qc.loc[rawfilename, 'MS1Scans'] = metrics.loc[1, 'MS1 scans:']
-    qc.loc[rawfilename, 'MS2Scans'] = metrics.loc[1, 'MS2 scans:'] if 'MS2 scans:' in metrics.columns else None
-    qc.loc[rawfilename, 'MS3Scans'] = metrics.loc[1, 'MS3 scans:'] if 'MS3 scans:' in metrics.columns else None
-    qc.loc[rawfilename, 'MeanTopN'] = metrics.loc[1, 'Mean topN:']
-    qc.loc[rawfilename, 'MS1Scans/sec'] = metrics.loc[1, 'MS1 scans/sec:']
-    qc.loc[rawfilename, 'MS2Scans/sec'] = metrics.loc[1, 'MS2 scans/sec:'] if 'MS2 scans/sec:' in metrics.columns \
-        else None
-    qc.loc[rawfilename, 'MeanDutyCycle(s)'] = metrics.loc[1, 'Mean duty cycle:']
-    qc.loc[rawfilename, 'MedianMS1IonInjectionIime(ms)'] = metrics.loc[1, 'MS1 median ion injection time (ms):']
-    qc.loc[rawfilename, 'MedianMS2IonInjectionTime(ms)'] = metrics.loc[1, 'MS2 median ion injection time (ms):'] if \
-        'MS1 median ion injection time (ms):' in metrics.columns else None
-    qc.loc[rawfilename, 'MedianMS3IonInjectionTime(ms)'] = metrics.loc[1, 'MS2 median ion injection time (ms):'] if \
-        'MS1 median ion injection time (ms):' in metrics.columns else None
-    qc.loc[rawfilename, 'MedianPrecursorIntensity'] = metrics.loc[1, 'Median precursor intensity:']
-    qc.loc[rawfilename, 'MedianMS2Intensity'] = metrics.loc[1, 'Median MS2 intensity:'] if 'Median MS2 intensity:' in \
-        metrics.columns else None
-    qc.loc[rawfilename, 'MedianBaseToBaseRTWidth(s)'] = metrics.loc[1, 'Median base to base RT width (s):']
+# Multiprocessing uses pickle on windows.
+# A pickable function should be in top module or imported from another module.
+# This is requirement is not mandatory on Linux because python uses behind the scenes the fork operating system call.
+# But on Windows it uses named pipes and pickle.
 
-    qc.to_csv(directory + '/__QC__/QC.csv', index=False)
+
+def _example_calculation(n):
+    if n == 0:
+        return 0
+    elif n == 1:
+        return 1
+    else:
+        return _example_calculation(n - 1) + _example_calculation(n - 2)
+
+
+if __name__ == "__main__":
+    try:
+        from Tkinter import Tk, Frame, Entry, Label, Button, IntVar, StringVar, LEFT
+        import tkMessageBox as messagebox
+    except ImportError:
+        from tkinter import Tk, Frame, Entry, Label, Button, IntVar, StringVar, LEFT
+        from tkinter import messagebox
+
+    disabled = False
+
+
+    def calculate_fibonacci():
+        global disabled
+        if disabled:
+            messagebox.showinfo("warning", "It's still calculating...")
+            return
+
+        def errback(result):
+            global disabled
+            disabled = False
+            result_var.set(result)
+
+        def callback(result):
+            global disabled
+            disabled = False
+            result_var.set(result)
+
+        disabled = True
+        tk_call_async(root, _example_calculation, args=(n.get(),), callback=callback, errback=errback)
+
+
+    root = Tk()
+
+    n = IntVar(value=35)
+    row = Frame(root)
+    row.pack()
+    Entry(row, textvariable=n).pack(side=LEFT)
+    Button(row, text="Calculate fibonnaci", command=calculate_fibonacci).pack(side=LEFT)
+    Button(row, text="It's responsive", command=lambda: messagebox.showinfo("info", "it's responsive")).pack(side=LEFT)
+
+    result_var = StringVar()
+    Label(root, textvariable=result_var).pack()
+
+    root.mainloop()
 
 
 class WatcherGUI:
@@ -346,3 +365,4 @@ class WatcherGUI:
             f.write(med_int + ',')
 
             f.write(re.search(r'Median base to base RT width \(s\): (\S+.)', metrics).group(1) + ',')
+

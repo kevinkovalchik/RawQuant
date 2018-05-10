@@ -2,7 +2,7 @@ import argparse
 import sys
 import os
 from RawQuant import *
-from RawQuant import qc
+from RawQuant import qc as quality_control
 from joblib import Parallel, delayed
 import multiprocessing
 
@@ -867,5 +867,4 @@ if __name__ == "__main__":
 
     if args.subparser_name == 'qc':
 
-        qc_dir = qc.Watcher(args.directory)
-        qc_dir.watch()
+        quality_control.do_qc(args.directory)
