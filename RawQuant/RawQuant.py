@@ -1872,45 +1872,45 @@ class RawQuant:
 
             mins = time/60
 
-            f.write('Raw file: ' + self.MetaData['DataFile'])
-            f.write('\nInstrument: ' + self.MetaData['InstName'])
-            f.write('\nMS order: ' + str(self.MetaData['AnalysisOrder']))
-            f.write('\nTotal analysis time (min): ' + str(mins))
+            f.write('Raw file:\t' + self.MetaData['DataFile'])
+            f.write('\nInstrument:\t' + self.MetaData['InstName'])
+            f.write('\nMS order:\t' + str(self.MetaData['AnalysisOrder']))
+            f.write('\nTotal analysis time (min):\t' + str(mins))
 
-            if order in ['1','2','3']: f.write('\nTotal scans: ' + str(len(self.info)) + '\n' +
-                'MS1 scans: ' + str(sum(self.info['MSOrder'] == 1)))
+            if order in ['1','2','3']: f.write('\nTotal scans:\t' + str(len(self.info)) + '\n' +
+                'MS1 scans:\t' + str(sum(self.info['MSOrder'] == 1)))
 
             if order in ['2','3']:
-                f.write('\nMS2 scans: ' + str(sum(self.info['MSOrder'] == 2)))
+                f.write('\nMS2 scans:\t' + str(sum(self.info['MSOrder'] == 2)))
 
             if order == '3':
-                f.write('\nMS3 scans: ' + str(sum(self.info['MSOrder'] == 3)))
+                f.write('\nMS3 scans:\t' + str(sum(self.info['MSOrder'] == 3)))
 
             if order in ['2','3']:
-                f.write('\nMean topN: '+ str(sum(self.info['MSOrder'] == 2)/\
+                f.write('\nMean topN:\t'+ str(sum(self.info['MSOrder'] == 2)/\
                                                             sum(self.info['MSOrder'] == 1)))
 
             if order in ['1','2','3']:
-                f.write('\nMS1 scans/sec: ' + str(sum(self.info['MSOrder'] == 1)/time))
+                f.write('\nMS1 scans/sec:\t' + str(sum(self.info['MSOrder'] == 1)/time))
 
             if order in ['2','3']:
-                f.write('\nMS2 scans/sec: ' + str(sum(self.info['MSOrder'] == 2)/time))
+                f.write('\nMS2 scans/sec:\t' + str(sum(self.info['MSOrder'] == 2)/time))
 
-            if order in ['1','2','3']: f.write('\nMean duty cycle: ' + str(time/sum(self.info['MSOrder'] == 1)))
+            if order in ['1','2','3']: f.write('\nMean duty cycle:\t' + str(time/sum(self.info['MSOrder'] == 1)))
 
             for o in range(1, int(order)+1):
 
                 MedianFillTime = np.median([self.data['MS'+str(o)+'TrailerExtra'][str(x)]['Ion Injection Time (ms)'] for
                                             x in self.info.loc[self.info['MSOrder'] == o, 'ScanNum']])
 
-                f.write('\nMS'+str(o)+' median ion injection time (ms): ' + str(MedianFillTime))
+                f.write('\nMS'+str(o)+' median ion injection time (ms):\t' + str(MedianFillTime))
 
             if order in ['2','3']:
 
                 MedianIntensity = np.median([self.data['PrecursorIntensities'][str(x)]['Max']\
                     for x in self.info.loc[self.info['MSOrder']==2,'ScanNum']])
 
-                f.write('\nMedian precursor intensity: ' + str(MedianIntensity))
+                f.write('\nMedian precursor intensity:\t' + str(MedianIntensity))
 
                 if self.MetaData['AnalyzerTypes']['2'] == 'ITMS':
                     # there is a possibility a MS2 scan is empty, so we need an if else statement in here
@@ -1926,12 +1926,12 @@ class RawQuant:
                 else:
                     MedianMS2Intensity = 'NA'
 
-                f.write('\nMedian MS2 intensity: ' + str(MedianMS2Intensity))
+                f.write('\nMedian MS2 intensity:\t' + str(MedianMS2Intensity))
 
                 MedianWidth = np.median([self.data['PrecursorElution'][str(x)][1]-self.data['PrecursorElution'][str(x)][0]\
                     for x in self.info.loc[self.info['MSOrder']==2,'ScanNum']])
 
-                f.write('\nMedian base to base RT width (s): ' + str(MedianWidth*60))
+                f.write('\nMedian base to base RT width (s):\t' + str(MedianWidth*60))
 
 
     def Close(self):
