@@ -21,6 +21,6 @@ setup(
         'Topic :: Scientific/Engineering :: Bio-Informatics',
         'Topic :: Scientific/Engineering :: Chemistry',
     ],
-    install_requires=['numpy', 'comtypes>=1.1.3', 'pandas', 'tqdm>=4', 'joblib'],
+    install_requires=['numpy', 'pandas', 'tqdm>=4', 'joblib', 'pythonnet'],
     python_requires='>=3.6'
 )
