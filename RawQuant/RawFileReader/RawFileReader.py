@@ -3,6 +3,7 @@ clr.AddReference('RawQuant/RawFileReader/ThermoFisher.CommonCore.Data')
 from ThermoFisher.CommonCore.Data import Business
 from RawQuant.RawFileReader.converter import asNumpyArray
 from tqdm import tqdm
+from collections import OrderedDict as OD
 
 single_thread_accessor = Business.RawFileReaderFactory.ReadFile('File here')
 
@@ -20,12 +21,20 @@ accessor.RunHeaderEx.SpectraCount  # returns number of spectra in the file
 
 raw = Business.RawFileReaderFactory.ReadFile(r'D:\raw file TMT quant\test.raw')
 
+# might be of interest: IScanEvent.SpsMultiNotch  --- not sure what it does, need to look at ms3 data
 
-def extract_centroid_streams(raw):
+
+def open_raw_file(raw):
+
+    return Business.RawFileReaderFactory.ReadFile(raw)
+
+
+def extract_centroid_streams(raw, scans, disable_bar):
 
     """
 
     :param raw:
+    :param scans:
     :return:
     """
     num = raw.RunHeaderEx.SpectraCount
@@ -45,14 +54,38 @@ def extract_centroid_streams(raw):
 
         return out
 
-    return dict((str(x),get_out(raw,x)) for x in tqdm(range(1,num+1)))
+    return OD((str(x),get_out(raw,x)) for x in tqdm(scans, ncols=70, disable=disable_bar))
 
-
-def extract_trailer_extra(raw):
+def extract_centroid_spectra(raw, scans, disable_bar):
 
     """
 
     :param raw:
+    :param scans:
+    :return:
+    """
+    num = raw.RunHeaderEx.SpectraCount
+
+    def get_out(raw, scan):
+
+        data = raw.GetCentroidStream(scan, None)
+
+        out = np.empty((data.Length, 2))
+
+        out[:, 0] = asNumpyArray(data.Masses)
+        out[:, 1] = asNumpyArray(data.Intensities)
+
+        return out
+
+    return OD((str(x),get_out(raw,x)) for x in tqdm(scans, ncols=70, disable=disable_bar))
+
+
+def extract_trailer_extras(raw, scans, disable_bar):
+
+    """
+
+    :param raw:
+    :param scans:
     :return:
     """
 
@@ -60,22 +93,36 @@ def extract_trailer_extra(raw):
 
     labels = [trailer_extra_information[x].Label for x in range(trailer_extra_information.Length)]
 
-    desired = ['Ion Injection Time (ms):', 'Master Scan Number:', 'Monoisotopic M/Z:', 'Charge State:', 'HCD Energy:',
-               'SPS Masses:', 'SPS Masses Continued:']
+    if 'SPS Masses:' in labels:
 
-    index = [x for x in range(len(labels)) if labels[x] in desired]
+        desired = ['Ion Injection Time (ms):', 'Master Scan Number:', 'Monoisotopic M/Z:', 'Charge State:',
+                   'HCD Energy:', 'SPS Masses:', 'SPS Masses Continued:']
+
+        keys = [x[:-1] for x in desired]
+
+        index = [x for x in range(len(labels)) if labels[x] in desired]
+
+    else:
+
+        desired = ['Ion Injection Time (ms):', 'Master Scan Number:', 'Monoisotopic M/Z:', 'Charge State:',
+                   'HCD Energy:'] + ['SPS Mass {}:'.format(x) for x in range(1, 21)]
+
+        keys = [x[:-1] for x in desired]
+
+        index = [x for x in range(len(labels)) if labels[x] in desired]
 
     def get_out(raw, scan):
 
-        return dict((desired[x], raw.GetTrailerExtraValue(scan, index[x])) for x in range(7))
+        return OD((keys[x], raw.GetTrailerExtraValue(scan, index[x])) for x in range(len(index)))
 
-    return dict((str(x), get_out(raw, x)) for x in tqdm(range(1, raw.RunHeaderEx.SpectraCount+1)))
+    return OD((str(x), get_out(raw, x)) for x in tqdm(scans, ncols=70, disable=disable_bar))
 
-def extract_segmented_scans(raw):
+def extract_segmented_scans(raw, scans, disable_bar):
 
     """
 
     :param raw:
+    :param scans:
     :return:
     """
 
@@ -96,4 +143,28 @@ def extract_segmented_scans(raw):
 
         return out
 
-    return dict((str(x), get_out(raw, x)) for x in tqdm(range(1, raw.RunHeaderEx.SpectraCount+1)))
+    return OD((str(x), get_out(raw, x)) for x in tqdm(scans, ncols=70, disable=disable_bar))
+
+def extract_retention_times(raw, scans, disable_bar):
+
+    """
+
+    :param raw:
+    :param scans:
+    :return:
+    """
+
+    return OD((str(x), raw.RetentionTimeFromScanNumber(x)) for x in tqdm(scans, ncols=70, disable=disable_bar))
+
+def extract_precursor_masses(raw, scans, disable_bar):
+
+    """
+
+    :param raw:
+    :param scans:
+    :param disable_bar:
+    :return:
+    """
+
+    return OD((str(x), raw.GetScanEventForScanNumber(x).Reactions[0].PrecursorMass) for x in tqdm(scans, ncols=70,
+                                                                                                  disable=disable_bar))
