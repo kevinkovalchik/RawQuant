@@ -308,7 +308,7 @@ class RawQuant:
         # precursror scans must be inferred from the MS orders of the scan list
         else:
 
-            print(self.RawFile + ': Calculating precursor scan numbers')
+            print(self.RawFile + ': Correlating scan events')
 
             if self.MetaData['AnalysisOrder'] == 2:
 
@@ -1850,7 +1850,7 @@ class RawQuant:
         with open(filename, 'w') as f:
 
             order = str(self.MetaData['AnalysisOrder'])
-            time = self.raw.GetEndTime() * 60 - self.raw.GetStartTime() * 60
+            time = self.raw.RunHeaderEx.EndTime * 60 - self.raw.RunHeaderEx.StartTime * 60
 
             mins = time / 60
 
@@ -1859,8 +1859,9 @@ class RawQuant:
             f.write('\nMS order: ' + str(self.MetaData['AnalysisOrder']))
             f.write('\nTotal analysis time (min): ' + str(mins))
 
-            if order in ['1', '2', '3']: f.write('\nTotal scans: ' + str(len(self.info)) + '\n' +
-                                                 'MS1 scans: ' + str(sum(self.info['MSOrder'] == 1)))
+            if order in ['1', '2', '3']:
+                f.write('\nTotal scans: ' + str(len(self.info)) + '\n' + 'MS1 scans: ' +
+                        str(sum(self.info['MSOrder'] == 1)))
 
             if order in ['2', '3']:
                 f.write('\nMS2 scans: ' + str(sum(self.info['MSOrder'] == 2)))
@@ -1869,7 +1870,7 @@ class RawQuant:
                 f.write('\nMS3 scans: ' + str(sum(self.info['MSOrder'] == 3)))
 
             if order in ['2', '3']:
-                f.write('\nMean topN: ' + str(sum(self.info['MSOrder'] == 2) / \
+                f.write('\nMean topN: ' + str(sum(self.info['MSOrder'] == 2) /
                                               sum(self.info['MSOrder'] == 1)))
 
             if order in ['1', '2', '3']:
