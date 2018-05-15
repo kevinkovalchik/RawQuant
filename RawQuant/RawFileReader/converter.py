@@ -1,4 +1,5 @@
 # from https://github.com/pythonnet/pythonnet/issues/514
+# seems this might be implemented as a helper function in a future release of Python for .NET
 
 import numpy as np
 import ctypes

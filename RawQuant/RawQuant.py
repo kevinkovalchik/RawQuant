@@ -63,14 +63,13 @@ class RawQuant:
         self.open = True
 
         self.info = pd.DataFrame(columns=['ScanNum', 'MSOrder'],
-                                 index=range(self.raw.FirstSpectrumNumber,
-                                             self.raw.LastSpectrumNumber + 1))
+                                 index=range(self.raw.RunHeaderEx.FirstSpectrum,
+                                             self.raw.RunHeaderEx.LastSpectrum + 1))
 
-        self.info['ScanNum'] = range(self.raw.FirstSpectrumNumber,
-                                     self.raw.LastSpectrumNumber + 1)
+        self.info['ScanNum'] = range(self.raw.RunHeaderEx.FirstSpectrum,
+                                     self.raw.RunHeaderEx.LastSpectrum + 1)
 
-        self.info['MSOrder'] = self.info['ScanNum'].apply(lambda x: \
-                                                              self.raw.GetMSOrderForScanNum(x))
+        self.info['MSOrder'] = self.info['ScanNum'].apply(lambda x: self.raw.GetScanEventForScanNumber(x).MsOrder)
 
         # create a dictionary to contain metadata
         self.MetaData = {}
@@ -82,12 +81,10 @@ class RawQuant:
             self.MetaData['AnalysisOrder'] = int(order)
 
         # get the instrument name and see if it is an Exactive
-        self.MetaData['InstName'] = self.raw.GetInstName()
-        self.MetaData['IsExactive'] = ('Exactive' in self.MetaData['InstName']) \
-                                      | ('exactive' in self.MetaData['InstName'])
+        self.MetaData['InstName'] = self.raw.GetInstrumentData().Name
 
-        # get the data filename
-        self.MetaData['DataFile'] = self.raw.GetFileName()
+        # set the data filename
+        self.MetaData['DataFile'] = RawFile
 
         # print('Done!')
 
@@ -99,19 +96,19 @@ class RawQuant:
         # get the mass analyzer types by looking at the first scan of  each MS order
         self.MetaData['AnalyzerTypes'] = {}
         for order in range(1, self.MetaData['AnalysisOrder'] + 1):
-            self.MetaData['AnalyzerTypes'][str(order)] = self.raw.GetMassAnalyzerTypeForScanNum(
-                self.info.loc[self.info['MSOrder'] == order, 'ScanNum'].iloc[0])
+            self.MetaData['AnalyzerTypes'][str(order)] =\
+                RawFileReader.get_mass_analyzer_type(self.raw, self.info.loc[self.info['MSOrder'] == order,
+                                                                             'ScanNum'].iloc[0])
 
         # find out of the data is centroid by looking at the first scan of each MS order
         self.MetaData['Centroid'] = {}
         for order in range(1, self.MetaData['AnalysisOrder'] + 1):
-            self.MetaData['Centroid'][str(order)] = self.raw.IsCentroidScanForScanNum(
-                self.info.loc[self.info['MSOrder'] == order, 'ScanNum'].iloc[0])
+            self.MetaData['Centroid'][str(order)] = self.raw.GetScanStatsForScanNumber(
+                self.info.loc[self.info['MSOrder'] == order, 'ScanNum'].iloc[0]).IsCentroidScan
 
         # Get the isolation width for MS2
-        self.MetaData['IsolationWidth'] = self.raw.GetIsolationWidthForScanNum( \
-            self.info.loc[self.info['MSOrder'] == 2,
-                          'ScanNum'].iloc[0], 0)
+        self.MetaData['IsolationWidth'] = self.raw.GetFilterForScanNumber(self.info.loc[self.info['MSOrder'] == 2,
+                                                                          'ScanNum'].iloc[0]).GetIsolationWidth(0)
 
         # create an empty dictionary for data storage
         self.data = {}
@@ -141,8 +138,8 @@ class RawQuant:
 
         # Check if the trailer extra data contains master scan numbers
         try:
-            self.raw.GetTrailerExtraForScanNum(self.info.loc[self.info['MSOrder'] == 2, 'ScanNum'].iloc[0])[
-                'Master Scan Number']
+            RawFileReader.extract_trailer_extras(self.raw, self.info.loc[self.info['MSOrder'] == 2,
+                                                 'ScanNum'].iloc[0], disable_bar=True)['Master Scan Number']
             self.flags['MasterScanNumber'] = True
         except:
             None
@@ -1647,11 +1644,12 @@ class RawQuant:
                     # this will work if the SPSs are saved individually in the trailer extra data
                     for SPS in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16',
                                 '17', '18', '19', '20']:
+
                         df['SPSMass' + SPS] = [self.data['MS3TrailerExtra'][str(x)]['SPS Mass ' + SPS]
                                                for x in df['MS3ScanNumber']]
 
                     # cast the masses to a numpy array to speed up the next step
-                    SPSMasses = df.loc[:, 'SPSMass1':'SPSMass20'].values
+                    SPSMasses = np.asarray(df.loc[:, 'SPSMass1':'SPSMass20'].values, dtype=float)
 
                     for SPS in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16',
                                 '17', '18', '19', '20']:
