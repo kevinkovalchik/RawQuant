@@ -1730,7 +1730,7 @@ class RawQuant:
 
         if self.MetaData['AnalyzerTypes']['2'] == 'FTMS':
 
-            if self.flags['MS2LabelData'] == False:
+            if not self.flags['MS2LabelData']:
 
                 self.ExtractMSData(2,'LabelData')
 
@@ -1738,27 +1738,29 @@ class RawQuant:
 
         elif self.MetaData['AnalyzerTypes']['2'] == 'ITMS':
 
-            if self.MetaData['Centroid'] == False:
+            if not self.MetaData['Centroid']:
 
                 print('Ion trap data is profile. Skipping .mgf file creation.')
 
                 return None
 
-            if self.flags['MS2MassLists'] == False:
+            if not self.flags['MS2MassLists']:
 
                 self.ExtractMSData(2,'MassLists')
 
             LookFor = 'MassLists'
 
-        if self.flags['MS2PrecursorMass'] == False:
+        if not self.flags['MS2PrecursorMass']:
 
-            #print('MS2PrecursorMass required. Extracting now.')
             self.ExtractPrecursorMass(2)
 
-        if self.flags['PrecursorCharge'] == False:
+        if not self.flags['PrecursorCharge']:
 
-            #print('PrecursorCharge required. Extracting now.')
             self.ExtractPrecursorCharge()
+
+        if not self.flags['MS2RetentionTime']:
+
+            self.ExtractRetentionTimes(2)
 
         if cutoff is not None:
 
@@ -1784,6 +1786,7 @@ class RawQuant:
                         b'\nTITLE=Spectrum_' + bytes(scan, 'utf-8') +
                         b'\nRAWFILE=' + bytes(self.MetaData['DataFile'], 'utf-8') +
                         b'\nSCANS=' + bytes(scan, 'utf-8') +
+                        b'\nRTINSECONDS=' + bytes(str(self.data['MS2RetentionTime'][scan]), 'utf-8') +
                         b'\nPEPMASS=' + bytes(str(self.data['MS2PrecursorMass'][scan]), 'utf-8') +
                         b'\nCHARGE=' + bytes(str(self.data['PrecursorCharge'][scan]), 'utf-8')+b'+' +
                         b'\n')
@@ -1870,7 +1873,7 @@ class RawQuant:
             order = str(self.MetaData['AnalysisOrder'])
             time = self.raw.GetEndTime()*60 - self.raw.GetStartTime()*60
 
-            mins = time/60
+            mins = np.round(time/60, 4)
 
             f.write('Raw file:\t' + self.MetaData['DataFile'])
             f.write('\nInstrument:\t' + self.MetaData['InstName'])
@@ -1887,30 +1890,31 @@ class RawQuant:
                 f.write('\nMS3 scans:\t' + str(sum(self.info['MSOrder'] == 3)))
 
             if order in ['2','3']:
-                f.write('\nMean topN:\t'+ str(sum(self.info['MSOrder'] == 2)/\
-                                                            sum(self.info['MSOrder'] == 1)))
+                f.write('\nMean topN:\t'+ str(np.round(sum(self.info['MSOrder'] == 2)/\
+                                                            sum(self.info['MSOrder'] == 1), 4)))
 
             if order in ['1','2','3']:
-                f.write('\nMS1 scans/sec:\t' + str(sum(self.info['MSOrder'] == 1)/time))
+                f.write('\nMS1 scans/sec:\t' + str(np.round(sum(self.info['MSOrder'] == 1)/time, 4)))
 
             if order in ['2','3']:
-                f.write('\nMS2 scans/sec:\t' + str(sum(self.info['MSOrder'] == 2)/time))
+                f.write('\nMS2 scans/sec:\t' + str(np.round(sum(self.info['MSOrder'] == 2)/time, 4)))
 
-            if order in ['1','2','3']: f.write('\nMean duty cycle:\t' + str(time/sum(self.info['MSOrder'] == 1)))
+            if order in ['1','2','3']: f.write('\nMean duty cycle:\t' +
+                                               str(np.round(time/sum(self.info['MSOrder'] == 1), 4)))
 
             for o in range(1, int(order)+1):
 
                 MedianFillTime = np.median([self.data['MS'+str(o)+'TrailerExtra'][str(x)]['Ion Injection Time (ms)'] for
                                             x in self.info.loc[self.info['MSOrder'] == o, 'ScanNum']])
 
-                f.write('\nMS'+str(o)+' median ion injection time (ms):\t' + str(MedianFillTime))
+                f.write('\nMS'+str(o)+' median ion injection time (ms):\t' + str(np.round(MedianFillTime, 4)))
 
             if order in ['2','3']:
 
                 MedianIntensity = np.median([self.data['PrecursorIntensities'][str(x)]['Max']\
                     for x in self.info.loc[self.info['MSOrder']==2,'ScanNum']])
 
-                f.write('\nMedian precursor intensity:\t' + str(MedianIntensity))
+                f.write('\nMedian precursor intensity:\t' + str(np.round(MedianIntensity, 4)))
 
                 if self.MetaData['AnalyzerTypes']['2'] == 'ITMS':
                     # there is a possibility a MS2 scan is empty, so we need an if else statement in here
@@ -1926,12 +1930,12 @@ class RawQuant:
                 else:
                     MedianMS2Intensity = 'NA'
 
-                f.write('\nMedian MS2 intensity:\t' + str(MedianMS2Intensity))
+                f.write('\nMedian MS2 intensity:\t' + str(np.round(MedianMS2Intensity, 4)))
 
                 MedianWidth = np.median([self.data['PrecursorElution'][str(x)][1]-self.data['PrecursorElution'][str(x)][0]\
                     for x in self.info.loc[self.info['MSOrder']==2,'ScanNum']])
 
-                f.write('\nMedian base to base RT width (s):\t' + str(MedianWidth*60))
+                f.write('\nMedian precursor base to base RT width (s):\t' + str(np.round(MedianWidth*60, 4)))
 
 
     def Close(self):
