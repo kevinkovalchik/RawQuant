@@ -101,19 +101,19 @@ def extract_trailer_extras(raw, scans, disable_bar):
 
         desired = ['Ion Injection Time (ms):', 'Master Scan Number:', 'Monoisotopic M/Z:', 'Charge State:',
                    'HCD Energy:', 'SPS Masses:', 'SPS Masses Continued:']
-
-        keys = [x[:-1] for x in desired]
-
+        
         index = [x for x in range(len(labels)) if labels[x] in desired]
+        
+        keys = [labels[x][:-1] for x in index]
 
     else:
 
         desired = ['Ion Injection Time (ms):', 'Master Scan Number:', 'Monoisotopic M/Z:', 'Charge State:',
                    'HCD Energy:'] + ['SPS Mass {}:'.format(x) for x in range(1, 21)]
 
-        keys = [x[:-1] for x in desired]
-
         index = [x for x in range(len(labels)) if labels[x] in desired]
+        
+        keys = [labels[x][:-1] for x in index]
 
     def get_out(raw, scan):
 
