@@ -48,7 +48,7 @@ def do_qc(directory):
 
     for file in files:
 
-        raw = RawQuant(file)
+        raw = RawQuant(directory + '/' + file)
 
         raw.GenMetrics(directory + '/__QC__/metrics/' + file[:-4] + '_metrics.txt')
 
