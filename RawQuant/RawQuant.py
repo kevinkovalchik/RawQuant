@@ -133,7 +133,7 @@ class RawQuant:
             'MasterScanNumber': False, 'PrecursorCharge': False,
             'QuantMatrix': False, 'MS1Parse': False, 'MS2Parse': False, 'MS3Parse': False,
             'ImpurityMatrix': False, 'CorrectionMatrix': False, 'ImpuritiesCorrected': False,
-            'PrecursorPeaks': False
+            'PrecursorPeaks': False, 'BoxCar': False, 'MassRangeFillTimes': False
         }
 
         # Check if the trailer extra data contains master scan numbers
@@ -208,10 +208,12 @@ class RawQuant:
 
         # Extract meta data using the GetTrailerExtraForScanNum function
         print(self.RawFile + ': Extracting MS' + str(order) + 'TrailerExtra')
-        self.data['MS' + str(order) + 'TrailerExtra'] = RawFileReader.extract_trailer_extras(raw=self.raw, scans=scans,
+        self.data['MS' + str(order) + 'TrailerExtra'], boxcar = RawFileReader.extract_trailer_extras(raw=self.raw, scans=scans,
                                                                                              disable_bar=self.disable_bar)
 
         self.flags['MS' + str(order) + 'TrailerExtra'] = True
+        if boxcar:
+            self.flags['BoxCar'] = True
 
     def ExtractPrecursorMass(self, order):
 
@@ -359,10 +361,35 @@ class RawQuant:
 
         ### Begin extraction part of function ###
 
+        print(self.RawFile + ':Extracting precursor charges')
+
         self.data['PrecursorCharge'] = OD((str(x), int(self.data['MS2TrailerExtra'][str(x)]['Charge State']))
                                           for x in self.info.loc[self.info['MSOrder'] == 2, 'ScanNum'])
 
         self.flags['PrecursorCharge'] = True
+
+    def ExtractMassRangeFillTimes(self):
+
+        if not self.flags['MS1TrailerExtra']:
+
+            self.ExtractTrailerExtra(1)
+
+        def get_out(scan):
+            ranges = self.raw.GetScanEventForScanNumber(scan).MassRanges
+
+            keys = ['MassRange[' + str(x.LowMass) + '-' + str(x.HighMass) + ']FillTime' for x in ranges]
+
+            fill_times = self.data['MS1TrailerExtra'][str(scan)]['Multi Inject Info'][3:].split(',')
+
+            return OD((keys[x], fill_times[x]) for x in range(len(keys)))
+
+        print(self.RawFile + ': Extracting boxcar mass ranges and fill times')
+
+        self.data['MassRangeFillTimes'] = OD((str(x), get_out(x)) for x in tqdm(self.info.loc[self.info['MSOrder'] == 1,
+                                                                                              'ScanNum'], ncols=70,
+                                                                                disable=self.disable_bar))
+
+        self.flags['MassRangeFillTimes'] = True
 
     def QuantifyInterference(self, calculation_type='auto'):
 
@@ -1701,6 +1728,19 @@ class RawQuant:
                             del df['SPSMass' + SPS], df['SPSIntensity' + SPS]
                     else:
                         None
+
+        if self.flags['BoxCar']:
+
+            if not self.flags['MassRangeFillTimes']:
+
+                self.ExtractMassRangeFillTimes()
+
+            for x in self.data['MassRangeFillTimes'].keys():
+
+                for y in self.data['MassRangeFillTimes'][x].keys():
+
+                    df.loc[df['MS1ScanNumber'] == int(x), y] = self.data['MassRangeFillTimes'][x][y]
+
         if method == 'quant':
             self.QuantMatrix = df
             self.flags['QuantMatrix'] = True

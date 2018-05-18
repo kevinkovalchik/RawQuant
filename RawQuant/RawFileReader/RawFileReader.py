@@ -97,29 +97,31 @@ def extract_trailer_extras(raw, scans, disable_bar):
 
     labels = [trailer_extra_information[x].Label for x in range(trailer_extra_information.Length)]
 
+    boxcar = False
+
     if 'SPS Masses:' in labels:
 
         desired = ['Ion Injection Time (ms):', 'Master Scan Number:', 'Monoisotopic M/Z:', 'Charge State:',
                    'HCD Energy:', 'SPS Masses:', 'SPS Masses Continued:']
-        
-        index = [x for x in range(len(labels)) if labels[x] in desired]
-        
-        keys = [labels[x][:-1] for x in index]
 
     else:
 
         desired = ['Ion Injection Time (ms):', 'Master Scan Number:', 'Monoisotopic M/Z:', 'Charge State:',
                    'HCD Energy:'] + ['SPS Mass {}:'.format(x) for x in range(1, 21)]
 
-        index = [x for x in range(len(labels)) if labels[x] in desired]
-        
-        keys = [labels[x][:-1] for x in index]
+    if 'Multi Inject Info:' in labels:
+        desired += ['Multi Inject Info:']
+        boxcar = True
+
+    index = [x for x in range(len(labels)) if labels[x] in desired]
+
+    keys = [labels[x][:-1] for x in index]
 
     def get_out(raw, scan):
 
         return OD((keys[x], raw.GetTrailerExtraValue(scan, index[x])) for x in range(len(index)))
 
-    return OD((str(x), get_out(raw, x)) for x in tqdm(scans, ncols=70, disable=disable_bar))
+    return OD((str(x), get_out(raw, x)) for x in tqdm(scans, ncols=70, disable=disable_bar)), boxcar
 
 
 def extract_segmented_scans(raw, scans, disable_bar):
