@@ -1630,26 +1630,17 @@ class RawQuant:
 
             df['MS1LastQuantScan'] = [self.data['PrecursorEdgeScans'][str(x)][1] for x in df['MS2ScanNumber']]
 
-        if order == 1:
+        if order >= 1:
+            if not self.flags['BoxCar']:
+                df['MS1IonInjectionTime'] = [self.data['MS1TrailerExtra'][str(x)]['Ion Injection Time (ms)'] for x in
+                                             df['MS1ScanNumber']]
 
-            df['MS1IonInjectionTime'] = [self.data['MS1TrailerExtra'][str(x)]['Ion Injection Time (ms)'] for x in
-                                         df['MS1ScanNumber']]
-
-        elif order == 2:
-
-            df['MS1IonInjectionTime'] = [self.data['MS1TrailerExtra'][str(x)]['Ion Injection Time (ms)'] for x in
-                                         df['MS1ScanNumber']]
+        if order >= 2:
 
             df['MS2IonInjectionTime'] = [self.data['MS2TrailerExtra'][str(x)]['Ion Injection Time (ms)'] for x in
                                          df['MS2ScanNumber']]
 
-        elif order == 3:
-
-            df['MS1IonInjectionTime'] = [self.data['MS1TrailerExtra'][str(x)]['Ion Injection Time (ms)'] for x in
-                                         df['MS1ScanNumber']]
-
-            df['MS2IonInjectionTime'] = [self.data['MS2TrailerExtra'][str(x)]['Ion Injection Time (ms)'] for x in
-                                         df['MS2ScanNumber']]
+        if order >= 3:
 
             df['MS3IonInjectionTime'] = [self.data['MS3TrailerExtra'][str(x)]['Ion Injection Time (ms)'] for x in
                                          df['MS3ScanNumber']]
