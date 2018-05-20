@@ -9,6 +9,11 @@ RawQuant is now live on the [Python Package Index](https://pypi.python.org/pypi/
 ## News and Updates
 
  * RawQuant paper is out: https://pubs.acs.org/doi/10.1021/acs.jproteome.8b00072.
- * We are working to develop an implementation of RawQuant as a QC and real-time performance monitoring tool (check the branches for the QC development version).
- * We are working to migrate RawQuant from MSFileReader to the .NET implementation of Thermo's raw file reader (http://planetorbitrap.com/rawfilereader#.WtfhwpPwbAw) (check the branches for the development version that can directly process .raw files on Linux or Mac).
+ * We are working to develop an implementation of RawQuant as a QC and real-time performance monitoring tool. You can follow and use this implementation here: https://github.com/kevinkovalchik/RawQuant/tree/qc_dev. 
+ * We are working to migrate RawQuant from MSFileReader to the .NET implementation of Thermo's raw file reader (http://planetorbitrap.com/rawfilereader#.WtfhwpPwbAw). You can follow and use this implementation here: https://github.com/kevinkovalchik/RawQuant/tree/RawFileReader_dev. 
  * We hope to incoporate reading of TMTc values in the near future.
+ * We are working to add support for extraction of scan information and data from Boxcar runs. Follow this development here: https://github.com/kevinkovalchik/RawQuant/issues/1.
+ 
+ ## Known bugs
+ 
+ * We are aware of a big that makes RawQuant incompatible with the latest version of the Tune software for the Orbitrap Fusion and Lumos (version 3.0 or greater). We will fix this ASAP. Please follow this issue here: https://github.com/kevinkovalchik/RawQuant/issues/4.
