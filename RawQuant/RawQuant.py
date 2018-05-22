@@ -1753,35 +1753,43 @@ class RawQuant:
         ### Error checking ###
 
         if '2' not in self.MetaData['AnalyzerTypes'].keys():
+
             print('No MS2 data. Skipping .mgf file creation.')
             return None
 
         if self.MetaData['AnalyzerTypes']['2'] == 'FTMS':
 
-            if self.flags['MS2LabelData'] == False:
-                self.ExtractMSData(2, 'LabelData')
+            if not self.flags['MS2LabelData']:
+
+                self.ExtractMSData(2,'LabelData')
 
             LookFor = 'LabelData'
 
         elif self.MetaData['AnalyzerTypes']['2'] == 'ITMS':
 
-            if self.MetaData['Centroid'] == False:
+            if not self.MetaData['Centroid']:
+
                 print('Ion trap data is profile. Skipping .mgf file creation.')
 
                 return None
 
-            if self.flags['MS2MassLists'] == False:
-                self.ExtractMSData(2, 'MassLists')
+            if not self.flags['MS2MassLists']:
+
+                self.ExtractMSData(2,'MassLists')
 
             LookFor = 'MassLists'
 
-        if self.flags['MS2PrecursorMass'] == False:
-            # print('MS2PrecursorMass required. Extracting now.')
+        if not self.flags['MS2PrecursorMass']:
+
             self.ExtractPrecursorMass(2)
 
-        if self.flags['PrecursorCharge'] == False:
-            # print('PrecursorCharge required. Extracting now.')
+        if not self.flags['PrecursorCharge']:
+
             self.ExtractPrecursorCharge()
+
+        if not self.flags['MS2RetentionTime']:
+
+            self.ExtractRetentionTimes(2)
 
         if cutoff is not None:
 
@@ -1795,11 +1803,11 @@ class RawQuant:
 
         with open(filename, 'wb') as f:
 
-            print(self.RawFile + ': Writing MGF file')
+            print(self.RawFile+': Writing MGF file')
             f.write(b'\nMASS=Monoisotopic')
             f.write(b'\n')
 
-            MassLists = self.data['MS2' + LookFor]
+            MassLists = self.data['MS2'+LookFor]
 
             for scan in tqdm(MassLists.keys(), ncols=70, disable=self.disable_bar):
 
@@ -1807,8 +1815,9 @@ class RawQuant:
                         b'\nTITLE=Spectrum_' + bytes(scan, 'utf-8') +
                         b'\nRAWFILE=' + bytes(self.MetaData['DataFile'], 'utf-8') +
                         b'\nSCANS=' + bytes(scan, 'utf-8') +
+                        b'\nRTINSECONDS=' + bytes(str(self.data['MS2RetentionTime'][scan]), 'utf-8') +
                         b'\nPEPMASS=' + bytes(str(self.data['MS2PrecursorMass'][scan]), 'utf-8') +
-                        b'\nCHARGE=' + bytes(str(self.data['PrecursorCharge'][scan]), 'utf-8') + b'+' +
+                        b'\nCHARGE=' + bytes(str(self.data['PrecursorCharge'][scan]), 'utf-8')+b'+' +
                         b'\n')
 
                 if cutoff is not None:
