@@ -125,7 +125,7 @@ class RawQuant:
             'MS2MassLists': False, 'MS2LabelData': False,
             'MS3MassLists': False, 'MS3LabelData': False,
             'MS1TrailerExtra': False, 'MS2TrailerExtra': False, 'MS3TrailerExtra': False,
-            'MS2PrecursorMass': False, 'MS3PrecursorMass': False,
+            'PrecursorMass': False,
             'MS1RetentionTime': False, 'MS2RetentionTime': False,
             'MS3RetentionTime': False, 'Quantified': False,
             'AutoExtracted': False, 'MS1Interference': False,
@@ -216,33 +216,30 @@ class RawQuant:
         if boxcar:
             self.flags['BoxCar'] = True
 
-    def ExtractPrecursorMass(self, order):
+    def ExtractPrecursorMass(self):
 
         if not self.open:
             raise Exception(self.RawFile + ' is not accessible. Reopen the file')
 
-        if type(order) != int:
-            raise TypeError('order must be of type: int')
+        if self.MetaData['AnalysisOrder'] < 2:
+            raise ValueError('Analysis order must be a positive integer greater than 1')
 
-        if order < 2:
-            raise ValueError('order must be a positive integer greater than 1')
+        if not self.flags['MS2TrailerExtra']:
 
-        if not self.flags['MS' + str(order) + 'TrailerExtra']:
+            self.ExtractTrailerExtra(2)
 
-            self.ExtractTrailerExtra(order)
+        print(self.RawFile + ': Extracting precursor masses')
 
-        print(self.RawFile + ': Extracting MS' + str(order) + ' precursor masses')
+        scans = self.info.loc[(self.info['MSOrder'] == 2), 'ScanNum']
 
-        scans = self.info.loc[self.info['MSOrder'] == order, 'ScanNum']
-
-        self.data['MS' + str(order) + 'PrecursorMass'] = OD((str(x), self.data['MS' + str(order) + 'TrailerExtra']
-                                                             [str(x)]['Monoisotopic M/Z']) for x in scans)
+        self.data['PrecursorMass'] = OD((str(x), self.data['MS2TrailerExtra'][str(x)]['Monoisotopic M/Z'])
+                                        for x in scans)
 
         #self.data['MS' + str(order) + 'PrecursorMass'] = RawFileReader.extract_precursor_masses(self.raw, scans=scans,
         #                                                                                        disable_bar=
         #                                                                                        self.disable_bar)
 
-        self.flags['MS' + str(order) + 'PrecursorMass'] = True
+        self.flags['PrecursorMass'] = True
 
     def ExtractRetentionTimes(self, order):
 
@@ -421,16 +418,13 @@ class RawQuant:
         if calculation_type not in ['auto', 'profile', 'centroid']:
             raise ValueError("calculation_type must be one of ['auto','profile', 'centroid']")
 
-        if self.flags['MS2PrecursorMass'] == False:
-            # print('MS2PrecursorMass required. Extracting now.')
-            self.ExtractPrecursorMass(2)
+        if self.flags['PrecursorMass'] == False:
+            self.ExtractPrecursorMass()
 
         if self.flags['MS2PrecursorScan'] == False:
-            # print('Precursor scans required. Extracting now.')
             self.ExtractPrecursorScans()
 
         if self.flags['PrecursorCharge'] == False:
-            # print('PrecursorCharge required. Extracting now.')
             self.ExtractPrecursorCharge()
 
         if self.MetaData['Centroid']['1'] & (calculation_type == 'profile'):
@@ -450,17 +444,14 @@ class RawQuant:
         if calculation_type == 'profile':
 
             if self.flags['MS1MassLists'] == False:
-                # print('MS1MassLists required. Extracting now.')
                 self.ExtractMSData(1, 'MassLists')
 
             if self.flags['MS1LabelData'] == False:
-                # print('MS1LabelData required. Extracting now.')
                 self.ExtractMSData(1, 'LabelData')
 
         if calculation_type == 'centroid':
 
             if self.flags['MS1LabelData'] == False:
-                # print('MS1LabelData required. Extracting now.')
                 self.ExtractMSData(1, 'LabelData')
 
         ### Begin quantification part of the function ###
@@ -477,7 +468,7 @@ class RawQuant:
             # try:
             precScan = self.data['MS2PrecursorScan'][scan]
 
-            precMass = self.data['MS2PrecursorMass'][scan]
+            precMass = self.data['PrecursorMass'][scan]
 
             precCharge = self.data['PrecursorCharge'][scan]
 
@@ -1024,8 +1015,8 @@ class RawQuant:
         if self.flags['MS2PrecursorScan'] == False:
             self.ExtractPrecursorScans()
 
-        if self.flags['MS2PrecursorMass'] == False:
-            self.ExtractPrecursorMass(2)
+        if self.flags['PrecursorMass'] == False:
+            self.ExtractPrecursorMass()
 
         if self.flags['MS1LabelData'] == False:
             self.ExtractMSData(1, 'LabelData')
@@ -1066,7 +1057,7 @@ class RawQuant:
 
             MS1scan = self.data['MS2PrecursorScan'][scan]
 
-            precMass = self.data['MS2PrecursorMass'][scan]
+            precMass = self.data['PrecursorMass'][scan]
 
             # find the leading edge of peak
 
@@ -1541,8 +1532,8 @@ class RawQuant:
 
         if order > 1:
 
-            if self.flags['MS' + str(order) + 'PrecursorMass'] == False:
-                self.ExtractPrecursorMass(order=order)
+            if self.flags['PrecursorMass'] == False:
+                self.ExtractPrecursorMass()
 
             if self.flags['PrecursorCharge'] == False:
                 self.ExtractPrecursorCharge()
@@ -1621,8 +1612,8 @@ class RawQuant:
                 self.data['PrecursorElution'][str(x)][1] - self.data['PrecursorElution'][str(x)][0] for x in
                 df['MS2ScanNumber']]
 
-            df['PrecursorMass'] = [self.data['MS' + str(order) + 'PrecursorMass'][str(x)] for x in
-                                   df['MS' + str(order) + 'ScanNumber']]
+            df['PrecursorMass'] = [self.data['PrecursorMass'][str(x)] for x in
+                                   df['MS2ScanNumber']]
 
             df['PrecursorCharge'] = [self.data['PrecursorCharge'][str(x)] for x in df['MS2ScanNumber']]
 
@@ -1779,9 +1770,9 @@ class RawQuant:
 
             LookFor = 'MassLists'
 
-        if not self.flags['MS2PrecursorMass']:
+        if not self.flags['PrecursorMass']:
 
-            self.ExtractPrecursorMass(2)
+            self.ExtractPrecursorMass()
 
         if not self.flags['PrecursorCharge']:
 
@@ -1816,7 +1807,7 @@ class RawQuant:
                         b'\nRAWFILE=' + bytes(self.MetaData['DataFile'], 'utf-8') +
                         b'\nSCANS=' + bytes(scan, 'utf-8') +
                         b'\nRTINSECONDS=' + bytes(str(self.data['MS2RetentionTime'][scan]), 'utf-8') +
-                        b'\nPEPMASS=' + bytes(str(self.data['MS2PrecursorMass'][scan]), 'utf-8') +
+                        b'\nPEPMASS=' + bytes(str(self.data['PrecursorMass'][scan]), 'utf-8') +
                         b'\nCHARGE=' + bytes(str(self.data['PrecursorCharge'][scan]), 'utf-8')+b'+' +
                         b'\n')
 
