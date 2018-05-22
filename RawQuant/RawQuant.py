@@ -137,12 +137,13 @@ class RawQuant:
         }
 
         # Check if the trailer extra data contains master scan numbers
-        try:
-            RawFileReader.extract_trailer_extras(self.raw, self.info.loc[self.info['MSOrder'] == 2,
-                                                 'ScanNum'].iloc[0], disable_bar=True)['Master Scan Number']
+
+        test = self.raw.GetTrailerExtraHeaderInformation()
+
+        labels = [test[x].Label for x in range(test.Length)]
+
+        if 'Master Scan Number:' in labels:
             self.flags['MasterScanNumber'] = True
-        except:
-            None
 
         self.Initialized = True
 
@@ -217,7 +218,7 @@ class RawQuant:
 
     def ExtractPrecursorMass(self, order):
 
-        if self.open == False:
+        if not self.open:
             raise Exception(self.RawFile + ' is not accessible. Reopen the file')
 
         if type(order) != int:
@@ -226,13 +227,20 @@ class RawQuant:
         if order < 2:
             raise ValueError('order must be a positive integer greater than 1')
 
+        if not self.flags['MS' + str(order) + 'TrailerExtra']:
+
+            self.ExtractTrailerExtra(order)
+
         print(self.RawFile + ': Extracting MS' + str(order) + ' precursor masses')
 
         scans = self.info.loc[self.info['MSOrder'] == order, 'ScanNum']
 
-        self.data['MS' + str(order) + 'PrecursorMass'] = RawFileReader.extract_precursor_masses(self.raw, scans=scans,
-                                                                                                disable_bar=
-                                                                                                self.disable_bar)
+        self.data['MS' + str(order) + 'PrecursorMass'] = OD((str(x), self.data['MS' + str(order) + 'TrailerExtra']
+                                                             [str(x)]['Monoisotopic M/Z']) for x in scans)
+
+        #self.data['MS' + str(order) + 'PrecursorMass'] = RawFileReader.extract_precursor_masses(self.raw, scans=scans,
+        #                                                                                        disable_bar=
+        #                                                                                        self.disable_bar)
 
         self.flags['MS' + str(order) + 'PrecursorMass'] = True
 
