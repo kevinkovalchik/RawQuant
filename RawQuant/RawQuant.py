@@ -244,10 +244,16 @@ class RawQuant:
 
             raise ValueError ('order must be a positive integer greater than 0')
 
+        if not self.flags['MS' + str(order) + 'TrailerExtra']:
+
+            self.ExtractTrailerExtra(order)
+
         print(self.RawFile+': Extracting MS' + str(order) + ' precursor masses')
 
-        self.data['MS'+str(order)+'PrecursorMass'] = OD((str(x), self.raw.GetFullMSOrderPrecursorDataFromScanNum(x,0).precursorMass)
-                        for x in tqdm(self.info.loc[self.info['MSOrder']==order,'ScanNum'],ncols=70,disable = self.disable_bar))
+        self.data['MS' + str(order) + 'PrecursorMass'] = OD((str(x), self.data['MS'+str(order)+'TrailerExtra'][str(x)]
+                                                            ['Monoisotopic M/Z']) for x in
+                                                            tqdm(self.info.loc[self.info['MSOrder'] == order,'ScanNum'],
+                                                                 ncols=70, disable=self.disable_bar))
 
         self.flags['MS'+str(order)+'PrecursorMass'] = True
 
