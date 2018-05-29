@@ -84,7 +84,7 @@ def extract_centroid_spectra(raw, scans, disable_bar):
     return OD((str(x),get_out(raw,x)) for x in tqdm(scans, ncols=70, disable=disable_bar))
 
 
-def extract_trailer_extras(raw, scans, disable_bar):
+def extract_trailer_extras(raw, scans, boxcar, disable_bar):
 
     """
 
@@ -97,8 +97,6 @@ def extract_trailer_extras(raw, scans, disable_bar):
 
     labels = [trailer_extra_information[x].Label for x in range(trailer_extra_information.Length)]
 
-    boxcar = False
-
     if 'SPS Masses:' in labels:
 
         desired = ['Ion Injection Time (ms):', 'Master Scan Number:', 'Monoisotopic M/Z:', 'Charge State:',
@@ -109,9 +107,8 @@ def extract_trailer_extras(raw, scans, disable_bar):
         desired = ['Ion Injection Time (ms):', 'Master Scan Number:', 'Monoisotopic M/Z:', 'Charge State:',
                    'HCD Energy:'] + ['SPS Mass {}:'.format(x) for x in range(1, 21)]
 
-    if 'Multi Inject Info:' in labels:
+    if boxcar:
         desired += ['Multi Inject Info:']
-        boxcar = True
 
     index = [x for x in range(len(labels)) if labels[x] in desired]
 
@@ -121,7 +118,7 @@ def extract_trailer_extras(raw, scans, disable_bar):
 
         return OD((keys[x], raw.GetTrailerExtraValue(scan, index[x])) for x in range(len(index)))
 
-    return OD((str(x), get_out(raw, x)) for x in tqdm(scans, ncols=70, disable=disable_bar)), boxcar
+    return OD((str(x), get_out(raw, x)) for x in tqdm(scans, ncols=70, disable=disable_bar))
 
 
 def extract_segmented_scans(raw, scans, disable_bar):

@@ -147,6 +147,10 @@ class RawQuant:
 
         self.Initialized = True
 
+    def SetAsBoxcar(self):
+
+        self.flags['BoxCar'] = True
+
     def LoadReporters(self, reporters):
 
         self.data['CustomReporters'] = pd.read_csv(reporters)
@@ -209,12 +213,12 @@ class RawQuant:
 
         # Extract meta data using the GetTrailerExtraForScanNum function
         print(self.RawFile + ': Extracting MS' + str(order) + 'TrailerExtra')
-        self.data['MS' + str(order) + 'TrailerExtra'], boxcar = RawFileReader.extract_trailer_extras(raw=self.raw, scans=scans,
+        self.data['MS' + str(order) + 'TrailerExtra'] = RawFileReader.extract_trailer_extras(raw=self.raw, scans=scans,
+                                                                                             boxcar=self.flags['BoxCar'],
                                                                                              disable_bar=self.disable_bar)
 
         self.flags['MS' + str(order) + 'TrailerExtra'] = True
-        if boxcar:
-            self.flags['BoxCar'] = True
+
 
     def ExtractPrecursorMass(self):
 
@@ -1975,9 +1979,12 @@ class RawQuant:
 
 
 # define a function to be used in parallelism
-def func(msFile, reagents, mgf, interference, impurities, metrics):
+def func(msFile, reagents, mgf, interference, impurities, metrics, boxcar):
     filename = msFile[:-4] + '_QuantData.txt'
     data = RawQuant(msFile, disable_bar=True)
+
+    if boxcar:
+        data.SetAsBoxcar()
 
     if reagents is not None:
 
