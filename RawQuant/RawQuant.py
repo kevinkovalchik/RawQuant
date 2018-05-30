@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from tqdm import tqdm
 from collections import OrderedDict as OD
+from re import findall
 import RawQuant.RawFileReader.RawFileReader as RawFileReader
 
 '''
@@ -219,7 +220,6 @@ class RawQuant:
 
         self.flags['MS' + str(order) + 'TrailerExtra'] = True
 
-
     def ExtractPrecursorMass(self):
 
         if not self.open:
@@ -229,19 +229,30 @@ class RawQuant:
             raise ValueError('Analysis order must be a positive integer greater than 1')
 
         if not self.flags['MS2TrailerExtra']:
-
             self.ExtractTrailerExtra(2)
 
         print(self.RawFile + ': Extracting precursor masses')
 
         scans = self.info.loc[(self.info['MSOrder'] == 2), 'ScanNum']
 
-        self.data['PrecursorMass'] = OD((str(x), self.data['MS2TrailerExtra'][str(x)]['Monoisotopic M/Z'])
-                                        for x in scans)
+        masses = OD((str(x), self.data['MS2TrailerExtra'][str(x)]['Monoisotopic M/Z']) for x in scans)
 
-        #self.data['MS' + str(order) + 'PrecursorMass'] = RawFileReader.extract_precursor_masses(self.raw, scans=scans,
-        #                                                                                        disable_bar=
-        #                                                                                        self.disable_bar)
+        if 0 in masses.values():
+
+            method = self.raw.GetInstrumentMethod(1)
+
+            try:
+                offset = findall(r'Scan ddMSnScan[\S\s]+MSn Level = 2[\S\s]+Isolation m/z Offset = (\S+)[\S\s]+Scan'
+                                 r'Description =', method)[0]
+            except IndexError:
+                offset = findall(r'Isolation offset[\s]+(\S+)', method)[0]
+
+            offset = float(offset)
+
+            masses = OD((str(x), self.raw.GetScanEventForScanNumber(x).Reactions[0].PrecursorMass - offset) for x in
+                        scans)
+
+        self.data['PrecursorMass'] = masses
 
         self.flags['PrecursorMass'] = True
 
