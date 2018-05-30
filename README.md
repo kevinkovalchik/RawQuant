@@ -17,6 +17,4 @@ RawQuant is now live on the [Python Package Index](https://pypi.python.org/pypi/
  
  ## Known bugs
  
- * NOTE: The bug below appears to be related to an isolation window offset and not the new version of Tune software. This has been addressed, but we will keep the issue open until it has been thoroughly test.
  
- * We are aware of a bug that makes RawQuant incompatible with the latest version of the Tune software for the Orbitrap Fusion and Lumos (version 3.0 or greater). We will fix this ASAP. Please follow this issue here: https://github.com/kevinkovalchik/RawQuant/issues/4.
