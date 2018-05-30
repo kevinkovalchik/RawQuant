@@ -115,15 +115,15 @@ if __name__ == "__main__":
 
         quant = subparsers.add_parser('quant', help=
                 'Parse and quantify data. Possible command line\narguments are:\n'+
-                'REQUIRED: -f or -m, -r or -cr\n'+
-                'OPTIONAL: -o, -mgf, -i, -spb, -c\n'+
+                'REQUIRED: -f or -m or -d, -r or -cr\n'+
+                'OPTIONAL: -o, -mgf, -mtx, -i, -spb, -c, -b\n'+
                 'For further help use the command:\n/python -m RawQuant quant -h\n ',
             formatter_class = argparse.RawTextHelpFormatter)
 
         parse = subparsers.add_parser('parse', help=
                 'Parse MS data. Possible command line arguments\nare:\n'+
-                'REQUIRED: -f or -m, -o\n'
-                'OPTIONAL: -mgf, -spb\n' +
+                'REQUIRED: -f or -m or -d, -o\n'
+                'OPTIONAL: -mgf, -mtx, -spb, -b\n' +
                 'For further help use the command:\n/python -m RawQuant parse -h\n ',
             formatter_class = argparse.RawTextHelpFormatter)
 
@@ -166,6 +166,10 @@ if __name__ == "__main__":
         quant.add_argument('-p','--parallel', help =
                 'Number of CPU cores to be used when processing multiple files.\n'+
                 'If left blank a single core will be used.\n ')
+
+        quant.add_argument('-b', '--boxcar', help=
+                'Indicates that the rawfile is from a boxcar experiment and the program'
+                'should look for multi-injection data.')
 
         quant.add_argument('-mgf','--generate_mgf', action='store_true', help =
                 'Generate a standard-format .MGF file from the .raw file as part\n'+
@@ -243,6 +247,10 @@ if __name__ == "__main__":
                 'containing 0 (e.g. -o 0 1 2) will be considered 0, and parsing\n'+
                 'will not be done. Entering "auto" will select the highest\n'+
                 'MS order present for parsing.',required = True)
+
+        parse.add_argument('-b', '--boxcar', action='store_true', help=
+        'Indicates that the rawfile is from a boxcar experiment and the program'
+        'should look for multi-injection data.')
 
         parse.add_argument('-mtx','--metrics', action='store_true', help =
                 'Generate a text file containing metrics of the MS run. Includes:\n'+
@@ -717,6 +725,10 @@ if __name__ == "__main__":
             filename = msFile[:-4]+'_ParseData.txt'
             data = RawQuant(msFile,disable_bar=suppress_bar)
 
+            if args.boxcar:
+
+                data.SetAsBoxcar()
+
             if '0' not in order:
 
                 if order != 'auto':
@@ -823,6 +835,9 @@ if __name__ == "__main__":
                 filename = msFile[:-4]+'_QuantData.txt'
                 data = RawQuant(msFile,order=order,disable_bar=suppress_bar)
 
+                if args.boxcar:
+                    data.SetAsBoxcar()
+
                 if reagents is not None:
 
                     if args.quantify_interference:
@@ -863,8 +878,11 @@ if __name__ == "__main__":
                 print('Specified number of cores for parallelization exceeds '+
                         'available number of cores. Maximum will be used.')
 
-            Parallel(n_jobs=num_cores)(delayed(func)(msFile=msFile, reagents=reagents, mgf=args.generate_mgf, interference = args.quantify_interference, impurities = impurities, metrics = args.metrics) for msFile in files)
+            Parallel(n_jobs=num_cores)(delayed(func)(msFile=msFile, reagents=reagents, mgf=args.generate_mgf,
+                                                     interference=args.quantify_interference, impurities=impurities,
+                                                     metrics=args.metrics, boxcar=args.boxcar) for msFile in files)
 
     if args.subparser_name == 'qc':
 
         quality_control.do_qc(args.directory)
+

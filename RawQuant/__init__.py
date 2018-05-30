@@ -1,5 +1,4 @@
 from RawQuant.RawQuant import *
-from RawQuant import MSFileReader
-#from RawQuant.qcGUI import Watcher
+from RawQuant import RawFileReader
 
-__version__ = '0.1.4'
+__version__ = '0.2.0'

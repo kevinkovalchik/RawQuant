@@ -2,8 +2,14 @@ from distutils.core import setup
 
 setup(
     name='RawQuant',
-    packages=['RawQuant'],
-    version='0.1.4',
+    packages=['RawQuant', 'RawQuant/RawFileReader'],
+    package_data={'RawQuant/RawFileReader': ['RawQuant/RawFileReader/*.dll']},
+    data_files=[('lib/site-packages/RawQuant/RawFileReader', ['RawQuant/RawFileReader/ThermoFisher.CommonCore.BackgroundSubtraction.dll',
+                                                              'RawQuant/RawFileReader/ThermoFisher.CommonCore.Data.dll',
+                                                              'RawQuant/RawFileReader/ThermoFisher.CommonCore.MassPrecisionEstimator.dll',
+                                                              'RawQuant/RawFileReader/ThermoFisher.CommonCore.RawFileReader.dll'])],
+    include_package_data=True,
+    version='0.2.0',
     description='Package for extracting scan meta data and quantification information from Thermo .raw files',
     long_description='RawQuant is a Python package for extracting scan meta data and quantification values from ' +
                      'Thermo .raw files.',
@@ -21,6 +27,6 @@ setup(
         'Topic :: Scientific/Engineering :: Bio-Informatics',
         'Topic :: Scientific/Engineering :: Chemistry',
     ],
-    install_requires=['numpy', 'comtypes>=1.1.3', 'pandas', 'tqdm>=4', 'joblib'],
+    install_requires=['numpy', 'pandas', 'tqdm>=4', 'joblib', 'pythonnet'],
     python_requires='>=3.6'
 )
