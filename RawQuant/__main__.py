@@ -277,6 +277,7 @@ if __name__ == "__main__":
         ### qc subparser section ###
 
         QC.add_argument('-d', '--directory', help='specify directory to watch for qc purposes.')
+        QC.add_argument('-q', '--qc_directory', help='specify directory to contain qc output data.')
 
         args = parser.parse_args()
 
@@ -884,5 +885,5 @@ if __name__ == "__main__":
 
     if args.subparser_name == 'qc':
 
-        quality_control.do_qc(args.directory)
+        quality_control.do_qc(args.directory, args.qc_directory)
 

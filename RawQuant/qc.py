@@ -34,9 +34,9 @@ def check_qc_directory(directory):
         os.mkdir(directory + '/__QC__/metrics/')  # make a metrics folder in the QC folder, metrics files go here
 
 
-def do_qc(directory):
+def do_qc(directory, qc_directory):
 
-    check_qc_directory(directory)
+    check_qc_directory(qc_directory)
 
     files = to_do_list(directory)
 
@@ -44,20 +44,20 @@ def do_qc(directory):
 
         print('\nNo new files to QC!')
 
-    is_locked(directory + '/__QC__/QC.csv', 'QC.csv')
+    is_locked(qc_directory + '/__QC__/QC.csv', 'QC.csv')
 
     for file in files:
 
         raw = RawQuant(directory + '/' + file)
 
-        raw.GenMetrics(directory + '/__QC__/metrics/' + file[:-4] + '_metrics.txt')
+        raw.GenMetrics(qc_directory + '/__QC__/metrics/' + file[:-4] + '_metrics.txt')
 
-        update_qc_csv(directory, file)
+        update_qc_csv(qc_directory, file)
 
 
-def to_do_list(directory):
+def to_do_list(directory, qc_directory):
 
-    qc = pd.read_csv(directory + '/__QC__/QC.csv')
+    qc = pd.read_csv(qc_directory + '/__QC__/QC.csv')
 
     all_files = [f for f in os.listdir(directory) if f[-4:] == '.raw']
 
@@ -84,12 +84,12 @@ def is_locked(pathtofile, filename):
             failure = True
 
 
-def update_qc_csv(directory, rawfilename):
+def update_qc_csv(directory, qc_directory, rawfilename):
 
-    metrics = pd.read_table(directory + '/__QC__/metrics/' + rawfilename[:-4] + '_metrics.txt',
+    metrics = pd.read_table(qc_directory + '/__QC__/metrics/' + rawfilename[:-4] + '_metrics.txt',
                             header=None, index_col=0).transpose()
 
-    qc = pd.read_csv(directory + '/__QC__/QC.csv')
+    qc = pd.read_csv(qc_directory + '/__QC__/QC.csv')
 
     qc.loc[rawfilename, 'RawFile'] = metrics.loc[1, 'Raw file:']
     qc.loc[rawfilename, 'DateAdded'] = time.ctime()
@@ -113,7 +113,7 @@ def update_qc_csv(directory, rawfilename):
         metrics.columns else None
     qc.loc[rawfilename, 'MedianBaseToBaseRTWidth(s)'] = metrics.loc[1, 'Median base to base RT width (s):']
 
-    qc.to_csv(directory + '/__QC__/QC.csv', index=False)
+    qc.to_csv(qc_directory + '/__QC__/QC.csv', index=False)
 
 
 class WatcherGUI:
