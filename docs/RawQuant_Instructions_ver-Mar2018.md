@@ -1,10 +1,12 @@
 ## RawQuant 
 
-This guide describes the install and use of RawQuant. This guide was updated last on March 22, 2018. 
+This guide describes the install and use of RawQuant. This guide was updated last on May 29, 2018.
 
 #### System Pre-Requisites
 
-Our starting point is a blank Windows system. Windows is required for MSFileReader. We recommend uninstalling MSFileReader and Python if they are already installed as the order of installation is important for RawQuant.
+Our starting point is a blank Windows system. The newest version of RawQuant uses RawFileReader from Thermo Fisher,
+which does not have any specific system requirements. However, this guide will only demonstrate installation on
+a Windows system.
 
 RawQuant does not have any specific system requirements, although the script may run slowly on older machines. The computer we are using in this walkthrough has the specs:
 
@@ -26,17 +28,9 @@ Before starting, we recommend creating a working directory somewhere you will re
 	
 	![alt text](screens/screen17.png)
 
-2. Download MSFileReader into your created folder.
-	* The version here is important. We have currently only tested the mentioned version (version 3.0.29, or 3.0 SP2).
-	* The install file can be downloaded from the [RawQuant GitHub page](https://github.com/kevinkovalchik/RawQuant). 
-	* Navigate to the [RawQuant GitHub repository](https://github.com/kevinkovalchik/RawQuant) in your web browser.
-	* Download the entire repository as a ZIP archive using the 'Clone or download' button. 
-	* Extract the ZIP archive in the folder you created above.
-	* MSFileReader will be located in the MSFileReader folder.
-
-	![alt text](screens/screen18.png)	
-	
-	* Alternatively, the install file can be downloaded from [Thermo](https://thermo.flexnetoperations.com/control/thmo/login?nextURL=%2Fcontrol%2Fthmo%2Fdownload%3Felement%3D6306677). This website requires registration, which is free.
+2. Download the latest version of the .NET framework into your created folder.
+	* We have tested versions >=4.0.0 and haven't run into any problems. Thermo recommends using a version >=4.5
+	* The latest version can be downloaded from [here](https://www.microsoft.com/net/download/dotnet-framework-runtime).
 
 #### Installation
 
@@ -44,7 +38,7 @@ Let's walk through the setup:
 
 1. Navigate to your folder containing all the downloaded files using your file browser.
 
-2. Install Python by double clicking the downloaded executable. 
+2. Install Python by double clicking the downloaded executable.
 	* Make sure to select the 'add Python 3.6 to PATH' option.
 	* Use the default "Install Now" option. 
 	
@@ -61,9 +55,11 @@ Let's walk through the setup:
 
 	![alt text](screens/screen3_crop.png)
 
-4. Install RawQuant and it's Python dependencies.
+4. Install the .NET Framework using the executable [downloaded above](https://www.microsoft.com/net/download/dotnet-framework-runtime).
+
+5. Install RawQuant and it's Python dependencies.
 	* Open 'Command Prompt' if not already open.
-	* RawQuant is available on the [Python Package Index](https://pypi.python.org/pypi/RawQuant/0.1.0), so can be easily installed with pip.
+	* RawQuant is available on the [Python Package Index](https://pypi.python.org/pypi/RawQuant), so can be easily installed with pip.
 	
 	~~~bash
 	pip install RawQuant
@@ -72,12 +68,6 @@ Let's walk through the setup:
 	![alt text](screens/screen21_crop.png)
  
 8. After the install has completed successfully, restart your computer. 
-
-9. Install MSFileReader version 3.0 SP2, 64-bit only (do not install the 32-bit version!).
-	* Use the default settings for the install, specifying the 64-bit version only. 
-	* After the install has completed successfully, restart your computer.
-	
-	![alt text](screens/screen22_crop.png)
 
 
 #### Install testing
