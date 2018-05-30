@@ -16,5 +16,6 @@ RawQuant is now live on the [Python Package Index](https://pypi.python.org/pypi/
  * We are working to add support for extraction of scan information and data from Boxcar runs. Follow this development here: https://github.com/kevinkovalchik/RawQuant/issues/1.
  
  ## Known bugs
- 
+
+See the 'Issues' tab to see what bugs we are currently working to address (https://github.com/kevinkovalchik/RawQuant/issues/).
  
