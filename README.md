@@ -9,7 +9,7 @@ RawQuant is now live on the [Python Package Index](https://pypi.python.org/pypi/
 ## News and Updates
 
  * RawQuant has migrated from MSFileReader to the .NET implementation of Thermo's RawFileReader! (http://planetorbitrap.com/rawfilereader#.WtfhwpPwbAw).
- This means RawQuant is no longer dependent on an installation of MSFileReader, and can run on Linux and MacOS systems. A new requirement is the .NET framework on Windows or Mono on Linux. Please report any issues you find.
+ This means RawQuant is no longer dependent on an installation of MSFileReader, and can run on Windows, Linux and MacOS systems. A new requirement is the .NET framework on Windows or Mono on Linux. Please report any issues you find.
  * RawQuant paper is out: https://pubs.acs.org/doi/10.1021/acs.jproteome.8b00072.
  * We are working to develop an implementation of RawQuant as a QC and real-time performance monitoring tool. You can follow and use this implementation here: https://github.com/kevinkovalchik/RawQuant/tree/qc_dev. 
  * We hope to incoporate reading of TMTc values in the near future.
