@@ -134,7 +134,7 @@ class RawQuant:
             'MasterScanNumber': False, 'PrecursorCharge': False,
             'QuantMatrix': False, 'MS1Parse': False, 'MS2Parse': False, 'MS3Parse': False,
             'ImpurityMatrix': False, 'CorrectionMatrix': False, 'ImpuritiesCorrected': False,
-            'PrecursorPeaks': False, 'BoxCar': False, 'MassRangeFillTimes': False
+            'PrecursorPeaks': False, 'BoxCar': False, 'MassRangeFillTimes': False, 'NoMonoisotopicMass':False
         }
 
         # Check if the trailer extra data contains master scan numbers
@@ -239,11 +239,13 @@ class RawQuant:
 
         if 0 in masses.values():
 
+            self.flags['NoMonoisotopicMass'] = True
+
             method = self.raw.GetInstrumentMethod(1)
 
             try:
-                offset = findall(r'Scan ddMSnScan[\S\s]+MSn Level = 2[\S\s]+Isolation m/z Offset = (\S+)[\S\s]+Scan'
-                                 r'Description =', method)[0]
+                offset = findall(r'Scan ddMSnScan[\S\s]+MSn Level = 2[\S\s]+Isolation m/z Offset = (\S+)[\S\s]',
+                                 method)[0]
             except IndexError:
                 offset = findall(r'Isolation offset[\s]+(\S+)', method)[0]
 
@@ -1811,6 +1813,9 @@ class RawQuant:
 
             print(self.RawFile+': Writing MGF file')
             f.write(b'\nMASS=Monoisotopic')
+
+            if self.flags['NoMonoisotopicMass']:
+                f.write(b'\nWARNING!!!! PRECURSOR MASSES ARE NOT MONOISOTOPIC!!!!')
             f.write(b'\n')
 
             MassLists = self.data['MS2'+LookFor]
@@ -1839,6 +1844,11 @@ class RawQuant:
                     np.savetxt(f, scanData[:, :2], delimiter=' ', fmt="%.6f")
 
                 f.write(b'END IONS\n')
+
+        if self.flags['NoMonoisotopicMass']:
+
+            print('WARNING!!!!\n'
+                  'PRECURSOR MONOISOTOPIC M/Z VALUES WERE NOT AVAILABLE!')
 
     def SaveData(self, method='quant', parse_order=None, filename='TMTQuantData.txt', delimiter='\t'):
 
