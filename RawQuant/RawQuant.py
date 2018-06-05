@@ -153,7 +153,7 @@ class RawQuant:
 
         offset = findall(r'Isolation[ m/z ]*Offset\s*=*\s*(\S+)', method, flags=IGNORECASE)[0]
 
-        if offset.lower() == 'off':
+        if (offset.lower() == 'off') | (offset.lower() == 'false') :
             offset = 0.0
 
         self.MetaData['Offset'] = float(offset)
@@ -1943,6 +1943,8 @@ class RawQuant:
             f.write('Raw file:\t' + self.MetaData['DataFile'])
             f.write('\nInstrument:\t' + self.MetaData['InstName'])
             f.write('\nMS order:\t' + str(self.MetaData['AnalysisOrder']))
+            for O in range(1, int(order)+1):
+                f.write('\nMS{} analyzer type:\t{}'.format(str(O), self.MetaData['AnalyzerTypes'][str(O)]))
             f.write('\nTotal analysis time (min):\t' + str(mins))
 
             if order in ['1', '2', '3']:

@@ -4,11 +4,9 @@ This guide describes the install and use of RawQuant. This guide was updated las
 
 #### System Pre-Requisites
 
-Our starting point is a blank Windows system. The newest version of RawQuant uses RawFileReader from Thermo Fisher,
-which does not have any specific system requirements. However, this guide will only demonstrate installation on
-a Windows system.
+Our starting point is a blank Windows system. The newest version of RawQuant uses RawFileReader from Thermo Fisher. RawFileReader is compatible with Windows, Linux, and Mac, though installation details will differ. This guide will only demonstrate installation on a Windows system.
 
-RawQuant does not have any specific system requirements, although the script may run slowly on older machines. The computer we are using in this walkthrough has the specs:
+***RawQuant requires a 64-bit system***. The computer we are using in this walkthrough has the specs:
 
 * Microsoft Windows 10 Enterprise 2015 LTSB
 * 10.0.10240 Build 10240
