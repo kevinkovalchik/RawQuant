@@ -8,12 +8,15 @@ import pandas as pd
 from RawQuant import RawQuant
 
 
-def check_qc_directory(directory):
-    if not os.path.isdir(directory + '/__QC__'):  # check if a QC directory already exists
-        os.mkdir(directory + '/__QC__')  # create a QC directory
-        open(directory + '__QC__', 'a').close()
-        open(directory + '/__QC__/QC.csv', 'a').close()
-        with open(directory + '/__QC__/QC.csv', 'a') as f:  # make an empty QC.csv file to store QC data
+def check_qc_directory(qc_directory):
+    if qc_directory[-3:] != '.qc':
+        print('The QC directory must end with .qc (e.g. qc_folder.qc)')
+        return
+
+    if not os.path.isfile(qc_directory + '/__QC__'):  # check if a QC directory already exists
+        open(qc_directory + '/__QC__', 'a').close()
+        open(qc_directory + '/latest_QC.csv', 'a').close()
+        with open(qc_directory + '/latest_QC.csv', 'a') as f:  # make an empty QC.csv file to store QC data
             f.write('RawFile,'
                     'DateAdded,'
                     'TotalAnalysisTime(min),'
@@ -31,7 +34,9 @@ def check_qc_directory(directory):
                     'MedianPrecursorIntensity,'
                     'MedianMS2Intensity,'
                     'MedianBaseToBaseRTWidth(s)')
-        os.mkdir(directory + '/__QC__/metrics/')  # make a metrics folder in the QC folder, metrics files go here
+        os.mkdir(qc_directory + '/metrics/')  # make a metrics folder in the QC folder, metrics files go here
+        os.mkdir(qc_directory + '/plots/')  # make a plots folder in the QC folder, plot pdf files go here
+        os.mkdir(qc_directory + '/csv/')  # make a csv folder in the QC folder, csv files go here
 
 
 def do_qc(directory, qc_directory):
@@ -44,20 +49,20 @@ def do_qc(directory, qc_directory):
 
         print('\nNo new files to QC!')
 
-    is_locked(qc_directory + '/__QC__/QC.csv', 'QC.csv')
+    is_locked(qc_directory + '/latest_QC.csv', 'latest_QC.csv')
 
     for file in files:
 
         raw = RawQuant(directory + '/' + file)
 
-        raw.GenMetrics(qc_directory + '/__QC__/metrics/' + file[:-4] + '_metrics.txt')
+        raw.GenMetrics(qc_directory + '/metrics/' + file[:-4] + '_metrics.txt')
 
         update_qc_csv(qc_directory, file)
 
 
 def to_do_list(directory, qc_directory):
 
-    qc = pd.read_csv(qc_directory + '/__QC__/QC.csv')
+    qc = pd.read_csv(qc_directory + '/latest_QC.csv')
 
     all_files = [f for f in os.listdir(directory) if f[-4:] == '.raw']
 
@@ -86,10 +91,12 @@ def is_locked(pathtofile, filename):
 
 def update_qc_csv(directory, qc_directory, rawfilename):
 
-    metrics = pd.read_table(qc_directory + '/__QC__/metrics/' + rawfilename[:-4] + '_metrics.txt',
+    metrics = pd.read_table(qc_directory + '/metrics/' + rawfilename[:-4] + '_metrics.txt',
                             header=None, index_col=0).transpose()
 
-    qc = pd.read_csv(qc_directory + '/__QC__/QC.csv')
+    is_locked(qc_directory + '/latest_QC.csv', 'latest_QC.csv')
+
+    qc = pd.read_csv(qc_directory + '/latest_QC.csv')
 
     qc.loc[rawfilename, 'RawFile'] = metrics.loc[1, 'Raw file:']
     qc.loc[rawfilename, 'DateAdded'] = time.ctime()
@@ -113,7 +120,9 @@ def update_qc_csv(directory, qc_directory, rawfilename):
         metrics.columns else None
     qc.loc[rawfilename, 'MedianBaseToBaseRTWidth(s)'] = metrics.loc[1, 'Median base to base RT width (s):']
 
-    qc.to_csv(qc_directory + '/__QC__/QC.csv', index=False)
+    is_locked(qc_directory + '/latest_QC.csv', 'latest_QC.csv')
+    qc.to_csv(qc_directory + '/QC.csv', index=False)
+    qc.to_csv(qc_directory + '/csv/{}_QC.csv'.format(time.ctime().replace('  ', '_').replace(' ', '_')), index=False)
 
 
 class WatcherGUI:
