@@ -7,9 +7,10 @@ setup(
     data_files=[('lib/site-packages/RawQuant/RawFileReader', ['RawQuant/RawFileReader/ThermoFisher.CommonCore.BackgroundSubtraction.dll',
                                                               'RawQuant/RawFileReader/ThermoFisher.CommonCore.Data.dll',
                                                               'RawQuant/RawFileReader/ThermoFisher.CommonCore.MassPrecisionEstimator.dll',
-                                                              'RawQuant/RawFileReader/ThermoFisher.CommonCore.RawFileReader.dll'])],
+                                                              'RawQuant/RawFileReader/ThermoFisher.CommonCore.RawFileReader.dll',
+                                                              'RawFileReaderLicense.doc'])],
     include_package_data=True,
-    version='0.2.0',
+    version='0.2.2',
     description='Package for extracting scan meta data and quantification information from Thermo .raw files',
     long_description='RawQuant is a Python package for extracting scan meta data and quantification values from ' +
                      'Thermo .raw files.',

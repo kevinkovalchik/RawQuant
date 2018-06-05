@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from tqdm import tqdm
 from collections import OrderedDict as OD
-from re import findall
+from re import findall, IGNORECASE
 import RawQuant.RawFileReader.RawFileReader as RawFileReader
 
 '''
@@ -134,7 +134,8 @@ class RawQuant:
             'MasterScanNumber': False, 'PrecursorCharge': False,
             'QuantMatrix': False, 'MS1Parse': False, 'MS2Parse': False, 'MS3Parse': False,
             'ImpurityMatrix': False, 'CorrectionMatrix': False, 'ImpuritiesCorrected': False,
-            'PrecursorPeaks': False, 'BoxCar': False, 'MassRangeFillTimes': False
+            'PrecursorPeaks': False, 'BoxCar': False, 'MassRangeFillTimes': False, 'NoMonoisotopicMass': False,
+            'TriggerMass': False
         }
 
         # Check if the trailer extra data contains master scan numbers
@@ -145,6 +146,17 @@ class RawQuant:
 
         if 'Master Scan Number:' in labels:
             self.flags['MasterScanNumber'] = True
+
+        # get the isolation window offset, if there is one
+
+        method = self.raw.GetInstrumentMethod(1)
+
+        offset = findall(r'Isolation[ m/z ]*Offset\s*=*\s*(\S+)', method, flags=IGNORECASE)[0]
+
+        if (offset.lower() == 'off') | (offset.lower() == 'false') :
+            offset = 0.0
+
+        self.MetaData['Offset'] = float(offset)
 
         self.Initialized = True
 
@@ -220,7 +232,6 @@ class RawQuant:
 
         self.flags['MS' + str(order) + 'TrailerExtra'] = True
 
-
     def ExtractPrecursorMass(self):
 
         if not self.open:
@@ -230,7 +241,6 @@ class RawQuant:
             raise ValueError('Analysis order must be a positive integer greater than 1')
 
         if not self.flags['MS2TrailerExtra']:
-
             self.ExtractTrailerExtra(2)
 
         print(self.RawFile + ': Extracting precursor masses')
@@ -241,22 +251,34 @@ class RawQuant:
 
         if 0 in masses.values():
 
-            method = self.raw.GetInstrumentMethod(1)
+            self.flags['NoMonoisotopicMass'] = True
 
-            try:
-                offset = findall(r'Scan ddMSnScan[\S\s]+MSn Level = 2[\S\s]+Isolation m/z Offset = (\S+)[\S\s]+Scan'
-                                 r'Description =', method)[0]
-            except IndexError:
-                offset = findall(r'Isolation offset[\s]+(\S+)', method)[0]
-                
-            offset = float(offset)
-
-            masses = OD((str(x), self.raw.GetScanEventForScanNumber(x).Reactions[0].PrecursorMass - offset) for x in
-                        scans)
+            masses = OD((str(x), self.raw.GetScanEventForScanNumber(x).Reactions[0].PrecursorMass -
+                         self.MetaData['Offset']) for x in scans)
 
         self.data['PrecursorMass'] = masses
 
         self.flags['PrecursorMass'] = True
+
+    def ExtractTriggerMass(self):
+
+        if not self.open:
+            raise Exception(self.RawFile + ' is not accessible. Reopen the file')
+
+        if self.MetaData['AnalysisOrder'] < 2:
+            raise ValueError('Analysis order must be a positive integer greater than 1')
+
+        if self.flags['NoMonoisotopicMass'] & self.flags['PrecursorMass']:
+            self.data['TriggerMass'] = self.data['PrecursorMass']
+            return
+
+        scans = self.info.loc[(self.info['MSOrder'] == 2), 'ScanNum']
+
+        self.data['TriggerMass'] = OD((str(x), self.raw.GetScanEventForScanNumber(x).Reactions[0].PrecursorMass -
+                                       self.MetaData['Offset']) for x in scans)
+
+        self.flags['TriggerMass'] = True
+
 
     def ExtractRetentionTimes(self, order):
 
@@ -1032,8 +1054,8 @@ class RawQuant:
         if self.flags['MS2PrecursorScan'] == False:
             self.ExtractPrecursorScans()
 
-        if self.flags['PrecursorMass'] == False:
-            self.ExtractPrecursorMass()
+        if self.flags['TriggerMass'] == False:
+            self.ExtractTriggerMass()
 
         if self.flags['MS1LabelData'] == False:
             self.ExtractMSData(1, 'LabelData')
@@ -1074,7 +1096,7 @@ class RawQuant:
 
             MS1scan = self.data['MS2PrecursorScan'][scan]
 
-            precMass = self.data['PrecursorMass'][scan]
+            precMass = self.data['TriggerMass'][scan]
 
             # find the leading edge of peak
 
@@ -1813,6 +1835,9 @@ class RawQuant:
 
             print(self.RawFile+': Writing MGF file')
             f.write(b'\nMASS=Monoisotopic')
+
+            if self.flags['NoMonoisotopicMass']:
+                f.write(b'\nWARNING!!!! PRECURSOR MASSES ARE NOT MONOISOTOPIC!!!!')
             f.write(b'\n')
 
             MassLists = self.data['MS2'+LookFor]
@@ -1841,6 +1866,11 @@ class RawQuant:
                     np.savetxt(f, scanData[:, :2], delimiter=' ', fmt="%.6f")
 
                 f.write(b'END IONS\n')
+
+        if self.flags['NoMonoisotopicMass']:
+
+            print('WARNING!!!!\n'
+                  'PRECURSOR MONOISOTOPIC M/Z VALUES WERE NOT AVAILABLE!')
 
     def SaveData(self, method='quant', parse_order=None, filename='TMTQuantData.txt', delimiter='\t'):
 
@@ -1913,6 +1943,8 @@ class RawQuant:
             f.write('Raw file:\t' + self.MetaData['DataFile'])
             f.write('\nInstrument:\t' + self.MetaData['InstName'])
             f.write('\nMS order:\t' + str(self.MetaData['AnalysisOrder']))
+            for O in range(1, int(order)+1):
+                f.write('\nMS{} analyzer type:\t{}'.format(str(O), self.MetaData['AnalyzerTypes'][str(O)]))
             f.write('\nTotal analysis time (min):\t' + str(mins))
 
             if order in ['1', '2', '3']:
