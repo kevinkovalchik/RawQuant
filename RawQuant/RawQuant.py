@@ -249,6 +249,10 @@ class RawQuant:
             except IndexError:
                 offset = findall(r'Isolation offset[\s]+(\S+)', method)[0]
 
+            if offset.lower() == "false":
+
+                offset = 0
+
             offset = float(offset)
 
             masses = OD((str(x), self.raw.GetScanEventForScanNumber(x).Reactions[0].PrecursorMass - offset) for x in
@@ -1921,6 +1925,8 @@ class RawQuant:
             f.write('Raw file:\t' + self.MetaData['DataFile'])
             f.write('\nInstrument:\t' + self.MetaData['InstName'])
             f.write('\nMS order:\t' + str(self.MetaData['AnalysisOrder']))
+            for O in range(1, int(order)+1):
+                f.write('\nMS{} analyzer type:\t{}'.format(str(O), self.MetaData['AnalyzerTypes'][str(O)]))
             f.write('\nTotal analysis time (min):\t' + str(mins))
 
             if order in ['1', '2', '3']:
