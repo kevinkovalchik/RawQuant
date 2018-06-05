@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file.
 0.0 values for the Monoisotopic M/Z. When this happens, we now report the mass value that triggers
 the data-dependent scan. Not ideal, so future improvement might be recalculating the precursor mass.
 
+-Added analyzer types for each MS order to the metrics file (e.g. FTMS, ITMS)
+
 ## [0.2.0]
 -Metrics files are now tab-delimited
 
