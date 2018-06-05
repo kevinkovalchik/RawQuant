@@ -8,7 +8,9 @@ RawQuant is now live on the [Python Package Index](https://pypi.python.org/pypi/
 
 ## News and Updates
 
- * [RawQuant v0.2.1](https://pypi.python.org/pypi/RawQuant/0.2.1) released on PyPI (June 5, 2018)
+ * Oops! There were some commits that didn't get pushed before v0.2.1 was uploaded to PyPI! This has been addressed.
+ [RawQuant v0.2.2](https://pypi.python.org/pypi/RawQuant/0.2.2) is the replacement. (June 5, 2018)
+ * ~~[RawQuant v0.2.1](https://pypi.python.org/pypi/RawQuant/0.2.1) released on PyPI (June 5, 2018)~~
  * RawQuant has migrated from MSFileReader to the .NET implementation of Thermo's [RawFileReader]( http://planetorbitrap.com/rawfilereader#.WtfhwpPwbAw)! (RawFileReader reading tool. Copyright © 2016 by Thermo Fisher Scientific, Inc. All rights reserved.)
  This means RawQuant is no longer dependent on an installation of MSFileReader, and can run on Windows, Linux and MacOS systems. A new requirement is the .NET framework on Windows or Mono on Linux. Please report any issues you find.
  * The [paper describing the RawQuant tool](https://pubs.acs.org/doi/10.1021/acs.jproteome.8b00072) is now available: .
