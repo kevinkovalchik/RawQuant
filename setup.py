@@ -11,7 +11,7 @@ setup(
                                                               'RawQuant/RawFileReader/ThermoFisher.CommonCore.RawFileReader.dll',
                                                               'RawQuant/RawFileReader/RawFileReaderLicense.txt'])],
     include_package_data=True,
-    version='0.2.2',
+    version='0.2.3',
     description='Package for extracting scan meta data and quantification information from Thermo .raw files',
     long_description='RawQuant is a Python package for extracting scan meta data and quantification values from ' +
                      'Thermo .raw files.',
