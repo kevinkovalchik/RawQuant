@@ -9,7 +9,7 @@ setup(
                                                               'RawQuant/RawFileReader/ThermoFisher.CommonCore.Data.dll',
                                                               'RawQuant/RawFileReader/ThermoFisher.CommonCore.MassPrecisionEstimator.dll',
                                                               'RawQuant/RawFileReader/ThermoFisher.CommonCore.RawFileReader.dll',
-                                                              'RawFileReaderLicense.txt'])],
+                                                              'RawQuant/RawFileReader/RawFileReaderLicense.txt'])],
     include_package_data=True,
     version='0.2.2',
     description='Package for extracting scan meta data and quantification information from Thermo .raw files',
