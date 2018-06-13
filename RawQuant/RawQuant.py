@@ -49,17 +49,10 @@ class RawQuant:
         self.RawFile = RawFile
 
         print('Opening ' + RawFile + ' and initializing')
-        try:
-            self.raw = RawFileReader.open_raw_file(RawFile)
-        except:
-            self.raw = None
-            raise Exception(RawFile + ' does not appear to be a valid .raw file.'
-                                      'Please check path and file and try again.')
 
-        try:
-            self.raw.SelectInstrument(0, 1)
-        except:
-            raise Exception('MS detector not found in raw file. Is it an MS file?')
+        self.raw = RawFileReader.open_raw_file(RawFile)
+
+        self.raw.SelectInstrument(0, 1)
 
         self.open = True
 
