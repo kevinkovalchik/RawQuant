@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [unreleased]
+
+## [0.2.3]
 -When "Monoisotopic Precursor Selection" is turned off during MS acquisition, raw files contain
 0.0 values for the Monoisotopic M/Z. When this happens, we now report the mass value that triggers
 the data-dependent scan. Not ideal, so future improvement might be recalculating the precursor mass.
