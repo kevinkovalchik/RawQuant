@@ -2,4 +2,5 @@ include *.py
 include RawQuant/*.py
 include RawQuant/RawFileReader/*.py
 include RawQuant/RawFileReader/*.dll
+include RawQuant/RawFileReader/monomac/*.dll
 include RawQuant/RawFileReader/*.txt

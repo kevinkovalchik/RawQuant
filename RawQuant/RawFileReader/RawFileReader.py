@@ -1,12 +1,18 @@
 import clr
-clr.AddReference('RawQuant/RawFileReader/ThermoFisher.CommonCore.Data')
+import sys
+
+if (sys.platform is 'linux') | (sys.platform is 'darwin'):  # check if we are on a Linux or mac OS X system
+    clr.AddReference('RawQuant/RawFileReader/monomac/ThermoFisher.CommonCore.Data')
+else:
+    clr.AddReference('RawQuant/RawFileReader/ThermoFisher.CommonCore.Data')
+
 from ThermoFisher.CommonCore.Data import Business
 from RawQuant.RawFileReader.converter import asNumpyArray
 from tqdm import tqdm
 from collections import OrderedDict as OD
 import numpy as np
 
-'''
+r'''
 single_thread_accessor = Business.RawFileReaderFactory.ReadFile('File here')
 
 thread_manager = Business.RawFileReaderFactory.CreateThreadManager('File here')
