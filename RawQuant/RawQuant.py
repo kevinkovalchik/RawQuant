@@ -3,6 +3,7 @@ import numpy as np
 from tqdm import tqdm
 from collections import OrderedDict as OD
 from re import findall, IGNORECASE
+import sys
 import RawQuant.RawFileReader.RawFileReader as RawFileReader
 
 '''
@@ -141,13 +142,20 @@ class RawQuant:
             self.flags['MasterScanNumber'] = True
 
         # get the isolation window offset, if there is one
+        # if the system is linux, this seems to fail, so for now we will check that and skip if it is so
 
-        method = self.raw.GetInstrumentMethod(1)
+        if (sys.platform is 'linux') | (sys.platform is 'darwin'):
 
-        offset = findall(r'Isolation[ m/z ]*Offset\s*=*\s*(\S+)', method, flags=IGNORECASE)[0]
-
-        if (offset.lower() == 'off') | (offset.lower() == 'false') :
             offset = 0.0
+
+        else:
+
+            method = self.raw.GetInstrumentMethod(1)
+
+            offset = findall(r'Isolation[ m/z ]*Offset\s*=*\s*(\S+)', method, flags=IGNORECASE)[0]
+
+            if (offset.lower() == 'off') | (offset.lower() == 'false') :
+                offset = 0.0
 
         self.MetaData['Offset'] = float(offset)
 
