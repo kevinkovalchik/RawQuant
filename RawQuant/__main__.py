@@ -276,7 +276,10 @@ if __name__ == "__main__":
 
         ### qc subparser section ###
 
-        QC.add_argument('-d', '--directory', help='specify directory to watch for qc purposes.')
+        RAWFILES_QC = QC.add_mutually_exclusive_group(required=True)
+
+        RAWFILES_QC.add_argument('-d', '--directory', help='specify directory to watch for qc purposes.')
+        RAWFILES_QC.add_argument('-f', '--rawfile', help='specify path to file to add to QC data.')
         QC.add_argument('-q', '--qc_directory', help='specify directory to contain qc output data.')
 
         args = parser.parse_args()
@@ -885,5 +888,5 @@ if __name__ == "__main__":
 
     if args.subparser_name == 'qc':
 
-        quality_control.do_qc(args.directory, args.qc_directory)
+        quality_control.do_qc(qc_directory=args.qc_directory, path_to_file=args.rawfile, directory=args.directory)
 

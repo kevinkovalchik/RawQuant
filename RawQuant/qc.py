@@ -1,6 +1,7 @@
 import os
 import time
 import re
+import shutil
 import tkinter as tk
 from tkinter import messagebox
 import pandas as pd
@@ -13,7 +14,8 @@ def check_qc_directory(qc_directory):
         print('The QC directory must end with .qc (e.g. qc_folder.qc)')
         return
 
-    if not os.path.isfile(qc_directory + '/__QC__'):  # check if a QC directory already exists
+    if not os.path.isdir(qc_directory):  # check if a QC directory already exists
+        os.mkdir(qc_directory)
         open(qc_directory + '/__QC__', 'a').close()
         open(qc_directory + '/latest_QC.csv', 'a').close()
         with open(qc_directory + '/latest_QC.csv', 'a') as f:  # make an empty QC.csv file to store QC data
@@ -39,90 +41,116 @@ def check_qc_directory(qc_directory):
         os.mkdir(qc_directory + '/csv/')  # make a csv folder in the QC folder, csv files go here
 
 
-def do_qc(directory, qc_directory):
+def do_qc(qc_directory, path_to_file=None, directory=None):
 
     check_qc_directory(qc_directory)
 
-    files = to_do_list(directory)
+    if directory:
 
-    if len(files) == 0:
+        files = to_do_list(directory=directory, qc_directory=qc_directory)
 
-        print('\nNo new files to QC!')
+        if len(files) == 0:
 
-    is_locked(qc_directory + '/latest_QC.csv', 'latest_QC.csv')
+            print('\nNo new files to QC!')
 
-    for file in files:
+        is_locked(qc_directory + '/latest_QC.csv', 'latest_QC.csv')
 
-        raw = RawQuant(directory + '/' + file)
+        for file in files:
+
+            file = os.path.basename(file)
+
+            raw = RawQuant(directory + '/' + file)
+
+            raw.GenMetrics(qc_directory + '/metrics/' + file[:-4] + '_metrics.txt')
+
+            update_qc_csv(qc_directory, file)
+
+    if path_to_file:
+
+        file = os.path.basename(path_to_file)
+
+        is_locked(path_to_file=qc_directory + '/latest_QC.csv', filename='latest_QC.csv')
+
+        raw = RawQuant(path_to_file)
 
         raw.GenMetrics(qc_directory + '/metrics/' + file[:-4] + '_metrics.txt')
 
-        update_qc_csv(qc_directory, file)
+        update_qc_csv(qc_directory=qc_directory, raw_file_name=file)
 
 
 def to_do_list(directory, qc_directory):
 
     qc = pd.read_csv(qc_directory + '/latest_QC.csv')
 
-    all_files = [f for f in os.listdir(directory) if f[-4:] == '.raw']
+    all_files = [os.path.normpath(directory + '/' + f) for f in os.listdir(directory) if f[-4:] == '.raw']
 
-    done_files = qc['RawFile'].tolist()
+    done_files = [os.path.normpath(path) for path in qc['RawFile'].tolist()]
 
     return [f for f in all_files if f not in done_files]
 
 
-def is_locked(pathtofile, filename):
+def is_locked(path_to_file, filename):
 
     failure = True
 
     while failure:
 
         try:
-            open(pathtofile, 'a').close()
+            open(path_to_file, 'a').close()
             failure = False
 
         except IOError:
             root = tk.Tk()
+            root.attributes("-topmost", True)
             root.withdraw()
             messagebox.showerror('File is open!', 'The ' + filename + ' file appears to be open. Close it and press OK'
-                                                                      ' to continue.')
+                                                                      ' to continue.',)
             failure = True
 
 
-def update_qc_csv(directory, qc_directory, rawfilename):
+def update_qc_csv(qc_directory, raw_file_name):
 
-    metrics = pd.read_table(qc_directory + '/metrics/' + rawfilename[:-4] + '_metrics.txt',
+    metrics = pd.read_table(qc_directory + '/metrics/' + raw_file_name[:-4] + '_metrics.txt',
                             header=None, index_col=0).transpose()
 
     is_locked(qc_directory + '/latest_QC.csv', 'latest_QC.csv')
 
     qc = pd.read_csv(qc_directory + '/latest_QC.csv')
 
-    qc.loc[rawfilename, 'RawFile'] = metrics.loc[1, 'Raw file:']
-    qc.loc[rawfilename, 'DateAdded'] = time.ctime()
-    qc.loc[rawfilename, 'TotalAnalysisTime(min)'] = metrics.loc[1, 'Total analysis time (min):']
-    qc.loc[rawfilename, 'TotalScans'] = metrics.loc[1, 'Total scans:']
-    qc.loc[rawfilename, 'MS1Scans'] = metrics.loc[1, 'MS1 scans:']
-    qc.loc[rawfilename, 'MS2Scans'] = metrics.loc[1, 'MS2 scans:'] if 'MS2 scans:' in metrics.columns else None
-    qc.loc[rawfilename, 'MS3Scans'] = metrics.loc[1, 'MS3 scans:'] if 'MS3 scans:' in metrics.columns else None
-    qc.loc[rawfilename, 'MeanTopN'] = metrics.loc[1, 'Mean topN:']
-    qc.loc[rawfilename, 'MS1Scans/sec'] = metrics.loc[1, 'MS1 scans/sec:']
-    qc.loc[rawfilename, 'MS2Scans/sec'] = metrics.loc[1, 'MS2 scans/sec:'] if 'MS2 scans/sec:' in metrics.columns \
-        else None
-    qc.loc[rawfilename, 'MeanDutyCycle(s)'] = metrics.loc[1, 'Mean duty cycle:']
-    qc.loc[rawfilename, 'MedianMS1IonInjectionIime(ms)'] = metrics.loc[1, 'MS1 median ion injection time (ms):']
-    qc.loc[rawfilename, 'MedianMS2IonInjectionTime(ms)'] = metrics.loc[1, 'MS2 median ion injection time (ms):'] if \
-        'MS1 median ion injection time (ms):' in metrics.columns else None
-    qc.loc[rawfilename, 'MedianMS3IonInjectionTime(ms)'] = metrics.loc[1, 'MS2 median ion injection time (ms):'] if \
-        'MS1 median ion injection time (ms):' in metrics.columns else None
-    qc.loc[rawfilename, 'MedianPrecursorIntensity'] = metrics.loc[1, 'Median precursor intensity:']
-    qc.loc[rawfilename, 'MedianMS2Intensity'] = metrics.loc[1, 'Median MS2 intensity:'] if 'Median MS2 intensity:' in \
-        metrics.columns else None
-    qc.loc[rawfilename, 'MedianBaseToBaseRTWidth(s)'] = metrics.loc[1, 'Median base to base RT width (s):']
+    qc.index = qc['RawFile']
 
     is_locked(qc_directory + '/latest_QC.csv', 'latest_QC.csv')
-    qc.to_csv(qc_directory + '/QC.csv', index=False)
-    qc.to_csv(qc_directory + '/csv/{}_QC.csv'.format(time.ctime().replace('  ', '_').replace(' ', '_')), index=False)
+
+    with open(qc_directory + '/latest_QC.csv', 'r') as f:
+        text = f.readlines()
+
+    with open(qc_directory + '/latest_QC.csv', 'a') as f:
+
+        if text[-1][-1] != '\n':
+            f.write('\n')
+
+        f.write(os.path.normpath(metrics.loc[1, 'Raw file:']) + ',')
+        f.write(time.ctime() + ',')
+        f.write(metrics.loc[1, 'Total analysis time (min):'] + ',')
+        f.write(metrics.loc[1, 'Total scans:'] + ',')
+        f.write(metrics.loc[1, 'MS1 scans:'] + ',')
+        f.write(metrics.loc[1, 'MS2 scans:'] + ',' if 'MS2 scans:' in metrics.columns else ',')
+        f.write(metrics.loc[1, 'MS3 scans:'] + ',' if 'MS3 scans:' in metrics.columns else ',')
+        f.write(metrics.loc[1, 'Mean topN:'] + ',')
+        f.write(metrics.loc[1, 'MS1 scans/sec:'] + ',')
+        f.write(metrics.loc[1, 'MS2 scans/sec:'] + ',' if 'MS2 scans/sec:' in metrics.columns else ',')
+        f.write(metrics.loc[1, 'Mean duty cycle:'] + ',')
+        f.write(metrics.loc[1, 'MS1 median ion injection time (ms):'] + ',')
+        f.write(metrics.loc[1, 'MS2 median ion injection time (ms):'] + ',' if 'MS2 median ion injection time (ms):'
+                                                                               in metrics.columns else ',')
+        f.write(metrics.loc[1, 'MS3 median ion injection time (ms):'] + ',' if 'MS3 median ion injection time (ms):'
+                                                                               in metrics.columns else ',')
+        f.write(metrics.loc[1, 'Median precursor intensity:'] + ',')
+        f.write(metrics.loc[1, 'Median MS2 intensity:'] + ',' if 'Median MS2 intensity:' in metrics.columns else ',')
+        f.write(metrics.loc[1, 'Median precursor base to base RT width (s):'])
+
+    shutil.copyfile(qc_directory + '/latest_QC.csv', qc_directory + '/csv/{}_QC.csv'.
+                    format(time.ctime().replace('  ', '_').replace(' ', '_').replace(':', '')))
 
 
 class WatcherGUI:
