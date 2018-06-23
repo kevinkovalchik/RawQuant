@@ -201,6 +201,9 @@ if __name__ == "__main__":
                 '>python -m RawQuant quant -f rawFile.raw -r TMT0 -mgf -mco 128\n' +
                 'cuts off all MS2 ions < m/z 128 when making the mgf file.')
 
+        quant.add_argument('-offset', '--isolation_window_offset', help=
+                           'Specify the isolation window offset, if one was used.')
+
         ### Examples subparser section ###
 
         examples.add_argument('-m','--multiple', action='store_true', help =
@@ -266,6 +269,9 @@ if __name__ == "__main__":
         'Specify a low mass cutoff during mgf file generation. Example:\n' +
         '>python -m RawQuant parse -f rawFile.raw -o 0 -mgf -mco 128\n' +
         'cuts off all MS2 ions < m/z 128 when making the mgf file.')
+
+        parse.add_argument('-offset', '--isolation_window_offset', help=
+        'Specify the isolation window offset, if one was used.')
 
         args = parser.parse_args()
 
@@ -712,7 +718,7 @@ if __name__ == "__main__":
         for msFile in files:
 
             filename = msFile[:-4]+'_ParseData.txt'
-            data = RawQuant(msFile,disable_bar=suppress_bar)
+            data = RawQuant(msFile, disable_bar=suppress_bar, offset=args.isolation_window_offset)
 
             if args.boxcar:
 
@@ -758,7 +764,7 @@ if __name__ == "__main__":
 
         elif args.multiple is not None:
 
-            files = np.loadtxt(args.multiple,dtype=str).tolist()
+            files = np.loadtxt(args.multiple, dtype=str).tolist()
 
         elif args.directory is not None:
 
@@ -822,7 +828,7 @@ if __name__ == "__main__":
             for msFile in files:
 
                 filename = msFile[:-4]+'_QuantData.txt'
-                data = RawQuant(msFile,order=order,disable_bar=suppress_bar)
+                data = RawQuant(msFile, order=order, disable_bar=suppress_bar, offset=args.isolation_window_offset)
 
                 if args.boxcar:
                     data.SetAsBoxcar()
@@ -869,4 +875,5 @@ if __name__ == "__main__":
 
             Parallel(n_jobs=num_cores)(delayed(func)(msFile=msFile, reagents=reagents, mgf=args.generate_mgf,
                                                      interference=args.quantify_interference, impurities=impurities,
-                                                     metrics=args.metrics, boxcar=args.boxcar) for msFile in files)
+                                                     metrics=args.metrics, boxcar=args.boxcar,
+                                                     offset=args.isolation_window_offset) for msFile in files)

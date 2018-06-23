@@ -5,6 +5,7 @@ from collections import OrderedDict as OD
 from re import findall, IGNORECASE
 import sys
 import RawQuant.RawFileReader.RawFileReader as RawFileReader
+from RawQuant.PeakDeconvolution import IsotopeProfile
 
 '''
 RawQuant provides hassle-free extraction of quantification information
@@ -23,9 +24,17 @@ provided for this usage.
 
 class RawQuant:
 
-    def __init__(self, RawFile, order='auto', disable_bar=False):
+    def __init__(self, RawFile, order='auto', disable_bar=False, offset=None):
 
         self.disable_bar = disable_bar
+
+        # create a dictionary to contain metadata
+        self.MetaData = dict()
+
+        if offset is not None:
+            self.MetaData['Offset'] = float(offset)
+        else:
+            self.MetaData['Offset'] = 0.0
 
         # check that 'order' is the correct type
         if type(order) == str:
@@ -65,9 +74,6 @@ class RawQuant:
                                      self.raw.RunHeaderEx.LastSpectrum + 1)
 
         self.info['MSOrder'] = self.info['ScanNum'].apply(lambda x: self.raw.GetScanEventForScanNumber(x).MsOrder)
-
-        # create a dictionary to contain metadata
-        self.MetaData = {}
 
         # infer whether this is a MS2 or MS3 experiment, or set user-override
         if order == 'auto':
@@ -140,24 +146,6 @@ class RawQuant:
 
         if 'Master Scan Number:' in labels:
             self.flags['MasterScanNumber'] = True
-
-        # get the isolation window offset, if there is one
-        # if the system is linux, this seems to fail, so for now we will check that and skip if it is so
-
-        if (sys.platform is 'linux') | (sys.platform is 'darwin'):
-
-            offset = 0.0
-
-        else:
-
-            method = self.raw.GetInstrumentMethod(1)
-
-            offset = findall(r'Isolation[ m/z ]*Offset\s*=*\s*(\S+)', method, flags=IGNORECASE)[0]
-
-            if (offset.lower() == 'off') | (offset.lower() == 'false') :
-                offset = 0.0
-
-        self.MetaData['Offset'] = float(offset)
 
         self.Initialized = True
 
@@ -232,6 +220,26 @@ class RawQuant:
                                                                                              disable_bar=self.disable_bar)
 
         self.flags['MS' + str(order) + 'TrailerExtra'] = True
+
+    def ExtractPrecursorMassCharge(self):
+
+        if not self.flags['TriggerMass']:
+
+            self.ExtractTriggerMass()
+
+        if not self.flags['MS1LabelData']:
+
+            self.ExtractMSData(1, dtype='LabelData')
+
+        isotopeFactory = IsotopeProfile()
+
+        scans = self.info.loc[(self.info['MSOrder'] == 2), 'ScanNum']
+
+        MassCharge = OD((str(x), isotopeFactory.match(self.data['TriggerMass'][str(x)],
+                                                      self.data['MS1LabelData'][str(self.data['MS2PrecursorScan'][str(
+                                                          x)])],str(x)))for x in tqdm(scans))
+
+        self.data['MassCharge'] = MassCharge
 
     def ExtractPrecursorMass(self):
 
@@ -1655,7 +1663,13 @@ class RawQuant:
             df['PrecursorMass'] = [self.data['PrecursorMass'][str(x)] for x in
                                    df['MS2ScanNumber']]
 
+            self.ExtractPrecursorMassCharge()
+
+            df['NewPrecursorMass'] = [self.data['MassCharge'][str(x)]['monoisotopic m/z'] for x in df['MS2ScanNumber']]
+
             df['PrecursorCharge'] = [self.data['PrecursorCharge'][str(x)] for x in df['MS2ScanNumber']]
+
+            df['NewPrecursorCharge'] = [self.data['MassCharge'][str(x)]['charge'] for x in df['MS2ScanNumber']]
 
             df['PrecursorPickedIntensity'] = [self.data['PrecursorIntensities'][str(x)]['Picked'] for x in
                                               df['MS2ScanNumber']]
@@ -2026,9 +2040,9 @@ class RawQuant:
 
 
 # define a function to be used in parallelism
-def func(msFile, reagents, mgf, interference, impurities, metrics, boxcar):
+def func(msFile, reagents, mgf, interference, impurities, metrics, boxcar, offset):
     filename = msFile[:-4] + '_QuantData.txt'
-    data = RawQuant(msFile, disable_bar=True)
+    data = RawQuant(msFile, disable_bar=True, offset=offset)
 
     if boxcar:
         data.SetAsBoxcar()
