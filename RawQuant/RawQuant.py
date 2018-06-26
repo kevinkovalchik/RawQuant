@@ -231,6 +231,10 @@ class RawQuant:
 
             self.ExtractMSData(1, dtype='LabelData')
 
+        if not self.flags['MS2PrecursorScan']:
+
+            self.ExtractPrecursorScans()
+
         isotopeFactory = IsotopeProfile()
 
         scans = self.info.loc[(self.info['MSOrder'] == 2), 'ScanNum']
@@ -1660,8 +1664,10 @@ class RawQuant:
                 self.data['PrecursorElution'][str(x)][1] - self.data['PrecursorElution'][str(x)][0] for x in
                 df['MS2ScanNumber']]
 
-            df['PrecursorMass'] = [self.data['PrecursorMass'][str(x)] for x in
-                                   df['MS2ScanNumber']]
+            self.ExtractTriggerMass()
+            df['ParentMass'] = [self.data['TriggerMass'][str(x)] for x in df['MS2ScanNumber']]
+
+            df['PrecursorMass'] = [self.data['PrecursorMass'][str(x)] for x in df['MS2ScanNumber']]
 
             self.ExtractPrecursorMassCharge()
 
@@ -1670,6 +1676,8 @@ class RawQuant:
             df['PrecursorCharge'] = [self.data['PrecursorCharge'][str(x)] for x in df['MS2ScanNumber']]
 
             df['NewPrecursorCharge'] = [self.data['MassCharge'][str(x)]['charge'] for x in df['MS2ScanNumber']]
+
+            df['Score'] = [self.data['MassCharge'][str(x)]['score'] for x in df['MS2ScanNumber']]
 
             df['PrecursorPickedIntensity'] = [self.data['PrecursorIntensities'][str(x)]['Picked'] for x in
                                               df['MS2ScanNumber']]

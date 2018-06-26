@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from scipy.spatial.distance import braycurtis
 
 
 class IsotopeProfile:
@@ -55,84 +56,119 @@ class IsotopeProfile:
 
     def generate_profiles(self, mass: float):
 
-        R1S0 = self.ratio(mass=mass, sulfurs='S0', ratio='R1')
-        R2S0 = self.ratio(mass=mass, sulfurs='S0', ratio='R2')
-        R3S0 = self.ratio(mass=mass, sulfurs='S0', ratio='R3')
-        # R4S0 = self.ratio(mass=mass, sulfurs='S0', ratio='R4')
-        # R5S0 = self.ratio(mass=mass, sulfurs='S0', ratio='R5')
-        # R6S0 = self.ratio(mass=mass, sulfurs='S0', ratio='R6')
+        S0 = [1.0]
+        S0 += [self.ratio(mass=mass, sulfurs='S0', ratio='R1')]
+        S0 += [self.ratio(mass=mass, sulfurs='S0', ratio='R2')]
+        S0 += [self.ratio(mass=mass, sulfurs='S0', ratio='R3')]
+        if (self.coeff['S2']['R4range'][0] < mass) & (self.coeff['S2']['R4range'][1] > mass):
+            S0 += [self.ratio(mass=mass, sulfurs='S0', ratio='R4')]
+        if (self.coeff['S2']['R5range'][0] < mass) & (self.coeff['S2']['R5range'][1] > mass):
+            S0 += [self.ratio(mass=mass, sulfurs='S0', ratio='R5')]
+        if (self.coeff['S2']['R6range'][0] < mass) & (self.coeff['S2']['R6range'][1] > mass):
+            S0 += [self.ratio(mass=mass, sulfurs='S0', ratio='R6')]
 
-        R1S1 = self.ratio(mass=mass, sulfurs='S1', ratio='R1')
-        R2S1 = self.ratio(mass=mass, sulfurs='S1', ratio='R2')
-        R3S1 = self.ratio(mass=mass, sulfurs='S1', ratio='R3')
-        # R4S1 = self.ratio(mass=mass, sulfurs='S1', ratio='R4')
-        # R5S1 = self.ratio(mass=mass, sulfurs='S1', ratio='R5')
-        # R6S1 = self.ratio(mass=mass, sulfurs='S1', ratio='R6')
+        S0 = [S0[x] * S0[x-1] if x > 0 else 1.0 for x in range(len(S0))]
 
-        R1S2 = self.ratio(mass=mass, sulfurs='S2', ratio='R1')
-        R2S2 = self.ratio(mass=mass, sulfurs='S2', ratio='R2')
-        R3S2 = self.ratio(mass=mass, sulfurs='S2', ratio='R3')
-        # R4S2 = self.ratio(mass=mass, sulfurs='S2', ratio='R4')
-        # R5S2 = self.ratio(mass=mass, sulfurs='S2', ratio='R5')
-        # R6S2 = self.ratio(mass=mass, sulfurs='S2', ratio='R6')
+        S1 = [1.0]
+        S1 += [self.ratio(mass=mass, sulfurs='S1', ratio='R1')]
+        S1 += [self.ratio(mass=mass, sulfurs='S1', ratio='R2')]
+        S1 += [self.ratio(mass=mass, sulfurs='S1', ratio='R3')]
+        if (self.coeff['S2']['R4range'][0] < mass) & (self.coeff['S2']['R4range'][1] > mass):
+            S1 += [self.ratio(mass=mass, sulfurs='S1', ratio='R4')]
+        if (self.coeff['S2']['R5range'][0] < mass) & (self.coeff['S2']['R5range'][1] > mass):
+            S1 += [self.ratio(mass=mass, sulfurs='S1', ratio='R5')]
+        if (self.coeff['S2']['R6range'][0] < mass) & (self.coeff['S2']['R6range'][1] > mass):
+            S1 += [self.ratio(mass=mass, sulfurs='S1', ratio='R6')]
+        S1 = [S1[x] * S1[x - 1] if x > 0 else 1.0 for x in range(len(S1))]
 
-        return {'S0': np.asarray((1, R1S0, R2S0, R3S0), float),  # R4S0, R5S0, R6S0), float),
-                'S1': np.asarray((1, R1S1, R2S1, R3S1), float),  # , R4S1, R5S1, R6S1), float),
-                'S2': np.asarray((1, R1S2, R2S2, R3S2), float)}  # , R4S2, R5S2, R6S2), float)}
+        S2 = [1.0]
+        S2 += [self.ratio(mass=mass, sulfurs='S2', ratio='R1')]
+        S2 += [self.ratio(mass=mass, sulfurs='S2', ratio='R2')]
+        S2 += [self.ratio(mass=mass, sulfurs='S2', ratio='R3')]
+        if (self.coeff['S2']['R4range'][0] < mass) & (self.coeff['S2']['R4range'][1] > mass):
+            S2 += [self.ratio(mass=mass, sulfurs='S2', ratio='R4')]
+        if (self.coeff['S2']['R5range'][0] < mass) & (self.coeff['S2']['R5range'][1] > mass):
+            S2 += [self.ratio(mass=mass, sulfurs='S2', ratio='R5')]
+        if (self.coeff['S2']['R6range'][0] < mass) & (self.coeff['S2']['R6range'][1] > mass):
+            S2 += [self.ratio(mass=mass, sulfurs='S2', ratio='R6')]
+        S2 = [S2[x] * S2[x - 1] if x > 0 else 1.0 for x in range(len(S2))]
+
+        return {'S0': np.asarray(S0, float),
+                'S1': np.asarray(S1, float),
+                'S2': np.asarray(S2, float)}
 
     def match(self, parent_mass: float, spectrum: np.ndarray, scan: int):
 
-        data = spectrum[(spectrum[:, 0] > parent_mass - 5) & (spectrum[:, 0] < parent_mass + 5), :2]
+        data = spectrum[(spectrum[:, 0] > parent_mass - 5) & (spectrum[:, 0] < parent_mass + 5), :]
 
         scores = dict()
 
         # determine possible charge states
+        '''
         charges = []
 
-        for charge in range(1, 7):
+        for charge in range(2, 5):
 
-            if (np.sum(np.abs(data[:, 0] - (parent_mass - 1.003356 / charge))/parent_mass < 4*10**-6) > 0) | \
-                    (np.sum(np.abs(data[:, 0] - (parent_mass + 1.003356 / charge))/parent_mass < 4*10**-6) > 0):
+            if (np.sum(np.abs(data[:, 0] - (parent_mass - 1.003356 / charge))/parent_mass*10**6 < 4) > 0) | \
+                    (np.sum(np.abs(data[:, 0] - (parent_mass + 1.003356 / charge))/parent_mass*10**6 < 4) > 0):
 
                 charges += [charge]
+        '''
 
         # score profiles
 
         parent_loc = np.argmin(np.abs(data[:, 0] - parent_mass))
+        charges = [data[parent_loc, 5]]
+        data = data[:, :2]
 
-        for charge in range(1, 5):
+        for charge in charges:
 
             current_loc = parent_loc
 
             while True:
+                # print(current_loc)
                 mass = data[current_loc, 0]
                 intensity = data[current_loc, 1]
-                profiles = self.generate_profiles(mass)
+                profiles = self.generate_profiles((mass - 1.007276)*charge)
 
-                masses = np.asarray([mass + 1.003356 / charge * x for x in range(4)])
-                matching_spectrum = np.asarray([data[np.argmin(data[:, 0] - x), :] for x in masses], float)
-                use = np.abs(matching_spectrum[:, 0]/masses)/matching_spectrum[:, 0] < 4*10**-6
+                masses = np.asarray([mass + 1.003356 / charge * x for x in range(len(profiles['S0']))])
+                matching_spectrum = np.asarray([data[np.argmin(np.abs(data[:, 0] - x)), :] for x in masses], float)
+                use = np.abs(matching_spectrum[:, 0]-masses)/matching_spectrum[:, 0]*10**6 < 4
 
-                if np.sum(use)<3:
-                    break
+                last = np.argwhere(use)[-1][0]
 
-                ratios = matching_spectrum[use,1]/(matching_spectrum[use,1][0])[1:]
+                if (np.sum(use[:last+1] == False) > 0) | (parent_mass not in matching_spectrum):
+                    new_loc = np.argmin(np.abs(data[:, 0] - (mass - 1.003356 / charge)))
+
+                    if new_loc == current_loc:
+                        break
+                    elif np.abs((mass - 1.003356/charge) - data[new_loc, 0]) / (mass - 1.003356/charge) * 10 ** 6 > 4:
+                        break
+                    else:
+                        current_loc = new_loc
+                        continue
+
+                ratios = (matching_spectrum[use, 1]/(matching_spectrum[use, 1][0]))
 
                 for sulfur in ('S0', 'S1', 'S2'):
 
-                    predicted_ratios = profiles[sulfur][use][1:]
+                    predicted_ratios = profiles[sulfur][use]
 
                     score = np.sum((predicted_ratios - ratios)**2/predicted_ratios)
+                    #score = braycurtis(predicted_ratios, ratios)
 
                     scores[str(score)] = {'score': score,
                                           'monoisotopic m/z': mass,
                                           'charge': charge}
 
-                new_loc = np.argmin(np.abs(data[:, 0] - (parent_mass + 1.003356)/charge))
-                if new_loc == parent_loc:
+                new_loc = np.argmin(np.abs(data[:, 0] - (mass - 1.003356/charge)))
+                if new_loc == current_loc:
+                    break
+                elif np.abs((mass - 1.003356/charge) - data[new_loc, 0]) / (mass - 1.003356/charge) * 10 ** 6 > 4:
                     break
                 else:
                     current_loc = new_loc
+
         if len(scores) > 0:
             best = np.asarray(list(scores.keys()), float).min()
             return scores[str(best)]
