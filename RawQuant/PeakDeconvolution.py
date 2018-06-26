@@ -99,12 +99,12 @@ class IsotopeProfile:
 
     def match(self, parent_mass: float, spectrum: np.ndarray, scan: int):
 
-        data = spectrum[(spectrum[:, 0] > parent_mass - 5) & (spectrum[:, 0] < parent_mass + 5), :]
+        data = spectrum[(spectrum[:, 0] > parent_mass - 2) & (spectrum[:, 0] < parent_mass + 5), :]
 
         scores = dict()
 
         # determine possible charge states
-        '''
+
         charges = []
 
         for charge in range(2, 5):
@@ -113,14 +113,72 @@ class IsotopeProfile:
                     (np.sum(np.abs(data[:, 0] - (parent_mass + 1.003356 / charge))/parent_mass*10**6 < 4) > 0):
 
                 charges += [charge]
-        '''
+
 
         # score profiles
 
         parent_loc = np.argmin(np.abs(data[:, 0] - parent_mass))
-        charges = [data[parent_loc, 5]]
+        # charges = [data[parent_loc, 5]]
         data = data[:, :2]
 
+        for charge in charges:
+
+            current_loc = parent_loc
+
+            while True:
+                # print(current_loc)
+                mass = data[current_loc, 0]
+                intensity = data[current_loc, 1]
+                profiles = self.generate_profiles((mass - 1.007276)*charge)
+
+                masses = np.asarray([mass + 1.003356 / charge * x for x in range(len(profiles['S0']))])
+                matching_spectrum = np.asarray([data[np.argmin(np.abs(data[:, 0] - x)), :] for x in masses], float)
+                use = np.abs(matching_spectrum[:, 0]-masses)/matching_spectrum[:, 0]*10**6 < 4
+
+                last = np.argmin(use)
+                use[last:] = False
+                matching_spectrum = matching_spectrum[use, :]
+
+                if (last < 3) | (np.sum(np.abs(matching_spectrum-parent_mass)/parent_mass*10**6 < 4) != 1):
+                    new_loc = np.argmin(np.abs(data[:, 0] - (mass - 1.003356 / charge)))
+
+                    if new_loc == current_loc:
+                        break
+                    elif np.abs((mass - 1.003356/charge) - data[new_loc, 0]) / (mass - 1.003356/charge) * 10 ** 6 > 4:
+                        break
+                    else:
+                        current_loc = new_loc
+                        continue
+
+                measured_ratios = data[:, 1] / data[current_loc, 1]
+
+                for sulfur in ('S0', 'S1', 'S2'):
+
+                    predicted_ratios = profiles[sulfur][use]
+
+                    theoretical_ratios = data.copy()
+                    theoretical_ratios[:, 1] = 0
+
+                    for x in range(len(matching_spectrum)):
+                        theoretical_ratios[np.argmin(np.abs(theoretical_ratios[:, 0] - matching_spectrum[x, 0])), 1] =\
+                            predicted_ratios[x]
+
+                    #score = np.sum((theoretical_ratios[:, 1] - measured_ratios)**2/theoretical_ratios[:, 1])
+                    score = braycurtis(theoretical_ratios[:, 1], measured_ratios)
+
+                    scores[str(score)] = {'score': score,
+                                          'monoisotopic m/z': mass,
+                                          'charge': charge,
+                                          'sulfur': sulfur[-1]}
+
+                new_loc = np.argmin(np.abs(data[:, 0] - (mass - 1.003356/charge)))
+                if new_loc == current_loc:
+                    break
+                elif np.abs((mass - 1.003356/charge) - data[new_loc, 0]) / (mass - 1.003356/charge) * 10 ** 6 > 4:
+                    break
+                else:
+                    current_loc = new_loc
+        '''
         for charge in charges:
 
             current_loc = parent_loc
@@ -159,7 +217,8 @@ class IsotopeProfile:
 
                     scores[str(score)] = {'score': score,
                                           'monoisotopic m/z': mass,
-                                          'charge': charge}
+                                          'charge': charge,
+                                          'sulfur': sulfur[-1]}
 
                 new_loc = np.argmin(np.abs(data[:, 0] - (mass - 1.003356/charge)))
                 if new_loc == current_loc:
@@ -168,7 +227,7 @@ class IsotopeProfile:
                     break
                 else:
                     current_loc = new_loc
-
+        '''
         if len(scores) > 0:
             best = np.asarray(list(scores.keys()), float).min()
             return scores[str(best)]
