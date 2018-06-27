@@ -109,8 +109,8 @@ class IsotopeProfile:
 
         for charge in range(2, 5):
 
-            if (np.sum(np.abs(data[:, 0] - (parent_mass - 1.003356 / charge))/parent_mass*10**6 < 4) > 0) | \
-                    (np.sum(np.abs(data[:, 0] - (parent_mass + 1.003356 / charge))/parent_mass*10**6 < 4) > 0):
+            if (np.sum(np.abs(data[:, 0] - (parent_mass - 1.003356 / charge))/parent_mass*10**6 < 8) > 0) | \
+                    (np.sum(np.abs(data[:, 0] - (parent_mass + 1.003356 / charge))/parent_mass*10**6 < 8) > 0):
 
                 charges += [charge]
 
@@ -133,18 +133,18 @@ class IsotopeProfile:
 
                 masses = np.asarray([mass + 1.003356 / charge * x for x in range(len(profiles['S0']))])
                 matching_spectrum = np.asarray([data[np.argmin(np.abs(data[:, 0] - x)), :] for x in masses], float)
-                use = np.abs(matching_spectrum[:, 0]-masses)/matching_spectrum[:, 0]*10**6 < 4
+                use = np.abs(matching_spectrum[:, 0]-masses)/matching_spectrum[:, 0]*10**6 < 8
 
-                last = np.argmin(use)
+                last = np.argmin(use) if False in use else len(use)
                 use[last:] = False
                 matching_spectrum = matching_spectrum[use, :]
 
-                if (last < 3) | (np.sum(np.abs(matching_spectrum-parent_mass)/parent_mass*10**6 < 4) != 1):
+                if (last < 3) | (np.sum(np.abs(matching_spectrum-parent_mass)/parent_mass*10**6 < 8) != 1):
                     new_loc = np.argmin(np.abs(data[:, 0] - (mass - 1.003356 / charge)))
 
                     if new_loc == current_loc:
                         break
-                    elif np.abs((mass - 1.003356/charge) - data[new_loc, 0]) / (mass - 1.003356/charge) * 10 ** 6 > 4:
+                    elif np.abs((mass - 1.003356/charge) - data[new_loc, 0]) / (mass - 1.003356/charge) * 10 ** 6 > 8:
                         break
                     else:
                         current_loc = new_loc
@@ -174,7 +174,7 @@ class IsotopeProfile:
                 new_loc = np.argmin(np.abs(data[:, 0] - (mass - 1.003356/charge)))
                 if new_loc == current_loc:
                     break
-                elif np.abs((mass - 1.003356/charge) - data[new_loc, 0]) / (mass - 1.003356/charge) * 10 ** 6 > 4:
+                elif np.abs((mass - 1.003356/charge) - data[new_loc, 0]) / (mass - 1.003356/charge) * 10 ** 6 > 8:
                     break
                 else:
                     current_loc = new_loc
