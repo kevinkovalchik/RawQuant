@@ -128,7 +128,6 @@ class IsotopeProfile:
             while True:
                 # print(current_loc)
                 mass = data[current_loc, 0]
-                intensity = data[current_loc, 1]
                 profiles = self.generate_profiles((mass - 1.007276)*charge)
 
                 masses = np.asarray([mass + 1.003356 / charge * x for x in range(len(profiles['S0']))])
