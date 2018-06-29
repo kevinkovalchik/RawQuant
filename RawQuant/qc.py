@@ -80,7 +80,7 @@ def do_qc(qc_directory, path_to_file=None, directory=None):
 
 def to_do_list(directory, qc_directory):
 
-    qc = pd.read_csv(qc_directory + '/latest_QC.csv')
+    qc = pd.read_csv(qc_directory + '\latest_QC.csv')
 
     all_files = [os.path.normpath(directory + '/' + f) for f in os.listdir(directory) if f[-4:] == '.raw']
 
