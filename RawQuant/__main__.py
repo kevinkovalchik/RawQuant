@@ -160,7 +160,7 @@ if __name__ == "__main__":
                 'Number of CPU cores to be used when processing multiple files.\n'+
                 'If left blank a single core will be used.\n ')
 
-        quant.add_argument('-b', '--boxcar', help=
+        quant.add_argument('-b', '--boxcar', action='store_true', help=
                 'Indicates that the rawfile is from a boxcar experiment and the program'
                 'should look for multi-injection data.')
 
@@ -200,6 +200,9 @@ if __name__ == "__main__":
                 'Specify a low mass cutoff during mgf file generation. Example:\n' +
                 '>python -m RawQuant quant -f rawFile.raw -r TMT0 -mgf -mco 128\n' +
                 'cuts off all MS2 ions < m/z 128 when making the mgf file.')
+
+        quant.add_argument('-offset', '--isolation_window_offset', help=
+                'Specify the offset of the isolation window, if there was one.')
 
         ### Examples subparser section ###
 
@@ -266,6 +269,9 @@ if __name__ == "__main__":
         'Specify a low mass cutoff during mgf file generation. Example:\n' +
         '>python -m RawQuant parse -f rawFile.raw -o 0 -mgf -mco 128\n' +
         'cuts off all MS2 ions < m/z 128 when making the mgf file.')
+
+        parse.add_argument('-offset', '--isolation_window_offset', help=
+        'Specify the offset of the isolation window, if there was one.')
 
         args = parser.parse_args()
 
@@ -712,7 +718,8 @@ if __name__ == "__main__":
         for msFile in files:
 
             filename = msFile[:-4]+'_ParseData.txt'
-            data = RawQuant(msFile,disable_bar=suppress_bar)
+            data = RawQuant(msFile, disable_bar=suppress_bar, isolationOffset=args.isolation_window_offset,
+                            boxcar=args.boxcar)
 
             if args.boxcar:
 
@@ -758,7 +765,7 @@ if __name__ == "__main__":
 
         elif args.multiple is not None:
 
-            files = np.loadtxt(args.multiple,dtype=str).tolist()
+            files = np.loadtxt(args.multiple, dtype=str).tolist()
 
         elif args.directory is not None:
 
@@ -822,7 +829,8 @@ if __name__ == "__main__":
             for msFile in files:
 
                 filename = msFile[:-4]+'_QuantData.txt'
-                data = RawQuant(msFile,order=order,disable_bar=suppress_bar)
+                data = RawQuant(msFile, order=order, disable_bar=suppress_bar, boxcar=args.boxcar,
+                                isolationOffset=args.isolation_window_offset)
 
                 if args.boxcar:
                     data.SetAsBoxcar()
@@ -841,7 +849,7 @@ if __name__ == "__main__":
                     data.GenerateCorrectionMatrix()
                     data.CorrectImpurities()
 
-                data.SaveData(filename = filename)
+                data.SaveData(filename=filename)
 
                 if args.generate_mgf:
 
@@ -869,4 +877,5 @@ if __name__ == "__main__":
 
             Parallel(n_jobs=num_cores)(delayed(func)(msFile=msFile, reagents=reagents, mgf=args.generate_mgf,
                                                      interference=args.quantify_interference, impurities=impurities,
-                                                     metrics=args.metrics, boxcar=args.boxcar) for msFile in files)
+                                                     metrics=args.metrics, boxcar=args.boxcar,
+                                                     isolationOffset=args.isolation_window_offset) for msFile in files)

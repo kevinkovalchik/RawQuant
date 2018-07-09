@@ -23,7 +23,7 @@ provided for this usage.
 
 class RawQuant:
 
-    def __init__(self, RawFile, order='auto', disable_bar=False):
+    def __init__(self, RawFile, order='auto', disable_bar=False, boxcar=False, isolationOffset=None):
 
         self.disable_bar = disable_bar
 
@@ -141,23 +141,12 @@ class RawQuant:
         if 'Master Scan Number:' in labels:
             self.flags['MasterScanNumber'] = True
 
-        # get the isolation window offset, if there is one
-        # if the system is linux, this seems to fail, so for now we will check that and skip if it is so
-
-        if (sys.platform is 'linux') | (sys.platform is 'darwin'):
-
-            offset = 0.0
-
+        if isolationOffset is not None:
+            self.MetaData['Offset'] = float(isolationOffset)
         else:
+            self.MetaData['Offset'] = 0.0
 
-            method = self.raw.GetInstrumentMethod(1)
-
-            offset = findall(r'Isolation[ m/z ]*Offset\s*=*\s*(\S+)', method, flags=IGNORECASE)[0]
-
-            if (offset.lower() == 'off') | (offset.lower() == 'false') :
-                offset = 0.0
-
-        self.MetaData['Offset'] = float(offset)
+        self.flags['BoxCar'] = boxcar
 
         self.Initialized = True
 
@@ -274,6 +263,8 @@ class RawQuant:
             return
 
         scans = self.info.loc[(self.info['MSOrder'] == 2), 'ScanNum']
+
+        print(self.RawFile + ': Extracting parent peak masses')
 
         self.data['TriggerMass'] = OD((str(x), self.raw.GetScanEventForScanNumber(x).Reactions[0].PrecursorMass -
                                        self.MetaData['Offset']) for x in scans)
@@ -424,7 +415,11 @@ class RawQuant:
 
             keys = ['MassRange[' + str(x.LowMass) + '-' + str(x.HighMass) + ']FillTime' for x in ranges]
 
+            print(keys)
+
             fill_times = self.data['MS1TrailerExtra'][str(scan)]['Multi Inject Info'][3:].split(',')
+
+            print(fill_times)
 
             return OD((keys[x], fill_times[x]) for x in range(len(keys)))
 
@@ -2026,9 +2021,9 @@ class RawQuant:
 
 
 # define a function to be used in parallelism
-def func(msFile, reagents, mgf, interference, impurities, metrics, boxcar):
+def func(msFile, reagents, mgf, interference, impurities, metrics, boxcar, isolationOffset=None):
     filename = msFile[:-4] + '_QuantData.txt'
-    data = RawQuant(msFile, disable_bar=True)
+    data = RawQuant(msFile, disable_bar=True, isolationOffset=isolationOffset)
 
     if boxcar:
         data.SetAsBoxcar()
