@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 
 ## [unreleased]
+-Added an -offset parameter to the CLI. This is required if your experiment uses an isolation window offset.
+
+-Parse and Quant modes have a -boxcar switch. This feature might or might not be useful if you are using
+an older Tune version and run boxcar experiments. It should add injection times for each MS1 isolation window in boxcar
+experiments to the output matrix. We were developing this, but when we upgraded to Tune 2.0 we found
+the multi-inject field of the trailer data seems to be truncated. We are leaving it in for now, but be advised it's
+functionality isn't verified and it might well crash.
 
 ## [0.2.3]
 -When "Monoisotopic Precursor Selection" is turned off during MS acquisition, raw files contain
