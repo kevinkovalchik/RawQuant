@@ -1,3 +1,9 @@
+# UPDATE - January 2019
+
+As of January 4, 2019 we will no longer be providing support for RawQuant. Please check out the new replacement for RawQuant, [RawTools](https://github.com/kevinkovalchik/RawTools), which is described in the previous update.
+
+RawQuant will still be available through the Python Package Index, but we will be making no new updates and will not be providing support on GitHub. To reflect this, repository will be archived. This means it will be accesible, but read-only (i.e. users will not be able to post new issues).
+
 # UPDATE - September 2018
 
 We have developed a replacement for RawQuant called RawTools. RawTools has been built from the ground up in C# and built on the Thermo RawFileReader library. As a result of these changes, RawTools is substantially faster at data processing compared with RawQuant, and is compatible with data handling on Windows, MacOS, and Linux. RawTools also includes a large collection of new features, including quality control tracking!
